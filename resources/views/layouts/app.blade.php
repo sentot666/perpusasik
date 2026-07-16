@@ -121,6 +121,26 @@
             </div>
         </form>
 
+        {{-- Auto Refresh Widget (visible only on Dashboard, Sirkulasi, and Users pages) --}}
+        <div class="d-none d-sm-flex align-items-center ms-3" id="autoRefreshContainer" style="gap:0.5rem;">
+            <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1" type="button" id="autoRefreshDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-size:0.75rem; padding: 0.22rem 0.5rem; border-radius:6px;">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span id="autoRefreshLabel">Auto Refresh: Off</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="autoRefreshDropdown" style="font-size:0.8rem; border-radius:8px; border:none;">
+                    <li><a class="dropdown-item active" href="#" data-interval="0">Off</a></li>
+                    <li><a class="dropdown-item" href="#" data-interval="10">10s</a></li>
+                    <li><a class="dropdown-item" href="#" data-interval="30">30s</a></li>
+                    <li><a class="dropdown-item" href="#" data-interval="60">60s</a></li>
+                    <li><a class="dropdown-item" href="#" data-interval="300">5m</a></li>
+                </ul>
+            </div>
+            <div class="progress" style="width: 40px; height: 3px; background-color: #e2e8f0; display: none; margin-bottom: 0;" id="autoRefreshProgressContainer">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" id="autoRefreshProgressBar"></div>
+            </div>
+        </div>
+
         {{-- User dropdown --}}
         <div class="dropdown ms-2">
             <button class="btn btn-sm btn-light d-flex align-items-center gap-2" data-bs-toggle="dropdown">
@@ -178,5 +198,79 @@
 </div>{{-- end .main-wrapper --}}
 
 @stack('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('autoRefreshContainer');
+    const label = document.getElementById('autoRefreshLabel');
+    const progressContainer = document.getElementById('autoRefreshProgressContainer');
+    const progressBar = document.getElementById('autoRefreshProgressBar');
+    const dropdownItems = document.querySelectorAll('#autoRefreshContainer .dropdown-item');
+
+    // Only show on specific pages
+    const allowedPaths = ['/dashboard', '/sirkulasi', '/users'];
+    const currentPath = window.location.pathname;
+    const isPageAllowed = allowedPaths.some(path => currentPath.endsWith(path) || currentPath.includes(path + '/'));
+
+    if (!isPageAllowed) {
+        if (container) container.style.display = 'none';
+        return;
+    }
+
+    let interval = parseInt(localStorage.getItem('auto_refresh_interval') || '0');
+    let timer = null;
+    let timeLeft = interval;
+    let totalDuration = interval;
+
+    function startTimer() {
+        if (timer) clearInterval(timer);
+        if (interval === 0) {
+            if (progressContainer) progressContainer.style.display = 'none';
+            return;
+        }
+
+        if (progressContainer) progressContainer.style.display = 'block';
+        timeLeft = interval;
+        totalDuration = interval;
+        if (progressBar) progressBar.style.width = '100%';
+
+        timer = setInterval(() => {
+            timeLeft -= 1;
+            const percentage = (timeLeft / totalDuration) * 100;
+            if (progressBar) progressBar.style.width = percentage + '%';
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.reload();
+            }
+        }, 1000);
+    }
+
+    function updateUI() {
+        dropdownItems.forEach(item => {
+            const itemInt = parseInt(item.getAttribute('data-interval'));
+            if (itemInt === interval) {
+                item.classList.add('active');
+                if (label) label.textContent = itemInt === 0 ? 'Auto Refresh: Off' : `Auto Refresh: ${itemInt}s`;
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            interval = parseInt(item.getAttribute('data-interval'));
+            localStorage.setItem('auto_refresh_interval', interval);
+            updateUI();
+            startTimer();
+        });
+    });
+
+    // Initialize
+    updateUI();
+    startTimer();
+});
+</script>
 </body>
 </html>
