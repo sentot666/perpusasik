@@ -211,7 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, "");
     const isPageAllowed = currentPath.endsWith('/dashboard') || 
                           currentPath.endsWith('/sirkulasi') || 
-                          currentPath.endsWith('/users');
+                          currentPath.endsWith('/users') ||
+                          currentPath.endsWith('/members');
 
     console.log('[AutoRefresh] Sanitized path:', currentPath, 'Allowed:', isPageAllowed);
 
