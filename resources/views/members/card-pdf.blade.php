@@ -6,138 +6,162 @@
     <style>
         @page {
             margin: 0;
+            size: 242pt 153pt landscape;
         }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 10px;
+            padding: 0;
+            width: 242pt;
+            height: 153pt;
             background-color: #ffffff;
             color: #333333;
-        }
-        .card-container {
-            width: 222px; /* Approx 3.375 inches */
-            height: 133px; /* Approx 2.125 inches */
-            border: 1px solid #1e3a5f;
-            border-radius: 8px;
-            position: relative;
-            padding: 8px;
             box-sizing: border-box;
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
         }
-        .header {
-            border-bottom: 2px solid #1e3a5f;
-            padding-bottom: 3px;
-            margin-bottom: 6px;
+        .card {
+            width: 242pt;
+            height: 153pt;
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+            box-sizing: border-box;
+        }
+        .header-band {
+            background-color: #1e3a5f;
+            color: #ffffff;
+            padding: 6pt 10pt;
             text-align: center;
+            border-bottom: 2px solid #2b6cb0;
         }
         .library-name {
-            font-size: 8px;
+            font-size: 9pt;
             font-weight: bold;
-            color: #1e3a5f;
-            text-transform: uppercase;
             margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
         }
         .card-title {
-            font-size: 6px;
-            color: #718096;
-            margin: 1px 0 0 0;
-            letter-spacing: 0.5px;
+            font-size: 6.5pt;
+            color: #93c5fd;
+            margin: 2pt 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        .card-body {
+            padding: 8pt 10pt 4pt 10pt;
+        }
+        .photo-cell {
+            width: 52pt;
+            vertical-align: top;
         }
         .photo-box {
-            width: 40px;
-            height: 50px;
+            width: 48pt;
+            height: 60pt;
             border: 1px solid #cbd5e0;
-            float: left;
-            margin-right: 8px;
+            border-radius: 3px;
             background-color: #edf2f7;
+            overflow: hidden;
             text-align: center;
-            line-height: 50px;
-            font-size: 6px;
+        }
+        .photo-box-empty {
+            line-height: 60pt;
+            font-size: 7pt;
             color: #a0aec0;
+            font-weight: bold;
         }
         .photo {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .info-box {
-            float: left;
-            width: 148px;
+        .info-cell {
+            vertical-align: top;
+            padding-left: 8pt;
         }
-        .info-row {
-            margin-bottom: 3px;
-            font-size: 7px;
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info-table td {
+            padding: 2pt 0;
+            font-size: 8pt;
+            line-height: 1.2;
         }
         .info-label {
-            font-weight: bold;
             color: #4a5568;
-            display: inline-block;
-            width: 45px;
+            font-weight: bold;
+            width: 50pt;
         }
         .info-value {
-            color: #2d3748;
+            color: #1a202c;
         }
-        .clear {
-            clear: both;
-        }
-        .footer {
+        .card-footer {
             position: absolute;
-            bottom: 6px;
-            left: 8px;
-            right: 8px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 4pt 10pt;
+            border-top: 1px dashed #e2e8f0;
+            background-color: #f8fafc;
             text-align: center;
         }
         .barcode-text {
-            font-family: monospace;
-            font-size: 7px;
-            letter-spacing: 2px;
-            color: #1a202c;
-            margin-top: 2px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 7.5pt;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #2d3748;
+            margin: 0;
         }
     </style>
 </head>
 <body>
 
-<div class="card-container">
-    <div class="header">
-        <h1 class="library-name">{{ $libraryName }}</h1>
-        <h2 class="card-title">KARTU ANGGOTA PERPUSTAKAAN</h2>
+<div class="card">
+    <div class="header-band">
+        <div class="library-name">{{ $libraryName }}</div>
+        <div class="card-title">Kartu Anggota Perpustakaan</div>
     </div>
 
-    <div class="photo-box">
-        @if($member->photo)
-            <img class="photo" src="{{ public_path('storage/' . $member->photo) }}" alt="Foto">
-        @else
-            FOTO
-        @endif
+    <div class="card-body">
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td class="photo-cell">
+                    <div class="photo-box">
+                        @if($member->photo)
+                            <img class="photo" src="{{ storage_path('app/public/' . $member->photo) }}" alt="Foto">
+                        @else
+                            <div class="photo-box-empty">FOTO</div>
+                        @endif
+                    </div>
+                </td>
+                <td class="info-cell">
+                    <table class="info-table">
+                        <tr>
+                            <td class="info-label">No. Anggota</td>
+                            <td class="info-value">: {{ $member->member_code }}</td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Nama</td>
+                            <td class="info-value">: <strong>{{ strtoupper($member->name) }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Jenis</td>
+                            <td class="info-value">: {{ $member->member_type }}</td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Berlaku s/d</td>
+                            <td class="info-value">: {{ $member->expired_date ? $member->expired_date->format('d/m/Y') : '-' }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
 
-    <div class="info-box">
-        <div class="info-row">
-            <span class="info-label">No. Anggota</span>
-            <span class="info-value">: {{ $member->member_code }}</span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Nama</span>
-            <span class="info-value">: <strong>{{ strtoupper($member->name) }}</strong></span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Jenis</span>
-            <span class="info-value">: {{ $member->member_type }}</span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Berlaku s/d</span>
-            <span class="info-value">: {{ $member->expired_date ? $member->expired_date->format('d/m/Y') : '-' }}</span>
-        </div>
-    </div>
-
-    <div class="clear"></div>
-
-    <div class="footer">
-        {{-- For barcode, we display the generated code in monospace --}}
-        <div style="border-top: 1px dashed #cbd5e0; padding-top: 3px;">
-            <div class="barcode-text">*{{ $member->barcode ?? $member->member_code }}*</div>
-        </div>
+    <div class="card-footer">
+        <div class="barcode-text">*{{ $member->barcode ?? $member->member_code }}*</div>
     </div>
 </div>
 
