@@ -207,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropdownItems = document.querySelectorAll('#autoRefreshContainer .dropdown-item');
 
     // Only allow auto-refresh on the main listing/dashboard pages (not create/edit/show)
-    // Remove trailing slash and convert to lowercase for robust matching
     const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, "");
     const isPageAllowed = currentPath.endsWith('/dashboard') || 
                           currentPath.endsWith('/sirkulasi') || 
@@ -242,6 +241,48 @@ document.addEventListener('DOMContentLoaded', () => {
     let timeLeft = interval;
     let totalDuration = interval;
 
+    function refreshDataOnly() {
+        console.log('[AutoRefresh] Fetching fresh data from:', window.location.href);
+        if (progressBar) {
+            progressBar.classList.add('progress-bar-striped', 'progress-bar-animated');
+        }
+
+        fetch(window.location.href)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(htmlText => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const currentContent = document.querySelector('.content-area');
+                const newContent = doc.querySelector('.content-area');
+                
+                if (currentContent && newContent) {
+                    currentContent.innerHTML = newContent.innerHTML;
+                    console.log('[AutoRefresh] Content updated successfully via AJAX!');
+                    
+                    // Re-initialize Bootstrap tooltips/popovers if window.bootstrap is defined
+                    if (window.bootstrap) {
+                        const tooltipEls = document.querySelectorAll('.content-area [data-bs-toggle="tooltip"]');
+                        tooltipEls.forEach(el => new window.bootstrap.Tooltip(el));
+                        
+                        const popoverEls = document.querySelectorAll('.content-area [data-bs-toggle="popover"]');
+                        popoverEls.forEach(el => new window.bootstrap.Popover(el));
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('[AutoRefresh] Fetch error:', error);
+            })
+            .finally(() => {
+                if (progressBar) {
+                    progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
+                }
+                startTimer();
+            });
+    }
+
     function startTimer() {
         if (timer) clearInterval(timer);
         if (interval === 0) {
@@ -255,13 +296,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progressBar) progressBar.style.width = '100%';
 
         timer = setInterval(() => {
+            // Pause/Reset the timer if the user is typing/focusing on an input, select, or textarea
+            const activeEl = document.activeElement;
+            const isUserInteracting = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT' || activeEl.tagName === 'TEXTAREA');
+
+            if (isUserInteracting) {
+                timeLeft = interval;
+                if (progressBar) progressBar.style.width = '100%';
+                return;
+            }
+
             timeLeft -= 1;
             const percentage = (timeLeft / totalDuration) * 100;
             if (progressBar) progressBar.style.width = percentage + '%';
 
             if (timeLeft <= 0) {
                 clearInterval(timer);
-                window.location.reload();
+                refreshDataOnly();
             }
         }, 1000);
     }
