@@ -206,17 +206,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('autoRefreshProgressBar');
     const dropdownItems = document.querySelectorAll('#autoRefreshContainer .dropdown-item');
 
-    // Only show on specific pages
-    const allowedPaths = ['/dashboard', '/sirkulasi', '/users'];
+    // Only allow auto-refresh on the main listing/dashboard pages (not create/edit/show)
     const currentPath = window.location.pathname;
-    const isPageAllowed = allowedPaths.some(path => currentPath.endsWith(path) || currentPath.includes(path + '/'));
+    const isPageAllowed = currentPath.endsWith('/dashboard') || 
+                          currentPath.endsWith('/sirkulasi') || 
+                          currentPath.endsWith('/users');
+
+    console.log('[AutoRefresh] Current path:', currentPath, 'Allowed:', isPageAllowed);
 
     if (!isPageAllowed) {
         if (container) container.style.display = 'none';
         return;
     }
 
-    let interval = parseInt(localStorage.getItem('auto_refresh_interval') || '0');
+    // Safe localStorage retrieval
+    let interval = 0;
+    try {
+        interval = parseInt(localStorage.getItem('auto_refresh_interval') || '0');
+    } catch (e) {
+        console.warn('[AutoRefresh] localStorage error:', e);
+        interval = 0;
+    }
+
     let timer = null;
     let timeLeft = interval;
     let totalDuration = interval;
@@ -246,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateUI() {
+        console.log('[AutoRefresh] Updating UI for interval:', interval);
         dropdownItems.forEach(item => {
             const itemInt = parseInt(item.getAttribute('data-interval'));
             if (itemInt === interval) {
@@ -260,8 +272,16 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdownItems.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-            interval = parseInt(item.getAttribute('data-interval'));
-            localStorage.setItem('auto_refresh_interval', interval);
+            const selectedInterval = parseInt(item.getAttribute('data-interval'));
+            console.log('[AutoRefresh] Item clicked, interval:', selectedInterval);
+            interval = selectedInterval;
+            
+            try {
+                localStorage.setItem('auto_refresh_interval', interval);
+            } catch (err) {
+                console.warn('[AutoRefresh] Cannot write to localStorage:', err);
+            }
+
             updateUI();
             startTimer();
         });
