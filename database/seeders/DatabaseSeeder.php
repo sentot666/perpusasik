@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
             ['username' => 'admin'],
             [
                 'name'     => 'Administrator',
-                'email'    => 'admin@inlislite.local',
+                'email'    => 'admin@makarya.local',
                 'password' => bcrypt('admin123'),
                 'is_active'=> true,
             ]
@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
             ['username' => 'pustakawan'],
             [
                 'name'     => 'Pustakawan Perpustakaan',
-                'email'    => 'pustakawan@inlislite.local',
+                'email'    => 'pustakawan@makarya.local',
                 'password' => bcrypt('pustakawan123'),
                 'is_active'=> true,
             ]
@@ -85,7 +85,7 @@ class DatabaseSeeder extends Seeder
             ['username' => 'anggota'],
             [
                 'name'     => 'Anggota Perpustakaan',
-                'email'    => 'anggota@inlislite.local',
+                'email'    => 'anggota@makarya.local',
                 'password' => bcrypt('anggota123'),
                 'is_active'=> true,
             ]
@@ -94,7 +94,7 @@ class DatabaseSeeder extends Seeder
 
         // ── Default Library Settings ───────────────────────────────────────────
         $defaultSettings = [
-            ['key' => 'library_name',   'value' => 'Perpustakaan INLIS Lite 3', 'group' => 'general', 'label' => 'Nama Perpustakaan'],
+            ['key' => 'library_name',   'value' => 'Perpustakaan Makarya', 'group' => 'general', 'label' => 'Nama Perpustakaan'],
             ['key' => 'library_address','value' => '',  'group' => 'general', 'label' => 'Alamat'],
             ['key' => 'library_phone',  'value' => '',  'group' => 'general', 'label' => 'Telepon'],
             ['key' => 'library_email',  'value' => '',  'group' => 'general', 'label' => 'Email'],

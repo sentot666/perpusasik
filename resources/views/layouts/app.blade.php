@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') - INLIS Lite 3</title>
+    <title>@yield('title', 'Dashboard') - {{ config('app.name', 'Makarya') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
@@ -17,7 +17,7 @@
     <a href="{{ route('dashboard') }}" class="sidebar-brand">
         <div class="brand-icon"><i class="bi bi-book-half"></i></div>
         <div>
-            <div>INLIS Lite 3</div>
+            <div>{{ config('app.name', 'Makarya') }}</div>
             <div style="font-size:0.6rem;font-weight:400;opacity:0.6">Perpustakaan Digital</div>
         </div>
     </a>
@@ -99,7 +99,7 @@
     </div>
 
     <div class="sidebar-footer">
-        v3.0.0 &copy; {{ date('Y') }} INLIS Lite
+        v3.0.0 &copy; {{ date('Y') }} {{ config('app.name', 'Makarya') }}
     </div>
 </nav>
 

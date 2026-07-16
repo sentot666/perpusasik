@@ -8,7 +8,7 @@
         <div class="login-logo">
             <i class="bi bi-book-half"></i>
         </div>
-        <h1>INLIS Lite 3</h1>
+        <h1>{{ config('app.name', 'Makarya') }}</h1>
         <p>Sistem Informasi Perpustakaan</p>
     </div>
 

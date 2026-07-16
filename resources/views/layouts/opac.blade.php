@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="@yield('meta_description', 'OPAC - Online Public Access Catalog Perpustakaan')">
-    <title>@yield('title', 'Katalog') - INLIS Lite 3 OPAC</title>
+    <title>@yield('title', 'Katalog') - {{ config('app.name', 'Makarya') }} OPAC</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
@@ -19,7 +19,7 @@
             <div style="width:32px;height:32px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center">
                 <i class="bi bi-book-half"></i>
             </div>
-            INLIS Lite 3
+            {{ config('app.name', 'Makarya') }}
         </a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#opacNav">
             <i class="bi bi-list text-white fs-4"></i>
@@ -48,7 +48,7 @@
 </main>
 
 <footer style="background:#1e3a5f;color:rgba(255,255,255,0.5);text-align:center;padding:1.5rem;font-size:0.8rem;margin-top:4rem">
-    &copy; {{ date('Y') }} INLIS Lite 3 — Sistem Informasi Perpustakaan
+    &copy; {{ date('Y') }} {{ config('app.name', 'Makarya') }} — Sistem Informasi Perpustakaan
 </footer>
 
 @stack('scripts')
