@@ -14,15 +14,19 @@ class DatabaseSeeder extends Seeder
     {
         // ── Permissions ────────────────────────────────────────────────────────
         $permissions = [
-            // Katalogisasi
+            // Super Admin
+            'manage-users', 'manage-roles', 'manage-settings', 'backup-db', 'restore-db', 'view-activity-logs', 'view-full-dashboard',
+            // Pustakawan / Admin
             'view-books', 'create-books', 'edit-books', 'delete-books',
+            'manage-catalog',
             'view-members', 'create-members', 'edit-members', 'delete-members',
-            // Sirkulasi
+            'print-barcode', 'print-book-label', 'print-member-card',
+            'import-excel', 'export-excel',
             'process-loans', 'process-returns', 'process-renewals', 'process-fines',
-            // Laporan
-            'view-reports', 'export-reports',
-            // Admin
-            'manage-users', 'manage-settings', 'manage-roles',
+            'view-reports',
+            // Anggota
+            'search-books', 'view-opac', 'view-stock', 'make-reservations',
+            'renew-loans', 'view-history', 'download-ebook', 'change-password', 'edit-profile'
         ];
 
         foreach ($permissions as $perm) {
@@ -31,33 +35,30 @@ class DatabaseSeeder extends Seeder
 
         // ── Roles ──────────────────────────────────────────────────────────────
         $superAdmin = Role::firstOrCreate(['name' => 'super-admin']);
-        $admin      = Role::firstOrCreate(['name' => 'admin']);
-        $librarian  = Role::firstOrCreate(['name' => 'librarian']);
-        $staff      = Role::firstOrCreate(['name' => 'staff']);
+        $pustakawan = Role::firstOrCreate(['name' => 'pustakawan']);
+        $anggota    = Role::firstOrCreate(['name' => 'anggota']);
 
         // Super Admin: all permissions
         $superAdmin->syncPermissions(Permission::all());
 
-        // Admin: all except manage-roles
-        $admin->syncPermissions(
-            Permission::whereNotIn('name', ['manage-roles'])->get()
-        );
-
-        // Librarian: catalogue + circulation + reports
-        $librarian->syncPermissions([
-            'view-books', 'create-books', 'edit-books',
-            'view-members', 'create-members', 'edit-members',
+        // Pustakawan: daily operations & catalogue management
+        $pustakawan->syncPermissions([
+            'view-books', 'create-books', 'edit-books', 'delete-books',
+            'manage-catalog',
+            'view-members', 'create-members', 'edit-members', 'delete-members',
+            'print-barcode', 'print-book-label', 'print-member-card',
+            'import-excel', 'export-excel',
             'process-loans', 'process-returns', 'process-renewals', 'process-fines',
-            'view-reports',
+            'view-reports'
         ]);
 
-        // Staff: circulation only
-        $staff->syncPermissions([
-            'view-books', 'view-members',
-            'process-loans', 'process-returns', 'process-renewals', 'process-fines',
+        // Anggota: self-service & public catalog access
+        $anggota->syncPermissions([
+            'search-books', 'view-opac', 'view-stock', 'make-reservations',
+            'renew-loans', 'view-history', 'download-ebook', 'change-password', 'edit-profile'
         ]);
 
-        // ── Default Admin User ─────────────────────────────────────────────────
+        // ── Default Users ──────────────────────────────────────────────────────
         $adminUser = User::firstOrCreate(
             ['username' => 'admin'],
             [
@@ -68,6 +69,28 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $adminUser->assignRole('super-admin');
+
+        $pustakawanUser = User::firstOrCreate(
+            ['username' => 'pustakawan'],
+            [
+                'name'     => 'Pustakawan Perpustakaan',
+                'email'    => 'pustakawan@inlislite.local',
+                'password' => bcrypt('pustakawan123'),
+                'is_active'=> true,
+            ]
+        );
+        $pustakawanUser->assignRole('pustakawan');
+
+        $anggotaUser = User::firstOrCreate(
+            ['username' => 'anggota'],
+            [
+                'name'     => 'Anggota Perpustakaan',
+                'email'    => 'anggota@inlislite.local',
+                'password' => bcrypt('anggota123'),
+                'is_active'=> true,
+            ]
+        );
+        $anggotaUser->assignRole('anggota');
 
         // ── Default Library Settings ───────────────────────────────────────────
         $defaultSettings = [
@@ -86,7 +109,9 @@ class DatabaseSeeder extends Seeder
             Setting::firstOrCreate(['key' => $setting['key']], $setting);
         }
 
-        $this->command->info('✅ Seeder selesai: Roles, Permissions, Admin user, dan Settings sudah dibuat.');
-        $this->command->info('   Login: admin / admin123');
+        $this->command->info('✅ Seeder selesai: Roles, Permissions, Default users, dan Settings sudah dibuat.');
+        $this->command->info('   Super Admin: admin / admin123');
+        $this->command->info('   Pustakawan:  pustakawan / pustakawan123');
+        $this->command->info('   Anggota:     anggota / anggota123');
     }
 }

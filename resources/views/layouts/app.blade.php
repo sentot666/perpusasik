@@ -25,11 +25,14 @@
     <div class="sidebar-menu">
 
         {{-- Dashboard --}}
+        @can('view-full-dashboard')
         <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
+        @endcan
 
         {{-- Katalogisasi --}}
+        @can('view-books')
         <div class="menu-label">Katalogisasi</div>
         <a href="{{ route('books.index') }}" class="nav-link {{ request()->routeIs('books.*') ? 'active' : '' }}">
             <i class="bi bi-journals"></i> Master Buku
@@ -46,8 +49,10 @@
         <a href="{{ route('locations.index') }}" class="nav-link {{ request()->routeIs('locations.*') ? 'active' : '' }}">
             <i class="bi bi-geo-alt"></i> Lokasi/Rak
         </a>
+        @endcan
 
         {{-- Sirkulasi --}}
+        @can('process-loans')
         <div class="menu-label">Sirkulasi</div>
         <a href="{{ route('circulations.index') }}" class="nav-link {{ request()->routeIs('circulations.index') ? 'active' : '' }}">
             <i class="bi bi-arrow-left-right"></i> Transaksi
@@ -58,29 +63,38 @@
         <a href="{{ route('circulations.return') }}" class="nav-link {{ request()->routeIs('circulations.return') ? 'active' : '' }}">
             <i class="bi bi-box-arrow-in-left"></i> Pengembalian
         </a>
+        @endcan
 
         {{-- Keanggotaan --}}
+        @can('view-members')
         <div class="menu-label">Keanggotaan</div>
         <a href="{{ route('members.index') }}" class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}">
             <i class="bi bi-people"></i> Data Anggota
         </a>
+        @endcan
 
         {{-- Laporan --}}
+        @can('view-reports')
         <div class="menu-label">Laporan</div>
         <a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
             <i class="bi bi-file-earmark-bar-graph"></i> Laporan
         </a>
+        @endcan
 
         {{-- Pengaturan --}}
-        @can('manage-users')
+        @canany(['manage-users', 'manage-settings'])
         <div class="menu-label">Administrasi</div>
+        @can('manage-users')
         <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
             <i class="bi bi-shield-person"></i> Manajemen User
         </a>
+        @endcan
+        @can('manage-settings')
         <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
             <i class="bi bi-gear"></i> Pengaturan
         </a>
         @endcan
+        @endcanany
 
     </div>
 

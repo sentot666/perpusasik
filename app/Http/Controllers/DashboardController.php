@@ -13,6 +13,10 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request)
     {
+        if (auth()->user()->hasRole('anggota')) {
+            return redirect()->route('opac.index');
+        }
+
         $stats = [
             'total_books'     => Book::count(),
             'total_members'   => Member::where('is_active', true)->count(),
