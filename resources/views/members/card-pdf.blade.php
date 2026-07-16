@@ -77,24 +77,50 @@
         }
         .info-cell {
             vertical-align: top;
-            padding-left: 8pt;
+            padding-left: 6pt;
+            width: 122pt;
         }
         .info-table {
             width: 100%;
             border-collapse: collapse;
         }
         .info-table td {
-            padding: 2pt 0;
-            font-size: 8pt;
+            padding: 1.5pt 0;
+            font-size: 7.5pt;
             line-height: 1.2;
         }
         .info-label {
             color: #4a5568;
             font-weight: bold;
-            width: 50pt;
+            width: 40pt;
         }
         .info-value {
             color: #1a202c;
+        }
+        .qr-cell {
+            vertical-align: top;
+            padding-left: 4pt;
+            width: 48pt;
+            text-align: right;
+        }
+        .qr-box {
+            width: 42pt;
+            height: 42pt;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            background-color: #ffffff;
+            padding: 2pt;
+            display: inline-block;
+        }
+        .qr-label {
+            font-size: 4.5pt;
+            color: #718096;
+            text-align: center;
+            margin-top: 2pt;
+            width: 48pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
         .card-footer {
             position: absolute;
@@ -125,7 +151,7 @@
     </div>
 
     <div class="card-body">
-        <table style="width: 100%; border-collapse: collapse;">
+        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
             <tr>
                 <td class="photo-cell">
                     <div class="photo-box">
@@ -139,22 +165,28 @@
                 <td class="info-cell">
                     <table class="info-table">
                         <tr>
-                            <td class="info-label">No. Anggota</td>
+                            <td class="info-label">No. ID</td>
                             <td class="info-value">: {{ $member->member_code }}</td>
                         </tr>
                         <tr>
                             <td class="info-label">Nama</td>
-                            <td class="info-value">: <strong>{{ strtoupper($member->name) }}</strong></td>
+                            <td class="info-value">: <strong>{{ strtoupper(\Illuminate\Support\Str::limit($member->name, 20)) }}</strong></td>
                         </tr>
                         <tr>
-                            <td class="info-label">Jenis</td>
-                            <td class="info-value">: {{ $member->member_type }}</td>
+                            <td class="info-label">Alamat</td>
+                            <td class="info-value">: {{ \Illuminate\Support\Str::limit($member->address ?? '-', 35) }}</td>
                         </tr>
                         <tr>
-                            <td class="info-label">Berlaku s/d</td>
-                            <td class="info-value">: {{ $member->expired_date ? $member->expired_date->format('d/m/Y') : '-' }}</td>
+                            <td class="info-label">Jenis / Exp</td>
+                            <td class="info-value">: {{ $member->member_type }} / {{ $member->expired_date ? $member->expired_date->format('d/m/Y') : '-' }}</td>
                         </tr>
                     </table>
+                </td>
+                <td class="qr-cell">
+                    <div class="qr-box">
+                        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(42)->margin(0)->generate(route('members.show', $member)) !!}
+                    </div>
+                    <div class="qr-label">Scan Profil</div>
                 </td>
             </tr>
         </table>
