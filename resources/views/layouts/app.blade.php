@@ -207,16 +207,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropdownItems = document.querySelectorAll('#autoRefreshContainer .dropdown-item');
 
     // Only allow auto-refresh on the main listing/dashboard pages (not create/edit/show)
-    const currentPath = window.location.pathname;
+    // Remove trailing slash and convert to lowercase for robust matching
+    const currentPath = window.location.pathname.toLowerCase().replace(/\/$/, "");
     const isPageAllowed = currentPath.endsWith('/dashboard') || 
                           currentPath.endsWith('/sirkulasi') || 
                           currentPath.endsWith('/users');
 
-    console.log('[AutoRefresh] Current path:', currentPath, 'Allowed:', isPageAllowed);
+    console.log('[AutoRefresh] Sanitized path:', currentPath, 'Allowed:', isPageAllowed);
 
     if (!isPageAllowed) {
-        if (container) container.style.display = 'none';
+        if (container) {
+            container.classList.add('d-none');
+            container.classList.remove('d-sm-flex');
+        }
         return;
+    } else {
+        if (container) {
+            container.classList.remove('d-none');
+            container.classList.add('d-sm-flex');
+        }
     }
 
     // Safe localStorage retrieval
