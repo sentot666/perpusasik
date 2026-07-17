@@ -13,34 +13,58 @@
         <h1>Buku Tamu & Aktivitas Harian</h1>
         <p>Pendataan aktivitas harian tamu dan kunjungan institusi/kelompok di perpustakaan</p>
     </div>
-    <div>
+    <div class="d-flex gap-2">
+        <button type="button" onclick="window.print()" class="btn btn-outline-secondary d-flex align-items-center gap-1">
+            <i class="bi bi-printer fs-6"></i>Cetak Laporan
+        </button>
         <button type="button" class="btn btn-primary d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#addGuestModal">
             <i class="bi bi-journal-plus fs-6"></i>Catat Kunjungan Baru
         </button>
     </div>
 </div>
 
+{{-- Print-only Header --}}
+<div class="d-none print-header mb-4">
+    <h2 class="text-center fw-bold text-uppercase" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+        Laporan Kunjungan Tamu & Aktivitas Harian<br>
+        <span style="font-size: 1.1rem; font-weight: normal; text-transform: none;">
+            {{ config('app.name', 'Makarya') }}
+        </span>
+    </h2>
+    @if($startDate || $endDate)
+        <p class="text-center text-muted" style="margin-top: -10px;">
+            Periode: 
+            @if($startDate) <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> @else Awal @endif
+            s.d.
+            @if($endDate) <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong> @else Akhir @endif
+        </p>
+    @endif
+</div>
+
 {{-- Filters --}}
 <div class="card mb-3">
     <div class="card-body py-2">
-        <form method="GET" class="row g-2 align-items-center" id="guestBookFilterForm">
-            <div class="col-md-5">
+        <form method="GET" class="row g-2 align-items-end" id="guestBookFilterForm">
+            <div class="col-md-4">
+                <label class="form-label" style="font-size:0.75rem;font-weight:600">CARI TAMU / INSTANSI</label>
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0 bg-light" placeholder="Cari nama, instansi, atau tujuan kunjungan..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control border-start-0 bg-light" placeholder="Cari nama, instansi, atau tujuan..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light"><i class="bi bi-calendar-event text-muted"></i></span>
-                    <input type="date" name="date" class="form-control bg-light" value="{{ request('date') }}" onchange="this.form.submit()">
-                </div>
+            <div class="col-md-2.5 col-6">
+                <label class="form-label" style="font-size:0.75rem;font-weight:600">MULAI TANGGAL</label>
+                <input type="date" name="start_date" class="form-control form-control-sm bg-light" value="{{ $startDate }}">
+            </div>
+            <div class="col-md-2.5 col-6">
+                <label class="form-label" style="font-size:0.75rem;font-weight:600">SAMPAI TANGGAL</label>
+                <input type="date" name="end_date" class="form-control form-control-sm bg-light" value="{{ $endDate }}">
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Cari</button>
+                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Filter</button>
                 <a href="{{ route('guest-books.index') }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x"></i> Reset</a>
             </div>
-            <div class="col-auto ms-auto text-muted" style="font-size:0.8rem">
+            <div class="col-auto ms-auto text-muted" style="font-size:0.8rem; padding-bottom: 5px;">
                 {{ $activities->total() }} kunjungan tercatat
             </div>
         </form>
@@ -194,3 +218,59 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+@media print {
+    /* Hide layout elements */
+    #sidebar, .topbar, .card:has(form), .btn, nav[aria-label="breadcrumb"], footer, .modal, .pagination, .page-header {
+        display: none !important;
+    }
+    /* Show print header */
+    .print-header {
+        display: block !important;
+    }
+    .main-wrapper {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+    .content-area {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    /* Format table for print */
+    .table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 0.85rem !important;
+    }
+    .table th, .table td {
+        border: 1px solid #000 !important;
+        padding: 6px 8px !important;
+        color: #000 !important;
+    }
+    .table-light {
+        background-color: #f8f9fa !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .badge {
+        border: none !important;
+        background: transparent !important;
+        color: #000 !important;
+        padding: 0 !important;
+        font-size: 0.85rem !important;
+    }
+    code {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #000 !important;
+    }
+}
+</style>
+@endpush

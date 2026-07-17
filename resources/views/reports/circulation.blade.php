@@ -9,6 +9,19 @@
 @endsection
 
 @section('content')
+{{-- Print-only Header --}}
+<div class="d-none print-header mb-4">
+    <h2 class="text-center fw-bold text-uppercase" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+        Laporan Transaksi Sirkulasi Buku<br>
+        <span style="font-size: 1.1rem; font-weight: normal; text-transform: none;">
+            {{ config('app.name', 'Makarya') }}
+        </span>
+    </h2>
+    <p class="text-center text-muted" style="margin-top: -10px;">
+        Rentang Tanggal: <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> s/d <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong>
+    </p>
+</div>
+
 <div class="page-header d-flex justify-content-between align-items-start">
     <div>
         <h1>Laporan Sirkulasi Buku</h1>
@@ -91,3 +104,59 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+@media print {
+    /* Hide layout elements */
+    #sidebar, .topbar, .card:has(form), .btn, nav[aria-label="breadcrumb"], footer, .modal, .pagination, .page-header {
+        display: none !important;
+    }
+    /* Show print header */
+    .print-header {
+        display: block !important;
+    }
+    .main-wrapper {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+    .content-area {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    /* Format table for print */
+    .table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 0.85rem !important;
+    }
+    .table th, .table td {
+        border: 1px solid #000 !important;
+        padding: 6px 8px !important;
+        color: #000 !important;
+    }
+    .table-light {
+        background-color: #f8f9fa !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .badge {
+        border: none !important;
+        background: transparent !important;
+        color: #000 !important;
+        padding: 0 !important;
+        font-size: 0.85rem !important;
+    }
+    code {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #000 !important;
+    }
+}
+</style>
+@endpush

@@ -24,13 +24,20 @@ class GuestBookController extends Controller
             });
         }
 
-        if ($date = $request->date) {
-            $query->whereDate('visit_date', $date);
+        $startDate = $request->start_date;
+        $endDate   = $request->end_date;
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('visit_date', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $query->whereDate('visit_date', '>=', $startDate);
+        } elseif ($endDate) {
+            $query->whereDate('visit_date', '<=', $endDate);
         }
 
         $activities = $query->paginate(20)->withQueryString();
 
-        return view('guest-books.index', compact('activities'));
+        return view('guest-books.index', compact('activities', 'startDate', 'endDate'));
     }
 
     /**
