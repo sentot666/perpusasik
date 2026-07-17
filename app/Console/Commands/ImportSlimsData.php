@@ -252,7 +252,7 @@ class ImportSlimsData extends Command
                 'address'         => $member->member_address,
                 'member_type'     => $member->member_type_name ?? 'Umum',
                 'register_date'   => $this->sanitizeDate($member->birth_date), // birth_date is in SLiMS layout here or register_date if defined
-                'expired_date'    => $this->sanitizeDate($member->expire_date),
+                'expired_date'    => now()->addYears(5)->toDateString(),
                 'is_active'       => true,
                 'photo'           => $member->member_image ? 'members/' . $member->member_image : null,
                 'barcode'         => 'M' . $member->member_id,
