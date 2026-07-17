@@ -85,9 +85,9 @@ class ImportSlimsData extends Command
 
         // Hapus akun pengguna lama dengan role 'anggota' agar tidak bentrok
         $this->info("🧹 Menghapus akun user lama dengan role 'anggota'...");
-        $anggotaUsers = \App\Models\User::role('anggota')->get();
+        $anggotaUsers = \App\Models\User::role('anggota')->withTrashed()->get();
         foreach ($anggotaUsers as $user) {
-            $user->delete();
+            $user->forceDelete();
         }
 
         // 2. Migrasi Pengarang (mst_author ➔ authors)
@@ -263,30 +263,9 @@ class ImportSlimsData extends Command
             // Dapatkan ID anggota internal
             $dbMember = DB::table('members')->where('member_code', $member->member_id)->first();
 
-            // Buat Akun User login untuk Anggota tersebut jika username belum dipakai
-            if (!\App\Models\User::where('username', $member->member_id)->exists()) {
-                $email = trim($member->member_email);
-                if (empty($email)) {
-                    $email = $member->member_id . '@makarya.local';
-                }
-
-                try {
-                    $user = \App\Models\User::create([
-                        'name'      => $member->member_name,
-                        'username'  => $member->member_id, // Nomor anggota sebagai username
-                        'email'     => $email,
-                        'password'  => bcrypt('123456'), // Default password
-                        'is_active' => true,
-                    ]);
-                    $user->assignRole('anggota');
-                } catch (\Exception $e) {
-                    $this->warn("⚠️ Gagal membuat akun user untuk anggota: {$member->member_id} ({$member->member_name}). Error: " . $e->getMessage());
-                }
-            }
-
             $importedMembersCount++;
         }
-        $this->info('✓ Berhasil mengimpor ' . $importedMembersCount . ' data anggota dan mengenerate akun login OPAC.');
+        $this->info('✓ Berhasil mengimpor ' . $importedMembersCount . ' data anggota.');
 
         // 11. Migrasi Transaksi Sirkulasi (loan ➔ circulations)
         $this->info('➔ Mengimpor Transaksi Sirkulasi...');
@@ -335,6 +314,22 @@ class ImportSlimsData extends Command
             }
         }
         $this->info('✓ Berhasil mengimpor ' . $importedLoansCount . ' transaksi peminjaman/sirkulasi.');
+
+        // Recreate default testing member user
+        $this->info("🔑 Membuat ulang akun anggota default untuk testing (anggota / anggota123)...");
+        $existingAnggota = \App\Models\User::withTrashed()->where('username', 'anggota')->first();
+        if ($existingAnggota) {
+            $existingAnggota->forceDelete();
+        }
+        
+        $anggotaUser = \App\Models\User::create([
+            'name'     => 'Anggota Perpustakaan',
+            'username' => 'anggota',
+            'email'    => 'anggota@makarya.local',
+            'password' => bcrypt('anggota123'),
+            'is_active'=> true,
+        ]);
+        $anggotaUser->assignRole('anggota');
 
         // Aktifkan kembali pemeriksaan foreign key
         Schema::enableForeignKeyConstraints();
