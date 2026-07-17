@@ -57,4 +57,58 @@ class ReportController extends Controller
 
         return view('reports.overdue', compact('overdueLoans'));
     }
+
+    /**
+     * Export report data to CSV spreadsheet.
+     */
+    public function export($type, Request $request)
+    {
+        if ($type === 'circulation') {
+            $startDate = $request->start_date ? date('Y-m-d', strtotime($request->start_date)) : today()->startOfMonth()->toDateString();
+            $endDate   = $request->end_date ? date('Y-m-d', strtotime($request->end_date)) : today()->endOfMonth()->toDateString();
+
+            $circulations = Circulation::with(['member', 'bookItem.book'])
+                ->whereBetween('loan_date', [$startDate, $endDate])
+                ->latest()
+                ->get();
+
+            $headers = [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+                'Content-Disposition' => 'attachment; filename="laporan-sirkulasi-' . $startDate . '-to-' . $endDate . '.csv"',
+                'Pragma' => 'no-cache',
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Expires' => '0'
+            ];
+
+            $callback = function() use ($circulations) {
+                $file = fopen('php://output', 'w');
+                fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+                fputcsv($file, [
+                    'No', 'Kode TRX', 'Nama Anggota', 'Kode Anggota', 'Judul Buku', 'Barcode Buku', 
+                    'Tanggal Pinjam', 'Jatuh Tempo', 'Tanggal Kembali', 'Status', 'Jumlah Denda'
+                ], ';');
+
+                foreach ($circulations as $index => $c) {
+                    fputcsv($file, [
+                        $index + 1,
+                        $c->transaction_code,
+                        $c->member->name,
+                        $c->member->member_code,
+                        $c->bookItem->book->title,
+                        $c->bookItem->barcode,
+                        $c->loan_date->format('d/m/Y'),
+                        $c->due_date->format('d/m/Y'),
+                        $c->return_date ? $c->return_date->format('d/m/Y') : '-',
+                        $c->status,
+                        (float) $c->fine_amount
+                    ], ';');
+                }
+                fclose($file);
+            };
+
+            return response()->stream($callback, 200, $headers);
+        }
+
+        abort(404);
+    }
 }

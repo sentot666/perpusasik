@@ -45,6 +45,7 @@
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Filter</button>
+                <a href="{{ route('reports.export', ['type' => 'circulation'] + request()->all()) }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Export Spreadsheet</a>
                 <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-printer"></i> Cetak</button>
             </div>
         </form>

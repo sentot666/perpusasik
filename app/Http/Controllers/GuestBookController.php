@@ -41,6 +41,80 @@ class GuestBookController extends Controller
     }
 
     /**
+     * Export guest book entries to CSV spreadsheet.
+     */
+    public function export(Request $request)
+    {
+        $query = GuestBook::query()->latest('visit_date')->latest('visit_time');
+
+        // Apply filters
+        if ($search = $request->search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('institution', 'like', "%{$search}%")
+                  ->orWhere('purpose', 'like', "%{$search}%");
+            });
+        }
+
+        $startDate = $request->start_date;
+        $endDate   = $request->end_date;
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('visit_date', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $query->whereDate('visit_date', '>=', $startDate);
+        } elseif ($endDate) {
+            $query->whereDate('visit_date', '<=', $endDate);
+        }
+
+        $activities = $query->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="laporan-buku-tamu-' . date('Y-m-d') . '.csv"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        ];
+
+        $callback = function() use ($activities) {
+            $file = fopen('php://output', 'w');
+            
+            // Add UTF-8 BOM for Excel compatibility
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // CSV Headers
+            fputcsv($file, [
+                'No', 
+                'Hari dan Tanggal', 
+                'Nama', 
+                'Kunjungan Dari', 
+                'Tujuan', 
+                'Waktu Kunjungan', 
+                'Jumlah Peserta',
+                'Catatan'
+            ], ';');
+
+            foreach ($activities as $index => $activity) {
+                fputcsv($file, [
+                    $index + 1,
+                    $activity->formatted_date,
+                    $activity->name,
+                    $activity->institution,
+                    $activity->purpose,
+                    $activity->formatted_time,
+                    $activity->participants_count,
+                    $activity->notes ?? '-'
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Store a newly created guest book entry in storage.
      */
     public function store(Request $request)

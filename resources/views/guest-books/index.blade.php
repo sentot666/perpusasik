@@ -14,6 +14,9 @@
         <p>Pendataan aktivitas harian tamu dan kunjungan institusi/kelompok di perpustakaan</p>
     </div>
     <div class="d-flex gap-2">
+        <a href="{{ route('guest-books.export', request()->all()) }}" class="btn btn-outline-success d-flex align-items-center gap-1">
+            <i class="bi bi-file-earmark-excel fs-6"></i>Export Spreadsheet
+        </a>
         <button type="button" onclick="window.print()" class="btn btn-outline-secondary d-flex align-items-center gap-1">
             <i class="bi bi-printer fs-6"></i>Cetak Laporan
         </button>

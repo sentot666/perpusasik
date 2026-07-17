@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     // ── Buku Tamu / Aktivitas Harian ───────────────────────────────────────────
+    Route::get('/guest-books/export', [GuestBookController::class, 'export'])->name('guest-books.export');
     Route::resource('guest-books', GuestBookController::class)->only(['index', 'store', 'destroy']);
 
     // ── Katalogisasi ────────────────────────────────────────────────────────
