@@ -35,7 +35,7 @@
                     @csrf
 
                     <div class="mb-4">
-                        <label class="form-label fw-500">Barcode Buku <span class="text-danger">*</span></label>
+                        <label for="returnBarcode" class="form-label fw-500">Barcode Buku <span class="text-danger">*</span></label>
                         <div class="input-group input-group-lg">
                             <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
                             <input

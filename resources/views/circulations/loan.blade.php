@@ -47,7 +47,7 @@
 
                     {{-- Member Search --}}
                     <div class="mb-3">
-                        <label class="form-label fw-500">Anggota <span class="text-danger">*</span></label>
+                        <label for="memberSearch" class="form-label fw-500">Anggota <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
                             <input type="text" id="memberSearch" class="form-control" placeholder="Ketik nama atau kode anggota..." autocomplete="off">
@@ -72,7 +72,7 @@
 
                     {{-- Barcode Input --}}
                     <div class="mb-3">
-                        <label class="form-label fw-500">Barcode Buku <span class="text-danger">*</span></label>
+                        <label for="barcodeInput" class="form-label fw-500">Barcode Buku <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
                             <input type="text" id="barcodeInput" class="form-control" placeholder="Scan atau ketik barcode eksemplar..." autocomplete="off">
@@ -99,8 +99,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-500">Catatan</label>
-                        <textarea name="notes" class="form-control" rows="2" placeholder="Opsional..."></textarea>
+                        <label for="notesInput" class="form-label fw-500">Catatan</label>
+                        <textarea name="notes" id="notesInput" class="form-control" rows="2" placeholder="Opsional..."></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 py-2 fw-600" id="submitLoan" disabled>
