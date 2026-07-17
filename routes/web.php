@@ -16,6 +16,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\OpacController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GuestBookController;
 
 // ── OPAC (public) ─────────────────────────────────────────────────────────────
 Route::get('/', [OpacController::class, 'index'])->name('opac.index');
@@ -38,6 +39,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // ── Buku Tamu / Aktivitas Harian ───────────────────────────────────────────
+    Route::resource('guest-books', GuestBookController::class)->only(['index', 'store', 'destroy']);
 
     // ── Katalogisasi ────────────────────────────────────────────────────────
     Route::middleware(['can:view-books'])->group(function () {

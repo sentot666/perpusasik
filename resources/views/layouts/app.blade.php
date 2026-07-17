@@ -73,6 +73,12 @@
         </a>
         @endcan
 
+        {{-- Buku Tamu --}}
+        <div class="menu-label">Aktivitas Harian</div>
+        <a href="{{ route('guest-books.index') }}" class="nav-link {{ request()->routeIs('guest-books.*') ? 'active' : '' }}">
+            <i class="bi bi-journal-text"></i> Buku Tamu
+        </a>
+
         {{-- Laporan --}}
         @can('view-reports')
         <div class="menu-label">Laporan</div>
