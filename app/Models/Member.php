@@ -33,6 +33,11 @@ class Member extends Model
         return $this->hasMany(Circulation::class);
     }
 
+    public function user(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(User::class);
+    }
+
     public function activeCirculations(): HasMany
     {
         return $this->hasMany(Circulation::class)->where('status', 'Dipinjam');

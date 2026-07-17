@@ -81,13 +81,30 @@ class DatabaseSeeder extends Seeder
         );
         $pustakawanUser->assignRole('pustakawan');
 
+        $anggotaMember = \App\Models\Member::firstOrCreate(
+            ['member_code' => 'anggota'],
+            [
+                'name'         => 'Anggota Perpustakaan',
+                'email'        => 'anggota@makarya.local',
+                'phone'        => '08123456789',
+                'gender'       => 'L',
+                'address'      => 'Jl. Perpustakaan No. 1',
+                'member_type'  => 'Umum',
+                'register_date'=> today(),
+                'expired_date' => today()->addYears(5),
+                'is_active'    => true,
+                'barcode'      => 'Manggota',
+            ]
+        );
+
         $anggotaUser = User::firstOrCreate(
             ['username' => 'anggota'],
             [
-                'name'     => 'Anggota Perpustakaan',
-                'email'    => 'anggota@makarya.local',
-                'password' => bcrypt('anggota123'),
-                'is_active'=> true,
+                'name'      => 'Anggota Perpustakaan',
+                'email'     => 'anggota@makarya.local',
+                'password'  => bcrypt('anggota123'),
+                'is_active' => true,
+                'member_id' => $anggotaMember->id,
             ]
         );
         $anggotaUser->assignRole('anggota');

@@ -19,6 +19,7 @@ class User extends Authenticatable
         'password',
         'is_active',
         'last_login_at',
+        'member_id',
     ];
 
     protected $hidden = [
@@ -34,5 +35,13 @@ class User extends Authenticatable
             'password'          => 'hashed',
             'is_active'         => 'boolean',
         ];
+    }
+
+    /**
+     * Get the member profile associated with the user account.
+     */
+    public function member(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Member::class);
     }
 }
