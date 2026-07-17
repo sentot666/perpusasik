@@ -256,6 +256,16 @@ function lookupBarcode() {
 }
 
 document.getElementById('lookupBarcode').addEventListener('click', lookupBarcode);
+let barcodeTimer;
+barcodeInput.addEventListener('input', function() {
+    clearTimeout(barcodeTimer);
+    const barcode = this.value.trim();
+    if (barcode.length < 3) return;
+    barcodeTimer = setTimeout(() => {
+        lookupBarcode();
+    }, 400);
+});
+
 barcodeInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); lookupBarcode(); } });
 
 document.getElementById('clearBook').addEventListener('click', () => {
