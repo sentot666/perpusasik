@@ -32,6 +32,15 @@
                     <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ session('error') }}
                 </div>
                 @endif
+                @if($errors->any())
+                <div class="alert alert-danger border-0 py-2" style="border-radius:8px">
+                    <ul class="mb-0 ps-3">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
                 <form method="POST" action="{{ route('circulations.store-loan') }}" id="loanForm">
                     @csrf
