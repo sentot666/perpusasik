@@ -78,6 +78,7 @@ class Member extends Model
         return $query->where(function ($q) use ($term) {
             $q->where('name', 'like', "%{$term}%")
               ->orWhere('member_code', 'like', "%{$term}%")
+              ->orWhere('barcode', 'like', "%{$term}%")
               ->orWhere('email', 'like', "%{$term}%")
               ->orWhere('phone', 'like', "%{$term}%")
               ->orWhere('identity_number', 'like', "%{$term}%");

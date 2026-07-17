@@ -178,6 +178,32 @@ memberSearch.addEventListener('input', function() {
     }, 300);
 });
 
+memberSearch.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const q = this.value.trim();
+        if (q.length < 2) return;
+        fetch(`/api/members/search?q=${encodeURIComponent(q)}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.length === 1) {
+                    selectMember(data[0]);
+                } else if (data.length > 1) {
+                    memberDropdown.innerHTML = '';
+                    data.forEach(m => {
+                        const item = document.createElement('button');
+                        item.type = 'button';
+                        item.className = 'dropdown-item py-2';
+                        item.innerHTML = `<strong>${m.name}</strong> <small class="text-muted ms-1">${m.member_code}</small><br><small class="text-muted">${m.member_type} • ${m.status}</small>`;
+                        item.addEventListener('click', () => selectMember(m));
+                        memberDropdown.appendChild(item);
+                    });
+                    memberDropdown.style.display = 'block';
+                }
+            });
+    }
+});
+
 function selectMember(m) {
     memberIdInput.value = m.id;
     memberSearch.value = m.name;
@@ -186,6 +212,7 @@ function selectMember(m) {
     document.getElementById('memberCardInfo').textContent = `${m.member_type} • ${m.status}`;
     memberCard.style.display = 'block';
     checkSubmit();
+    setTimeout(() => barcodeInput.focus(), 100);
 }
 
 document.getElementById('clearMember').addEventListener('click', () => {
