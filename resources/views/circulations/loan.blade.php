@@ -157,7 +157,7 @@ memberSearch.addEventListener('input', function() {
     const q = this.value.trim();
     if (q.length < 2) { memberDropdown.style.display = 'none'; return; }
     memberTimer = setTimeout(() => {
-        fetch(`/api/members/search?q=${encodeURIComponent(q)}`)
+        fetch('{{ route("members.ajax-search") }}?q=' + encodeURIComponent(q))
             .then(r => r.json())
             .then(data => {
                 memberDropdown.innerHTML = '';
@@ -183,7 +183,7 @@ memberSearch.addEventListener('keydown', function(e) {
         e.preventDefault();
         const q = this.value.trim();
         if (q.length < 2) return;
-        fetch(`/api/members/search?q=${encodeURIComponent(q)}`)
+        fetch('{{ route("members.ajax-search") }}?q=' + encodeURIComponent(q))
             .then(r => r.json())
             .then(data => {
                 if (data.length === 1) {
@@ -226,7 +226,7 @@ document.getElementById('clearMember').addEventListener('click', () => {
 function lookupBarcode() {
     const barcode = barcodeInput.value.trim();
     if (!barcode) return;
-    fetch(`/api/book-items/lookup?barcode=${encodeURIComponent(barcode)}`)
+    fetch('{{ route("book-items.ajax-lookup") }}?barcode=' + encodeURIComponent(barcode))
         .then(r => r.json())
         .then(data => {
             if (!data.found) {
