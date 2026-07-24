@@ -1,11 +1,88 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-
+/* ─── Custom Design Tokens ──────────────────────────────────────────────────── */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-primary: #4f46e5;
+    --color-primary-hover: #4338ca;
+    --color-sidebar: #0f172a;
+    --color-sidebar-hover: #1e293b;
+    --color-sidebar-active: #4f46e5;
+    --color-sidebar-text: #94a3b8;
+    --font-family-sans: 'Inter', 'Segoe UI', sans-serif;
 }
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+@layer base {
+    html, body {
+        font-family: var(--font-family-sans);
+        font-size: 0.875rem;
+        background-color: #f8fafc;
+        color: #1e293b;
+    }
+    h1, h2, h3, h4, h5, h6 { margin: 0; }
+    a { text-decoration: none; }
+}
+
+/* ─── Custom Components ─────────────────────────────────────────────────────── */
+@layer components {
+
+    /* ── Page Header ───────────────────────────────────────────────── */
+    .page-header {
+        @apply flex items-start justify-between mb-6;
+        h1 {
+            @apply text-xl font-bold text-slate-800;
+        }
+        p {
+            @apply text-slate-500 text-xs mt-0.5;
+        }
+    }
+
+    /* ── Stat Cards ────────────────────────────────────────────────── */
+    .stat-card {
+        @apply rounded-xl overflow-hidden shadow-sm border border-slate-200 transition-all duration-200;
+        &:hover { @apply -translate-y-0.5 shadow-md; }
+    }
+    .stat-icon {
+        @apply w-12 h-12 rounded-xl flex items-center justify-center text-xl;
+    }
+    .stat-value {
+        @apply text-2xl font-extrabold leading-none mb-1;
+    }
+    .stat-label {
+        @apply text-[0.72rem] text-slate-500 uppercase tracking-wide;
+    }
+
+    /* ── Content Area ──────────────────────────────────────────────── */
+    .content-area {
+        @apply flex-1 p-6;
+    }
+
+    /* ── Breadcrumb ────────────────────────────────────────────────── */
+    .breadcrumb-item {
+        @apply text-xs text-slate-400;
+        a { @apply hover:text-slate-600 transition-colors; }
+        &.active { @apply text-slate-600; }
+        & + .breadcrumb-item::before {
+            content: '/';
+            @apply mx-1 text-slate-300;
+        }
+    }
+
+    /* ── SweetAlert2 z-index fix ───────────────────────────────────── */
+    .swal2-container {
+        z-index: 9999 !important;
+    }
+
+    /* ── Sidebar nav active indicator ──────────────────────────────── */
+    .nav-pill-active::before {
+        content: '';
+        @apply absolute left-0 top-1/4 h-1/2 w-0.5 bg-white rounded;
+    }
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+

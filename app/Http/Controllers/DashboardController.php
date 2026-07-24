@@ -6,8 +6,10 @@ use App\Models\Book;
 use App\Models\BookItem;
 use App\Models\Circulation;
 use App\Models\Member;
+use App\Models\GuestBook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -39,6 +41,28 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        return view('dashboard', compact('stats', 'recentLoans', 'overdueLoans'));
+        // Chart Data: Visitors per day for last 14 days
+        $startDate = Carbon::today()->subDays(13);
+        $visitsData = GuestBook::where('visit_date', '>=', $startDate)
+            ->select('visit_date', DB::raw('SUM(participants_count) as total'))
+            ->groupBy('visit_date')
+            ->orderBy('visit_date')
+            ->get()
+            ->keyBy(function($item) {
+                return Carbon::parse($item->visit_date)->format('Y-m-d');
+            });
+
+        $chartLabels = [];
+        $chartData = [];
+        
+        for ($i = 0; $i < 14; $i++) {
+            $date = $startDate->copy()->addDays($i);
+            $dateStr = $date->format('Y-m-d');
+            
+            $chartLabels[] = $date->format('d M');
+            $chartData[] = isset($visitsData[$dateStr]) ? (int) $visitsData[$dateStr]->total : 0;
+        }
+
+        return view('dashboard', compact('stats', 'recentLoans', 'overdueLoans', 'chartLabels', 'chartData'));
     }
 }

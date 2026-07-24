@@ -91,8 +91,19 @@ class BookItemController extends Controller
             ->with(['book.authors', 'location'])
             ->first();
 
+        // Fallback: Check if the scanned barcode is actually an ISBN
         if (! $item) {
-            return response()->json(['found' => false, 'message' => 'Barcode tidak ditemukan.']);
+            $item = BookItem::whereHas('book', function ($query) use ($barcode) {
+                $query->where('isbn', $barcode)
+                      ->orWhere('isbn13', $barcode);
+            })
+            ->orderByRaw("FIELD(status, 'Tersedia') DESC")
+            ->with(['book.authors', 'location'])
+            ->first();
+        }
+
+        if (! $item) {
+            return response()->json(['found' => false, 'message' => 'Barcode atau ISBN tidak ditemukan.']);
         }
 
         return response()->json([

@@ -15,13 +15,13 @@
     <p>Perbarui status dan penempatan untuk eksemplar: <code>{{ $item->barcode }}</code></p>
 </div>
 
-<div class="card">
-    <div class="card-header"><i class="bi bi-pencil-square me-2 text-primary"></i>Form Perubahan Eksemplar</div>
-    <div class="card-body">
+<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-pencil-square text-indigo-600 mr-2"></i>Form Perubahan Eksemplar</div>
+    <div class="p-8">
 
         @if($errors->any())
-        <div class="alert alert-danger border-0 py-2 mb-3" style="border-radius:8px">
-            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+        <div class="alert alert-danger border-0 mb-6 py-2" style="border-radius:8px">
+            <i class="bi bi-exclamation-triangle-fill mr-1"></i>
             Periksa kembali form Anda.
         </div>
         @endif
@@ -30,23 +30,23 @@
             @csrf
             @method('PUT')
 
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-500">Barcode / RFID <span class="text-danger">*</span></label>
-                        <input type="text" name="barcode" class="form-control @error('barcode') is-invalid @enderror" value="{{ old('barcode', $item->barcode) }}" required>
-                        @error('barcode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            <div class="flex flex-wrap -mx-3">
+                <div class="w-full md:w-1/2 px-4">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Barcode / RFID <span class="text-red-600">*</span></label>
+                        <input type="text" name="barcode" class="@error('barcode') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" value="{{ old('barcode', $item->barcode) }}" required>
+                        @error('barcode')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-500">Nomor Induk / No. Inventaris <span class="text-danger">*</span></label>
-                        <input type="text" name="accession_number" class="form-control @error('accession_number') is-invalid @enderror" value="{{ old('accession_number', $item->accession_number) }}" required>
-                        @error('accession_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Induk / No. Inventaris <span class="text-red-600">*</span></label>
+                        <input type="text" name="accession_number" class="@error('accession_number') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" value="{{ old('accession_number', $item->accession_number) }}" required>
+                        @error('accession_number')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-500">Lokasi / Rak Penyimpanan</label>
-                        <select name="location_id" class="form-select">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Lokasi / Rak Penyimpanan</label>
+                        <select name="location_id" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4">
                             <option value="">Pilih Lokasi...</option>
                             @foreach($locations as $loc)
                             <option value="{{ $loc->id }}" {{ old('location_id', $item->location_id) == $loc->id ? 'selected' : '' }}>{{ $loc->name }} ({{ $loc->code }})</option>
@@ -55,19 +55,19 @@
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label fw-500">Kondisi Buku</label>
-                        <select name="condition" class="form-select">
+                <div class="w-full md:w-1/2 px-4">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Kondisi Buku</label>
+                        <select name="condition" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4">
                             <option value="Baik" {{ old('condition', $item->condition) == 'Baik' ? 'selected' : '' }}>Baik</option>
                             <option value="Rusak" {{ old('condition', $item->condition) == 'Rusak' ? 'selected' : '' }}>Rusak</option>
                             <option value="Hilang" {{ old('condition', $item->condition) == 'Hilang' ? 'selected' : '' }}>Hilang</option>
                         </select>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-500">Status Ketersediaan <span class="text-danger">*</span></label>
-                        <select name="status" class="form-select" required>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Status Ketersediaan <span class="text-red-600">*</span></label>
+                        <select name="status" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
                             <option value="Tersedia" {{ old('status', $item->status) == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
                             <option value="Dipesan" {{ old('status', $item->status) == 'Dipesan' ? 'selected' : '' }}>Dipesan</option>
                             <option value="Perbaikan" {{ old('status', $item->status) == 'Perbaikan' ? 'selected' : '' }}>Perbaikan / Perawatan</option>
@@ -76,18 +76,18 @@
                         <div class="form-text">Catatan: Status 'Dipinjam' dikontrol otomatis oleh transaksi sirkulasi</div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-500">Catatan Khusus</label>
-                        <textarea name="notes" class="form-control" rows="2">{{ old('notes', $item->notes) }}</textarea>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Catatan Khusus</label>
+                        <textarea name="notes" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" rows="2">{{ old('notes', $item->notes) }}</textarea>
                     </div>
                 </div>
             </div>
 
             <hr>
 
-            <div class="d-flex justify-content-end gap-2">
-                <a href="{{ route('books.show', $item->book) }}" class="btn btn-outline-secondary">Batal</a>
-                <button type="submit" class="btn btn-primary fw-600">Simpan Perubahan</button>
+            <div class="justify-end flex gap-2">
+                <a href="{{ route('books.show', $item->book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6">Batal</a>
+                <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold gap-2 py-2 px-6">Simpan Perubahan</button>
             </div>
         </form>
 

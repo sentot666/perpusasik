@@ -20,12 +20,23 @@ use App\Http\Controllers\GuestBookController;
 
 // ── OPAC (public) ─────────────────────────────────────────────────────────────
 Route::get('/', [OpacController::class, 'index'])->name('opac.index');
+Route::get('/katalog', [OpacController::class, 'katalog'])->name('opac.katalog');
 Route::get('/opac/buku/{book}', [OpacController::class, 'show'])->name('opac.show');
+
+// ── Buku Tamu Mandiri (public) ────────────────────────────────────────────────
+Route::get('/isi-buku-tamu', [GuestBookController::class, 'visitorForm'])->name('guest-books.visitor');
+Route::post('/isi-buku-tamu', [GuestBookController::class, 'visitorStore'])->name('guest-books.visitor.store');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
+
+    // Password Reset
+    Route::get('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'reset'])->name('password.update');
 });
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
@@ -60,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
 
     // ── Anggota ─────────────────────────────────────────────────────────────
     Route::middleware(['can:view-members'])->group(function () {
+        Route::get('members/{member}/print-card', [MemberController::class, 'printCard'])->name('members.print-card');
         Route::resource('members', MemberController::class);
         Route::get('/members/{member}/print-card', [MemberController::class, 'printCard'])->name('members.print-card');
         Route::get('/members/{member}/history', [MemberController::class, 'history'])->name('members.history');

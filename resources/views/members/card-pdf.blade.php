@@ -5,197 +5,237 @@
     <title>Kartu Anggota - {{ $member->name }}</title>
     <style>
         @page {
-            margin: 0;
-            size: 242pt 153pt landscape;
+            margin: 20pt;
+            size: A4 portrait;
         }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            width: 242pt;
-            height: 153pt;
             background-color: #ffffff;
-            color: #333333;
-            box-sizing: border-box;
+            color: #000000;
         }
-        .card {
+        
+        .cut-guide {
+            font-size: 8pt;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 15pt;
+            margin-top: 10pt;
+        }
+
+        /* 
+         * CARD WRAPPERS - Fixed size 242x153
+         */
+        .card-wrapper {
+            position: relative;
             width: 242pt;
             height: 153pt;
-            position: relative;
-            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
-            box-sizing: border-box;
-        }
-        .header-band {
-            background-color: #1e3a5f;
-            color: #ffffff;
-            padding: 6pt 10pt;
-            text-align: center;
-            border-bottom: 2px solid #2b6cb0;
-        }
-        .library-name {
-            font-size: 9pt;
-            font-weight: bold;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.1;
-        }
-        .card-title {
-            font-size: 6.5pt;
-            color: #93c5fd;
-            margin: 2pt 0 0 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-        .card-body {
-            padding: 8pt 10pt 4pt 10pt;
-        }
-        .photo-cell {
-            width: 52pt;
-            vertical-align: top;
-        }
-        .photo-box {
-            width: 48pt;
-            height: 60pt;
-            border: 1px solid #cbd5e0;
-            border-radius: 3px;
-            background-color: #edf2f7;
             overflow: hidden;
-            text-align: center;
+            border: 1.5pt dashed #94a3b8; /* guides for cutting */
+            margin: 0 auto;
+            text-align: left;
         }
-        .photo-box-empty {
-            line-height: 60pt;
-            font-size: 7pt;
-            color: #a0aec0;
-            font-weight: bold;
+
+        /* Use absolute positioning instead of padding to avoid DOMPDF box-sizing bugs */
+        .card-inner {
+            position: absolute;
+            top: 15pt;
+            left: 15pt;
+            right: 15pt;
+            bottom: 15pt;
+            z-index: 10;
         }
-        .photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+
+        /* FRONT CARD */
+        .front-card {
+            background: #ffffff;
         }
-        .info-cell {
-            vertical-align: top;
-            padding-left: 6pt;
-            width: 122pt;
-        }
-        .info-table {
+
+        .front-header-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .info-table td {
-            padding: 1.5pt 0;
-            font-size: 7.5pt;
-            line-height: 1.2;
+        .front-header-table td {
+            vertical-align: middle;
         }
-        .info-label {
-            color: #4a5568;
+
+        .name-block {
+            margin-top: 12pt;
+            margin-bottom: 10pt;
+            font-size: 11.5pt;
             font-weight: bold;
-            width: 40pt;
-        }
-        .info-value {
-            color: #1a202c;
-        }
-        .qr-cell {
-            vertical-align: top;
-            padding-left: 4pt;
-            width: 48pt;
-            text-align: right;
-        }
-        .qr-box {
-            width: 42pt;
-            height: 42pt;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            background-color: #ffffff;
-            padding: 2pt;
-            display: inline-block;
-        }
-        .qr-label {
-            font-size: 4.5pt;
-            color: #718096;
-            text-align: center;
-            margin-top: 2pt;
-            width: 48pt;
-            font-weight: bold;
+            letter-spacing: 0.5pt;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            color: #0f172a;
         }
-        .card-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 4pt 10pt;
-            border-top: 1px dashed #e2e8f0;
-            background-color: #f8fafc;
-            text-align: center;
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .barcode-text {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 7.5pt;
+        .details-table td {
+            vertical-align: top;
+        }
+        
+        .label {
+            font-size: 6pt;
             font-weight: bold;
-            letter-spacing: 3px;
-            color: #2d3748;
+            color: #64748b;
+            margin-bottom: 2pt;
+            text-transform: uppercase;
+        }
+        .val {
+            font-size: 7.5pt;
+            color: #1e293b;
+            line-height: 1.2;
+            margin-bottom: 8pt;
+        }
+
+        /* BACK CARD */
+        .back-card {
+            background: #f8fafc;
+        }
+
+        .bg-shape-grey {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150pt;
+            height: 153pt;
+            background-color: #e2e8f0;
+            border-bottom-left-radius: 150pt;
+            z-index: 1;
+        }
+        .bg-shape-blue {
+            position: absolute;
+            bottom: -30pt;
+            left: -30pt;
+            width: 120pt;
+            height: 120pt;
+            background-color: #2b6cb0;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .rules-list {
+            font-size: 7pt;
             margin: 0;
+            padding-left: 12pt;
+            line-height: 1.4;
+            color: #334155;
+        }
+        .rules-list li {
+            margin-bottom: 3pt;
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="header-band">
-        <div class="library-name">{{ $libraryName }}</div>
-        <div class="card-title">Kartu Anggota Perpustakaan</div>
-    </div>
+<div class="cut-guide">
+    Gunting mengikuti garis putus-putus. Lipat di tengah jika ingin dilaminating bolak-balik.
+</div>
 
-    <div class="card-body">
-        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-            <tr>
-                <td class="photo-cell">
-                    <div class="photo-box">
-                        @if($member->photo)
-                            <img class="photo" src="{{ storage_path('app/public/' . $member->photo) }}" alt="Foto">
-                        @else
-                            <div class="photo-box-empty">FOTO</div>
-                        @endif
-                    </div>
-                </td>
-                <td class="info-cell">
-                    <table class="info-table">
+<table style="width: 100%; border-collapse: collapse; margin-top: 10pt;">
+    <tr>
+        <!-- FRONT SIDE -->
+        <td style="width: 50%; text-align: center; vertical-align: top; padding: 10pt;">
+            <div class="card-wrapper front-card">
+                <div class="card-inner">
+                    <!-- Header -->
+                    <table class="front-header-table">
                         <tr>
-                            <td class="info-label">No. ID</td>
-                            <td class="info-value">: {{ $member->member_code }}</td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Nama</td>
-                            <td class="info-value">: <strong>{{ strtoupper(\Illuminate\Support\Str::limit($member->name, 20)) }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Alamat</td>
-                            <td class="info-value">: {{ \Illuminate\Support\Str::limit($member->address ?? '-', 35) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Jenis / Exp</td>
-                            <td class="info-value">: {{ $member->member_type }} / {{ $member->expired_date ? $member->expired_date->format('d/m/Y') : '-' }}</td>
+                            <td style="width: 26pt;">
+                                <div style="width: 20pt; height: 20pt;">
+                                    <img src="{{ public_path('images/logo.jpg') }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-size: 7.5pt; font-weight: bold; line-height: 1.1; color: #1e3a5f;">
+                                    KARTU PERPUSTAKAAN<br>SAINT PAUL
+                                </div>
+                            </td>
                         </tr>
                     </table>
-                </td>
-                <td class="qr-cell">
-                    <div class="qr-box">
-                        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(42)->margin(0)->generate(route('members.show', $member)) !!}
-                    </div>
-                    <div class="qr-label">Scan Profil</div>
-                </td>
-            </tr>
-        </table>
-    </div>
 
-    <div class="card-footer">
-        <div class="barcode-text">*{{ $member->barcode ?? $member->member_code }}*</div>
-    </div>
-</div>
+                    <!-- Name -->
+                    <div class="name-block">
+                        {{ $member->name }}
+                    </div>
+
+                    <!-- Details -->
+                    <table class="details-table">
+                        <tr>
+                            <td style="width: 52%;">
+                                <div class="label">Alamat</div>
+                                <div class="val" style="min-height: 18pt;">{{ \Illuminate\Support\Str::limit($member->address ?? '-', 60) }}</div>
+                            </td>
+                            <td style="width: 48%;">
+                                <div class="label">Nomor Identitas</div>
+                                <div class="val">{{ $member->member_code }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="label">Nomor Telepon</div>
+                                <div class="val">{{ $member->phone ?? '-' }}</div>
+                            </td>
+                            <td style="text-align: right; vertical-align: bottom;">
+                                <div style="font-size: 6pt; margin-bottom: 3pt; color: #64748b; font-weight: bold;">
+                                    EXP: {{ $member->expired_date ? $member->expired_date->format('Y-m-d') : '-' }}
+                                </div>
+                                <div>
+                                    @php
+                                        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+                                        $barcode = base64_encode($generator->getBarcode($member->member_code, $generator::TYPE_CODE_128, 1.2, 22));
+                                    @endphp
+                                    <img src="data:image/png;base64,{{ $barcode }}" style="width: 75pt; height: 16pt;" alt="barcode">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div style="font-size: 7pt; color: #94a3b8; margin-top: 5pt;">Bagian Depan</div>
+        </td>
+
+        <!-- BACK SIDE -->
+        <td style="width: 50%; text-align: center; vertical-align: top; padding: 10pt;">
+            <div class="card-wrapper back-card">
+                <!-- Background graphics -->
+                <div class="bg-shape-grey"></div>
+                <div class="bg-shape-blue"></div>
+                
+                <!-- Content -->
+                <div class="card-inner">
+                    <table style="width: 100%; height: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="vertical-align: top; width: 45%;">
+                                <div style="font-size: 8.5pt; font-weight: bold; margin-bottom: 2pt; color: #1e3a5f;">SANTO PAULUS</div>
+                                <div style="font-size: 6.5pt; color: #64748b;">santopaulus.sch.id</div>
+                            </td>
+                            <td style="vertical-align: top; width: 55%; padding-left: 10pt;">
+                                <div style="font-size: 7.5pt; font-weight: bold; margin-bottom: 6pt; color: #1e3a5f;">Aturan Perpustakaan</div>
+                                <ul class="rules-list">
+                                    <li>Kartu ini milik perpustakaan.</li>
+                                    <li>Tolong kembalikan ke perpustakaan apabila menemukan kartu ini.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="vertical-align: bottom; text-align: right;">
+                                <div style="font-size: 6pt; margin-bottom: 15pt; color: #64748b;">Jakarta Utara, {{ now()->format('d M Y') }}<br>Pustakawan</div>
+                                <div style="font-size: 7pt; font-weight: bold; color: #1e293b;">Yohanes Wakidi, S.Pd</div>
+                                <div style="font-size: 6pt; color: #64748b;">NIY 210 07 2000</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div style="font-size: 7pt; color: #94a3b8; margin-top: 5pt;">Bagian Belakang</div>
+        </td>
+    </tr>
+</table>
 
 </body>
 </html>

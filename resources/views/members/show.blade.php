@@ -9,58 +9,58 @@
 @endsection
 
 @section('content')
-<div class="page-header d-flex justify-content-between align-items-start">
+<div class="page-header justify-between items-start flex">
     <div>
         <h1>Detail Anggota</h1>
         <p>Profil dan data transaksi peminjaman anggota</p>
     </div>
-    <div class="d-flex gap-2">
-        <a href="{{ route('members.print-card', $member) }}" target="_blank" class="btn btn-warning text-dark fw-500">
-            <i class="bi bi-card-image me-1"></i>Cetak Kartu
+    <div class="flex gap-2">
+        <a href="{{ route('members.print-card', $member) }}" target="_blank" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-amber-600 border border-slate-200 border-amber-600 hover:bg-amber-50 transition-colors gap-2 py-2 px-6">
+            <i class="bi bi-printer mr-1"></i>Cetak Kartu
         </a>
-        <a href="{{ route('members.edit', $member) }}" class="btn btn-outline-secondary">
-            <i class="bi bi-pencil me-1"></i>Edit
+        <a href="{{ route('members.edit', $member) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6">
+            <i class="bi bi-pencil mr-1"></i>Edit
         </a>
     </div>
 </div>
 
-<div class="row g-3">
+<div class="flex flex-wrap -mx-3">
     {{-- Left: Card Profil --}}
-    <div class="col-lg-4">
-        <div class="card mb-3">
-            <div class="card-body text-center">
-                <div class="mx-auto mb-3" style="width:120px;height:120px;border-radius:50%;background:#f1f5f9;border:3px solid #e2e8f0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:3rem;font-weight:bold">
+    <div class="w-full lg:w-1/3 px-4">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            <div class="text-center p-8">
+                <div class="mx-auto mb-6" style="width:120px;height:120px;border-radius:50%;background:#f1f5f9;border:3px solid #e2e8f0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:3rem;font-weight:bold">
                     @if($member->photo)
                         <img src="{{ asset('storage/' . $member->photo) }}" style="width:100%;height:100%;object-fit:cover">
                     @else
                         {{ strtoupper(substr($member->name, 0, 1)) }}
                     @endif
                 </div>
-                <h4 class="fw-700 text-dark mb-1">{{ $member->name }}</h4>
-                <div class="badge bg-light text-dark border mb-3">{{ $member->member_type }}</div>
+                <h4 class="fw-700 text-slate-800 mb-1">{{ $member->name }}</h4>
+                <div class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-50 border border-slate-200 text-slate-800 mb-6">{{ $member->member_type }}</div>
 
-                <div class="d-flex justify-content-around text-center border-top border-bottom py-2 my-3">
+                <div class="justify-content-around border-t border-slate-200 border-b my-4 text-center flex py-2">
                     <div>
-                        <div class="fw-700 text-primary fs-5">{{ $activeLoans->count() }}</div>
-                        <div class="text-muted" style="font-size:0.7rem;text-transform:uppercase">Pinjam Aktif</div>
+                        <div class="fw-700 text-lg font-medium text-indigo-600">{{ $activeLoans->count() }}</div>
+                        <div class="text-slate-500" style="font-size:0.7rem;text-transform:uppercase">Pinjam Aktif</div>
                     </div>
                     <div>
-                        <div class="fw-700 text-muted fs-5">{{ $member->circulations()->count() }}</div>
-                        <div class="text-muted" style="font-size:0.7rem;text-transform:uppercase">Total Pinjam</div>
+                        <div class="fw-700 text-lg font-medium text-slate-500">{{ $member->circulations()->count() }}</div>
+                        <div class="text-slate-500" style="font-size:0.7rem;text-transform:uppercase">Total Pinjam</div>
                     </div>
                 </div>
 
-                <div class="text-start">
+                <div class="text-left">
                     <div class="mb-2" style="font-size:0.82rem">
-                        <span class="text-muted d-block" style="font-size:0.72rem">KODE ANGGOTA</span>
-                        <code class="fw-600 fs-6">{{ $member->member_code }}</code>
+                        <span class="block text-slate-500" style="font-size:0.72rem">KODE ANGGOTA</span>
+                        <code class="text-base font-semibold">{{ $member->member_code }}</code>
                     </div>
                     <div class="mb-2" style="font-size:0.82rem">
-                        <span class="text-muted d-block" style="font-size:0.72rem">STATUS</span>
-                        <span class="badge bg-{{ $member->status_badge_class }}">{{ $member->status_label }}</span>
+                        <span class="block text-slate-500" style="font-size:0.72rem">STATUS</span>
+                        <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-{{ $member->status_badge_class }}">{{ $member->status_label }}</span>
                     </div>
                     <div class="mb-2" style="font-size:0.82rem">
-                        <span class="text-muted d-block" style="font-size:0.72rem">MASA BERLAKU</span>
+                        <span class="block text-slate-500" style="font-size:0.72rem">MASA BERLAKU</span>
                         <span class="{{ $member->is_expired ? 'text-danger fw-600' : '' }}">
                             {{ $member->expired_date ? $member->expired_date->format('d F Y') : '-' }}
                         </span>
@@ -71,53 +71,53 @@
     </div>
 
     {{-- Right: Detail & Transaksi --}}
-    <div class="col-lg-8">
+    <div class="w-full lg:w-2/3 px-4">
         {{-- Profile details tab --}}
-        <div class="card mb-3">
-            <div class="card-header"><i class="bi bi-person-fill me-2"></i>Informasi Lengkap</div>
-            <div class="card-body">
-                <div class="row g-2">
-                    <div class="col-6 col-md-4">
-                        <div class="text-muted" style="font-size:0.72rem">EMAIL</div>
-                        <div class="fw-500">{{ $member->email ?? '-' }}</div>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-person-fill mr-2"></i>Informasi Lengkap</div>
+            <div class="p-8">
+                <div class="flex flex-wrap -mx-2">
+                    <div class="w-full md:w-1/3 w-1/2 px-4">
+                        <div class="text-slate-500" style="font-size:0.72rem">EMAIL</div>
+                        <div class="font-medium">{{ $member->email ?? '-' }}</div>
                     </div>
-                    <div class="col-6 col-md-4">
-                        <div class="text-muted" style="font-size:0.72rem">TELEPON</div>
-                        <div class="fw-500">{{ $member->phone ?? '-' }}</div>
+                    <div class="w-full md:w-1/3 w-1/2 px-4">
+                        <div class="text-slate-500" style="font-size:0.72rem">TELEPON</div>
+                        <div class="font-medium">{{ $member->phone ?? '-' }}</div>
                     </div>
-                    <div class="col-6 col-md-4">
-                        <div class="text-muted" style="font-size:0.72rem">IDENTITAS</div>
-                        <div class="fw-500">{{ $member->identity_type ?? 'KTP' }}: {{ $member->identity_number ?? '-' }}</div>
+                    <div class="w-full md:w-1/3 w-1/2 px-4">
+                        <div class="text-slate-500" style="font-size:0.72rem">IDENTITAS</div>
+                        <div class="font-medium">{{ $member->identity_type ?? 'KTP' }}: {{ $member->identity_number ?? '-' }}</div>
                     </div>
-                    <div class="col-6 col-md-4 mt-3">
-                        <div class="text-muted" style="font-size:0.72rem">JENIS KELAMIN</div>
-                        <div class="fw-500">{{ $member->gender == 'L' ? 'Laki-laki' : ($member->gender == 'P' ? 'Perempuan' : '-') }}</div>
+                    <div class="w-full md:w-1/3 w-1/2 mt-6 px-4">
+                        <div class="text-slate-500" style="font-size:0.72rem">JENIS KELAMIN</div>
+                        <div class="font-medium">{{ $member->gender == 'L' ? 'Laki-laki' : ($member->gender == 'P' ? 'Perempuan' : '-') }}</div>
                     </div>
-                    <div class="col-6 col-md-4 mt-3">
-                        <div class="text-muted" style="font-size:0.72rem">KOTA & PROVINSI</div>
-                        <div class="fw-500">{{ $member->city ?? '-' }}, {{ $member->province ?? '-' }}</div>
+                    <div class="w-full md:w-1/3 w-1/2 mt-6 px-4">
+                        <div class="text-slate-500" style="font-size:0.72rem">KOTA & PROVINSI</div>
+                        <div class="font-medium">{{ $member->city ?? '-' }}, {{ $member->province ?? '-' }}</div>
                     </div>
-                    <div class="col-6 col-md-4 mt-3">
-                        <div class="text-muted" style="font-size:0.72rem">TANGGAL DAFTAR</div>
-                        <div class="fw-500">{{ $member->register_date ? $member->register_date->format('d/m/Y') : '-' }}</div>
+                    <div class="w-full md:w-1/3 w-1/2 mt-6 px-4">
+                        <div class="text-slate-500" style="font-size:0.72rem">TANGGAL DAFTAR</div>
+                        <div class="font-medium">{{ $member->register_date ? $member->register_date->format('d/m/Y') : '-' }}</div>
                     </div>
-                    <div class="col-12 mt-3">
-                        <div class="text-muted" style="font-size:0.72rem">ALAMAT</div>
-                        <div class="fw-500">{{ $member->address ?? '-' }}</div>
+                    <div class="w-full mt-6 px-4">
+                        <div class="text-slate-500" style="font-size:0.72rem">ALAMAT</div>
+                        <div class="font-medium">{{ $member->address ?? '-' }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- Active Loans --}}
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-arrow-left-right me-2 text-warning"></i>Buku Sedang Dipinjam</span>
-                <a href="{{ route('members.history', $member) }}" class="btn btn-sm btn-outline-secondary">Riwayat Lengkap</a>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="justify-between items-center px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 flex py-4">
+                <span><i class="bi bi-arrow-left-right text-amber-500 mr-2"></i>Buku Sedang Dipinjam</span>
+                <a href="{{ route('members.history', $member) }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4">Riwayat Lengkap</a>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
+            <div class="p-0">
+                <div class="overflow-x-auto w-full">
+                    <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap [&>thead>tr>th]:px-4 [&>thead>tr>th]:py-3 [&>thead>tr>th]:bg-slate-50 [&>thead>tr>th]:font-semibold [&>thead>tr>th]:text-slate-700 [&>thead>tr>th]:border-b [&>thead>tr>th]:border-slate-200 [&>tbody>tr>td]:px-4 [&>tbody>tr>td]:py-3 [&>tbody>tr]:border-b [&>tbody>tr]:border-slate-100 [&>tbody>tr:last-child]:border-0 [&>tbody>tr:hover]:bg-slate-50">
                         <thead>
                             <tr>
                                 <th>Barcode</th>
@@ -132,7 +132,7 @@
                             @forelse($activeLoans as $loan)
                             <tr>
                                 <td><code>{{ $loan->bookItem->barcode }}</code></td>
-                                <td class="fw-500">{{ $loan->bookItem->book->title }}</td>
+                                <td class="font-medium">{{ $loan->bookItem->book->title }}</td>
                                 <td>{{ $loan->loan_date->format('d/m/Y') }}</td>
                                 <td>
                                     <span class="{{ $loan->is_overdue ? 'text-danger fw-600' : '' }}">
@@ -141,27 +141,27 @@
                                 </td>
                                 <td>
                                     @if($loan->is_overdue)
-                                    <span class="text-danger fw-600">Rp {{ number_format($loan->calculated_fine, 0, ',', '.') }}</span>
+                                    <span class="text-red-600 font-semibold">Rp {{ number_format($loan->calculated_fine, 0, ',', '.') }}</span>
                                     @else
-                                    <span class="text-muted">-</span>
+                                    <span class="text-slate-500">-</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="inline-flex rounded-md shadow-sm rounded-lg">
                                         <form method="POST" action="{{ route('circulations.renew', $loan) }}">
                                             @csrf
-                                            <button type="submit" class="btn btn-outline-secondary" title="Perpanjang" data-bs-toggle="tooltip">
+                                            <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="Perpanjang">
                                                 <i class="bi bi-arrow-repeat"></i>
                                             </button>
                                         </form>
-                                        <a href="{{ route('circulations.show', $loan) }}" class="btn btn-outline-primary" title="Detail Transaksi" data-bs-toggle="tooltip">
+                                        <a href="{{ route('circulations.show', $loan) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors gap-2 py-2 px-6" title="Detail Transaksi">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>
                                 </td>
                             </tr>
                             @empty
-                            <tr><td colspan="6" class="text-center text-muted py-4">Tidak ada peminjaman aktif</td></tr>
+                            <tr><td colspan="6" class="text-center text-slate-500 py-6">Tidak ada peminjaman aktif</td></tr>
                             @endforelse
                         </tbody>
                     </table>

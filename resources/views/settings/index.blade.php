@@ -13,32 +13,32 @@
     <p>Konfigurasi aturan peminjaman, denda, dan data keanggotaan</p>
 </div>
 
-<div class="row g-3">
-    <div class="col-lg-8">
+<div class="flex flex-wrap -mx-3">
+    <div class="w-full lg:w-2/3 px-4">
         <form method="POST" action="{{ route('settings.update') }}">
             @csrf
             @method('PUT')
 
             @foreach($settings as $group => $items)
-            <div class="card mb-3">
-                <div class="card-header text-capitalize">
-                    <i class="bi bi-gear-wide-connected me-2 text-primary"></i>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                <div class="capitalize px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4">
+                    <i class="bi bi-gear-wide-connected text-indigo-600 mr-2"></i>
                     @if($group == 'general') Umum @elseif($group == 'circulation') Sirkulasi / Peminjaman @else Keanggotaan @endif
                 </div>
-                <div class="card-body">
+                <div class="p-8">
                     @foreach($items as $item)
-                    <div class="mb-3 row">
-                        <label class="col-sm-4 col-form-label fw-500">{{ $item->label }}</label>
+                    <div class="mb-6 flex flex-wrap -mx-3">
+                        <label class="col-sm-4 col-form-label font-medium">{{ $item->label }}</label>
                         <div class="col-sm-8">
                             @if($item->type == 'number')
-                                <input type="number" name="settings[{{ $item->key }}]" class="form-control" value="{{ $item->value }}" min="0">
+                                <input type="number" name="settings[{{ $item->key }}]" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $item->value }}" min="0">
                             @elseif($item->type == 'boolean')
-                                <div class="form-check form-switch mt-2">
+                                <div class="form-switch flex items-center gap-2 mt-2">
                                     <input type="hidden" name="settings[{{ $item->key }}]" value="0">
-                                    <input class="form-check-input" type="checkbox" name="settings[{{ $item->key }}]" value="1" {{ $item->value ? 'checked' : '' }}>
+                                    <input class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500" type="checkbox" name="settings[{{ $item->key }}]" value="1" {{ $item->value ? 'checked' : '' }}>
                                 </div>
                             @else
-                                <input type="text" name="settings[{{ $item->key }}]" class="form-control" value="{{ $item->value }}">
+                                <input type="text" name="settings[{{ $item->key }}]" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $item->value }}">
                             @endif
                         </div>
                     </div>
@@ -47,9 +47,9 @@
             </div>
             @endforeach
 
-            <div class="card">
-                <div class="card-body d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-primary fw-600">Simpan Pengaturan</button>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="justify-end p-8 flex gap-2">
+                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold gap-2 py-2 px-6">Simpan Pengaturan</button>
                 </div>
             </div>
         </form>

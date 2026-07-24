@@ -10,52 +10,58 @@
 
 @section('content')
 {{-- Print-only Header --}}
-<div class="d-none print-header mb-4">
-    <h2 class="text-center fw-bold text-uppercase" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+<div class="hidden print-header mb-6">
+    <h2 class="uppercase text-center font-bold" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
         Laporan Transaksi Sirkulasi Buku<br>
         <span style="font-size: 1.1rem; font-weight: normal; text-transform: none;">
             {{ config('app.name', 'Makarya') }}
         </span>
     </h2>
-    <p class="text-center text-muted" style="margin-top: -10px;">
+    <p class="text-center text-slate-500" style="margin-top: -10px;">
         Rentang Tanggal: <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> s/d <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong>
     </p>
 </div>
 
-<div class="page-header d-flex justify-content-between align-items-start">
+<div class="page-header justify-between items-start flex">
     <div>
         <h1>Laporan Sirkulasi Buku</h1>
         <p>Rentang tanggal: <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> s/d <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong></p>
     </div>
-    <div>
-        <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
+    <div class="flex gap-2">
+        <a href="{{ route('reports.export', ['type' => 'circulation'] + request()->all()) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-file-earmark-excel text-base"></i> Export Spreadsheet
+        </a>
+        <button type="button" onclick="window.print()" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 text-white hover:bg-slate-900 transition-colors flex gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-printer text-base"></i> Cetak Laporan
+        </button>
+        <a href="{{ route('reports.index') }}" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors flex gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-arrow-left"></i> Kembali
+        </a>
     </div>
 </div>
 
-<div class="card mb-3">
-    <div class="card-body py-2">
-        <form method="GET" class="row g-2 align-items-end">
-            <div class="col-md-3 col-6">
-                <label class="form-label" style="font-size:0.75rem;font-weight:600">MULAI TANGGAL</label>
-                <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $startDate }}">
+<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+    <div class="px-8 py-2">
+        <form method="GET" class="items-end flex flex-wrap -mx-2">
+            <div class="w-full md:w-1/4 w-1/2 px-4">
+                <label class="block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600">MULAI TANGGAL</label>
+                <input type="date" name="start_date" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" value="{{ $startDate }}">
             </div>
-            <div class="col-md-3 col-6">
-                <label class="form-label" style="font-size:0.75rem;font-weight:600">SAMPAI TANGGAL</label>
-                <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}">
+            <div class="w-full md:w-1/4 w-1/2 px-4">
+                <label class="block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600">SAMPAI TANGGAL</label>
+                <input type="date" name="end_date" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" value="{{ $endDate }}">
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Filter</button>
-                <a href="{{ route('reports.export', ['type' => 'circulation'] + request()->all()) }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Export Spreadsheet</a>
-                <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-printer"></i> Cetak</button>
+            <div class="w-auto px-4">
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white px-4"><i class="bi bi-funnel"></i> Filter</button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
+<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-0">
+        <div class="overflow-x-auto w-full">
+            <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap [&>thead>tr>th]:px-4 [&>thead>tr>th]:py-3 [&>thead>tr>th]:bg-slate-50 [&>thead>tr>th]:font-semibold [&>thead>tr>th]:text-slate-700 [&>thead>tr>th]:border-b [&>thead>tr>th]:border-slate-200 [&>tbody>tr>td]:px-4 [&>tbody>tr>td]:py-3 [&>tbody>tr]:border-b [&>tbody>tr]:border-slate-100 [&>tbody>tr:last-child]:border-0 [&>tbody>tr:hover]:bg-slate-50">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -81,23 +87,23 @@
                         <td>{{ $c->return_date ? $c->return_date->format('d/m/Y') : '-' }}</td>
                         <td>
                             @if($c->status === 'Dikembalikan')
-                            <span class="badge bg-success">Kembali</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">Kembali</span>
                             @elseif($c->is_overdue)
-                            <span class="badge bg-danger">Terlambat</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-red-100 text-red-700 px-2">Terlambat</span>
                             @else
-                            <span class="badge bg-warning text-dark">Dipinjam</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-amber-100 text-amber-800 px-2">Dipinjam</span>
                             @endif
                         </td>
                         <td>
                             @if($c->fine_amount > 0)
-                            <span class="text-danger fw-600">Rp {{ number_format($c->fine_amount, 0, ',', '.') }}</span>
+                            <span class="text-red-600 font-semibold">Rp {{ number_format($c->fine_amount, 0, ',', '.') }}</span>
                             @else
                             -
                             @endif
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="9" class="text-center py-4 text-muted">Tidak ada data transaksi pada rentang tanggal ini</td></tr>
+                    <tr><td colspan="9" class="text-center text-slate-500 py-6">Tidak ada data transaksi pada rentang tanggal ini</td></tr>
                     @endforelse
                 </tbody>
             </table>

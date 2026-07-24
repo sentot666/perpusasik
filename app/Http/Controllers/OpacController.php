@@ -3,11 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Member;
+use App\Models\BookItem;
+use App\Models\GuestBook;
 use Illuminate\Http\Request;
 
 class OpacController extends Controller
 {
-    public function index(Request $request)
+            public function index(Request $request)
+    {
+        $stats = [
+            'total_books'     => Book::count(),
+            'total_items'     => BookItem::count(),
+            'total_members'   => Member::where('is_active', true)->count(),
+            'total_visitors'  => GuestBook::sum('participants_count'),
+        ];
+        
+        return view('opac.index', compact('stats'));
+    }
+
+    public function katalog(Request $request)
     {
         $query = Book::with(['authors', 'publisher'])
             ->withCount(['items', 'availableItems'])
@@ -31,7 +46,7 @@ class OpacController extends Controller
         $collectionTypes = Book::distinct()->pluck('collection_type')->sort();
         $years = Book::distinct()->orderByDesc('publication_year')->pluck('publication_year')->filter();
 
-        return view('opac.index', compact('books', 'collectionTypes', 'years'));
+        return view('opac.katalog', compact('books', 'collectionTypes', 'years'));
     }
 
     public function show(Book $book)

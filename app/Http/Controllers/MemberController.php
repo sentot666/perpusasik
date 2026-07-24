@@ -160,4 +160,5 @@ class MemberController extends Controller
             'status'      => $m->status_label,
         ]));
     }
+
 }

@@ -1,59 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Panduan Menjalankan Program Perpustakaan Makarya
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Berikut adalah langkah-langkah untuk menjalankan aplikasi Perpustakaan Makarya (berbasis Laravel) di lingkungan pengembangan lokal Anda (misalnya menggunakan Laragon, XAMPP, atau Laravel Valet).
 
-## About Laravel
+## Persyaratan Sistem
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Pastikan sistem Anda telah menginstal perangkat lunak berikut:
+- **PHP** (minimal versi 8.1 atau yang disarankan untuk Laravel 11+)
+- **Composer** (untuk mengelola dependensi PHP)
+- **Node.js & npm** (untuk mengelola dependensi Frontend seperti Vite dan Tailwind CSS)
+- **MySQL/MariaDB** (sebagai database server)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Langkah-langkah Instalasi & Konfigurasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Clone / Siapkan Direktori Proyek
+Pastikan terminal Anda sudah berada di dalam direktori proyek ini.
+```bash
+cd c:\laragon\www\laravel
+```
 
-## Learning Laravel
+### 2. Instal Dependensi PHP
+Jalankan perintah Composer untuk menginstal semua library PHP yang dibutuhkan oleh Laravel:
+```bash
+composer install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 3. Instal Dependensi Frontend (Node.js)
+Jalankan perintah npm untuk menginstal library Javascript (Vite, TailwindCSS, Alpine.js, dll):
+```bash
+npm install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 4. Konfigurasi Environment (`.env`)
+Salin file `.env.example` dan ubah namanya menjadi `.env`:
+```bash
+cp .env.example .env
+```
+Buka file `.env` dan sesuaikan konfigurasi koneksi database Anda:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nama_database_anda
+DB_USERNAME=root
+DB_PASSWORD=
+```
+*(Pastikan Anda telah membuat database kosong di MySQL dengan nama yang sesuai di `DB_DATABASE` sebelum lanjut ke langkah berikutnya).*
 
-## Laravel Sponsors
+### 5. Generate Application Key
+Jalankan perintah berikut untuk menghasilkan kunci keamanan aplikasi:
+```bash
+php artisan key:generate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 6. Migrasi dan Seeding Database
+Jalankan migrasi untuk membuat tabel-tabel di database, beserta data awal (seeder) yang mencakup Role, Permission, dan Akun Default:
+```bash
+php artisan migrate --seed
+```
 
-### Premium Partners
+## Menjalankan Aplikasi
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Aplikasi ini menggunakan Vite untuk kompilasi aset frontend. Oleh karena itu, Anda perlu menjalankan **dua terminal** secara bersamaan.
 
-## Contributing
+**Terminal 1 (Menjalankan server PHP/Laravel):**
+```bash
+php artisan serve
+```
+*(Aplikasi biasanya akan berjalan di `http://127.0.0.1:8000`)*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Terminal 2 (Menjalankan server Vite untuk aset frontend):**
+Buka tab terminal baru, arahkan ke folder proyek, dan jalankan:
+```bash
+npm run dev
+```
 
-## Code of Conduct
+## Akun Login Default
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Setelah proses migrasi dan seeding (`php artisan migrate --seed`) berhasil, Anda dapat masuk menggunakan salah satu akun default berikut:
 
-## Security Vulnerabilities
+| Peran (Role) | Username / Email | Password |
+| :--- | :--- | :--- |
+| **Super Admin** | `admin` | `admin123` |
+| **Pustakawan** | `pustakawan` | `pustakawan123` |
+| **Anggota** | `anggota` | `anggota123` |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Selamat mencoba!

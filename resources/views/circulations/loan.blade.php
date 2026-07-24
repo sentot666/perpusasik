@@ -4,37 +4,40 @@
 @section('page-title', 'Proses Peminjaman')
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('circulations.index') }}">Sirkulasi</a></li>
-<li class="breadcrumb-item active">Peminjaman</li>
+<li><a href="{{ route('circulations.index') }}" class="hover:text-slate-600 transition-colors no-underline">Sirkulasi</a></li>
+<li><i class="bi bi-chevron-right text-[0.55rem] mx-1"></i></li>
+<li class="text-slate-600">Peminjaman</li>
 @endsection
 
 @section('content')
-<div class="page-header">
-    <h1>Proses Peminjaman</h1>
-    <p>Scan atau cari anggota dan barcode buku untuk memproses peminjaman</p>
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-800">Proses Peminjaman</h1>
+    <p class="text-slate-500 text-sm mt-1">Scan atau cari anggota dan barcode buku untuk memproses peminjaman</p>
 </div>
 
-<div class="row g-3">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
     {{-- Form --}}
-    <div class="col-lg-7">
-        <div class="card">
-            <div class="card-header"><i class="bi bi-box-arrow-right me-2 text-primary"></i>Form Peminjaman</div>
-            <div class="card-body">
+    <div class="lg:col-span-7">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-8 border-b border-slate-200 font-semibold text-slate-700 bg-slate-50/50 flex items-center py-6">
+                <i class="bi bi-box-arrow-right text-indigo-500 text-lg mr-2"></i> Form Peminjaman
+            </div>
+            <div class="p-8">
 
                 @if(session('success'))
-                <div class="alert alert-success border-0 py-2" style="border-radius:8px">
-                    <i class="bi bi-check-circle-fill me-1"></i>{{ session('success') }}
+                <div class="bg-emerald-50 border border-slate-200 border-emerald-200 text-emerald-800 rounded-lg text-sm flex items-center mb-6 py-4 px-6">
+                    <i class="bi bi-check-circle-fill text-emerald-500 mr-2 text-lg"></i> {{ session('success') }}
                 </div>
                 @endif
                 @if(session('error'))
-                <div class="alert alert-danger border-0 py-2" style="border-radius:8px">
-                    <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ session('error') }}
+                <div class="bg-red-50 border border-slate-200 border-red-200 text-red-800 rounded-lg text-sm flex items-center mb-6 py-4 px-6">
+                    <i class="bi bi-exclamation-triangle-fill text-red-500 mr-2 text-lg"></i> {{ session('error') }}
                 </div>
                 @endif
                 @if($errors->any())
-                <div class="alert alert-danger border-0 py-2" style="border-radius:8px">
-                    <ul class="mb-0 ps-3">
+                <div class="bg-red-50 border border-slate-200 border-red-200 text-red-800 rounded-lg text-sm mb-6 py-4 px-6">
+                    <ul class="list-disc pl-5 m-0 space-y-1">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -42,69 +45,66 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('circulations.store-loan') }}" id="loanForm">
+                <form method="POST" action="{{ route('circulations.store-loan') }}" id="loanForm" class="space-y-5">
                     @csrf
 
                     {{-- Member Search --}}
-                    <div class="mb-3">
-                        <label for="memberSearch" class="form-label fw-500">Anggota <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                            <input type="text" id="memberSearch" class="form-control" placeholder="Ketik nama atau kode anggota..." autocomplete="off">
+                    <div class="relative">
+                        <label for="memberSearch" class="block text-sm font-medium text-slate-700 mb-1">Anggota <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                <i class="bi bi-person-badge"></i>
+                            </span>
+                            <input type="text" id="memberSearch" class="w-full pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2" placeholder="Ketik nama atau kode anggota..." autocomplete="off">
                         </div>
-                        <div id="memberDropdown" class="dropdown-menu w-100 shadow-sm" style="display:none;position:absolute;z-index:1050;max-height:250px;overflow-y:auto"></div>
+                        <div id="memberDropdown" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden mt-1"></div>
                         <input type="hidden" name="member_id" id="memberId">
                     </div>
 
                     {{-- Selected Member Card --}}
-                    <div id="memberCard" class="alert alert-info border-0 py-2 mb-3" style="display:none;border-radius:8px;font-size:0.82rem">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-person-check-fill fs-4"></i>
-                            <div>
-                                <div class="fw-600" id="memberCardName"></div>
-                                <div class="text-muted" id="memberCardInfo"></div>
+                    <div id="memberCard" class="hidden bg-blue-50 border border-slate-200 border-blue-200 rounded-lg text-sm p-6">
+                        <div class="flex items-center gap-6">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                                <i class="bi bi-person-check-fill text-xl"></i>
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" id="clearMember">
-                                <i class="bi bi-x"></i>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-blue-900 truncate" id="memberCardName"></div>
+                                <div class="text-blue-700 text-xs truncate" id="memberCardInfo"></div>
+                            </div>
+                            <button type="button" class="p-1.5 text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded-md transition" id="clearMember">
+                                <i class="bi bi-x text-lg"></i>
                             </button>
                         </div>
                     </div>
 
                     {{-- Barcode Input --}}
-                    <div class="mb-3">
-                        <label for="barcodeInput" class="form-label fw-500">Barcode Buku <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
-                            <input type="text" id="barcodeInput" class="form-control" placeholder="Scan atau ketik barcode eksemplar..." autocomplete="off">
-                            <button type="button" class="btn btn-outline-secondary" id="lookupBarcode">
+                    <div>
+                        <label for="barcodeInput" class="block text-sm font-medium text-slate-700 mb-1">Barcode Buku <span class="text-red-500">*</span></label>
+                        <div class="flex relative rounded-lg shadow-sm">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                                <i class="bi bi-upc-scan"></i>
+                            </span>
+                            <input type="text" id="barcodeInput" class="flex-1 min-w-0 block w-full pl-10 bg-slate-50 border border-slate-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" placeholder="Scan atau ketik barcode eksemplar..." autocomplete="off">
+                            <button type="button" class="inline-flex items-center border border-slate-200 border-l-0 rounded-r-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition py-2 px-6" id="lookupBarcode">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
-                        <input type="hidden" name="book_item_id" id="bookItemId">
+                        <!-- Hidden inputs for book item IDs will be injected dynamically by JS -->
+                        <div id="hiddenBookInputs"></div>
                     </div>
 
-                    {{-- Selected Book Card --}}
-                    <div id="bookCard" class="alert alert-success border-0 py-2 mb-3" style="display:none;border-radius:8px;font-size:0.82rem">
-                        <div class="d-flex align-items-start gap-2">
-                            <i class="bi bi-book-fill fs-4 text-success"></i>
-                            <div>
-                                <div class="fw-600" id="bookCardTitle"></div>
-                                <div class="text-muted" id="bookCardAuthor"></div>
-                                <div id="bookCardCallNumber" class="mt-1"></div>
-                            </div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary ms-auto" id="clearBook">
-                                <i class="bi bi-x"></i>
-                            </button>
-                        </div>
+                    {{-- Selected Books Container --}}
+                    <div id="bookListContainer" class="hidden space-y-3">
+                        <!-- Book cards will be appended here -->
                     </div>
 
-                    <div class="mb-3">
-                        <label for="notesInput" class="form-label fw-500">Catatan</label>
-                        <textarea name="notes" id="notesInput" class="form-control" rows="2" placeholder="Opsional..."></textarea>
+                    <div>
+                        <label for="notesInput" class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
+                        <textarea name="notes" id="notesInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition resize-none py-2 px-4" rows="2" placeholder="Opsional..."></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-600" id="submitLoan" disabled>
-                        <i class="bi bi-box-arrow-right me-2"></i>Proses Peminjaman
+                    <button type="submit" class="w-full flex items-center justify-center py-2.5 border border-slate-200 border-transparent rounded-lg shadow-sm text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed text-white gap-2 px-6" id="submitLoan" disabled>
+                        <i class="bi bi-box-arrow-right"></i> Proses Peminjaman
                     </button>
                 </form>
             </div>
@@ -112,29 +112,33 @@
     </div>
 
     {{-- Info Panel --}}
-    <div class="col-lg-5">
-        <div class="card">
-            <div class="card-header"><i class="bi bi-info-circle me-2 text-info"></i>Panduan</div>
-            <div class="card-body">
-                <ol class="ps-3 mb-0" style="font-size:0.85rem;line-height:2">
+    <div class="lg:col-span-5">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-8 border-b border-slate-200 font-semibold text-slate-700 bg-slate-50/50 flex items-center py-6">
+                <i class="bi bi-info-circle text-sky-500 text-lg mr-2"></i> Panduan
+            </div>
+            <div class="p-8">
+                <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600">
                     <li>Cari anggota dengan nama atau kode anggota</li>
                     <li>Scan barcode eksemplar buku yang akan dipinjam</li>
                     <li>Pastikan data anggota dan buku sudah benar</li>
-                    <li>Klik tombol <strong>Proses Peminjaman</strong></li>
+                    <li>Klik tombol <strong class="font-semibold text-slate-800">Proses Peminjaman</strong></li>
                 </ol>
-                <hr>
-                <div class="d-flex gap-2 flex-wrap">
-                    <div class="badge bg-light text-dark border p-2">
-                        <i class="bi bi-calendar me-1"></i>
-                        Durasi Pinjam: <strong>{{ \App\Models\Setting::get('loan_duration', 14) }} hari</strong>
+                
+                <div class="my-8 border-t border-slate-100"></div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <div class="inline-flex items-center gap-1.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-700 px-4">
+                        <i class="bi bi-calendar text-slate-500"></i>
+                        <span>Durasi Pinjam: <strong class="font-semibold text-slate-900">{{ \App\Models\Setting::get('loan_duration', 14) }} hari</strong></span>
                     </div>
-                    <div class="badge bg-light text-dark border p-2">
-                        <i class="bi bi-stack me-1"></i>
-                        Maks Pinjam: <strong>{{ \App\Models\Setting::get('max_loan_items', 3) }} eksemplar</strong>
+                    <div class="inline-flex items-center gap-1.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-700 px-4">
+                        <i class="bi bi-stack text-slate-500"></i>
+                        <span>Maks Pinjam: <strong class="font-semibold text-slate-900">{{ \App\Models\Setting::get('max_loan_items', 3) }} eksemplar</strong></span>
                     </div>
-                    <div class="badge bg-light text-dark border p-2">
-                        <i class="bi bi-cash me-1"></i>
-                        Denda: <strong>Rp {{ number_format(\App\Models\Setting::get('fine_per_day', 1000)) }}/hari</strong>
+                    <div class="inline-flex items-center gap-1.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-700 px-4">
+                        <i class="bi bi-cash text-slate-500"></i>
+                        <span>Denda: <strong class="font-semibold text-slate-900">Rp {{ number_format(\App\Models\Setting::get('fine_per_day', 1000)) }}/hari</strong></span>
                     </div>
                 </div>
             </div>
@@ -151,38 +155,95 @@ const memberDropdown= document.getElementById('memberDropdown');
 const memberCard    = document.getElementById('memberCard');
 const memberIdInput = document.getElementById('memberId');
 const barcodeInput  = document.getElementById('barcodeInput');
-const bookItemInput = document.getElementById('bookItemId');
-const bookCard      = document.getElementById('bookCard');
+const hiddenBookInputs = document.getElementById('hiddenBookInputs');
+const bookListContainer = document.getElementById('bookListContainer');
 const submitBtn     = document.getElementById('submitLoan');
 
+let selectedBooks = [];
+
 function checkSubmit() {
-    submitBtn.disabled = !(memberIdInput.value && bookItemInput.value);
+    submitBtn.disabled = !(memberIdInput.value && selectedBooks.length > 0);
 }
 
-// Member search
+// Render book list
+function renderBookList() {
+    hiddenBookInputs.innerHTML = '';
+    bookListContainer.innerHTML = '';
+    
+    if (selectedBooks.length === 0) {
+        bookListContainer.classList.add('hidden');
+        return;
+    }
+    
+    selectedBooks.forEach((book, index) => {
+        // Add hidden input
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'book_item_ids[]';
+        input.value = book.id;
+        hiddenBookInputs.appendChild(input);
+        
+        // Add card
+        const card = document.createElement('div');
+        card.className = 'bg-emerald-50 border border-slate-200 border-emerald-200 rounded-lg text-sm p-4 flex items-start gap-4';
+        card.innerHTML = `
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                <i class="bi bi-book-fill text-lg"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="font-semibold text-emerald-900 truncate">${book.book.title}</div>
+                <div class="text-emerald-700 text-xs truncate">${book.book.author || ''}</div>
+                <div class="mt-1 font-mono text-xs bg-emerald-100 text-emerald-800 py-0.5 rounded inline-block px-2">${book.barcode}</div>
+            </div>
+            <button type="button" class="p-1 text-emerald-400 hover:text-emerald-600 hover:bg-emerald-100 rounded-md transition shrink-0" onclick="removeBook(${index})">
+                <i class="bi bi-x text-lg"></i>
+            </button>
+        `;
+        bookListContainer.appendChild(card);
+    });
+    
+    bookListContainer.classList.remove('hidden');
+    checkSubmit();
+}
+
+window.removeBook = function(index) {
+    selectedBooks.splice(index, 1);
+    renderBookList();
+};
+
+// ... Member search logic remains mostly same
 let memberTimer;
 memberSearch.addEventListener('input', function() {
     clearTimeout(memberTimer);
     const q = this.value.trim();
-    if (q.length < 2) { memberDropdown.style.display = 'none'; return; }
+    if (q.length < 2) { 
+        memberDropdown.classList.add('hidden'); 
+        return; 
+    }
     memberTimer = setTimeout(() => {
         fetch('{{ route("members.ajax-search") }}?q=' + encodeURIComponent(q))
             .then(r => r.json())
             .then(data => {
                 memberDropdown.innerHTML = '';
                 if (data.length === 0) {
-                    memberDropdown.innerHTML = '<div class="dropdown-item text-muted py-2">Tidak ada hasil</div>';
+                    memberDropdown.innerHTML = '<div class="text-sm text-slate-500 text-center py-4 px-6">Tidak ada hasil</div>';
                 } else {
                     data.forEach(m => {
                         const item = document.createElement('button');
                         item.type = 'button';
-                        item.className = 'dropdown-item py-2';
-                        item.innerHTML = `<strong>${m.name}</strong> <small class="text-muted ms-1">${m.member_code}</small><br><small class="text-muted">${m.member_type} • ${m.status}</small>`;
+                        item.className = 'w-full text-left px-4 py-2 hover:bg-slate-50 focus:bg-slate-50 focus:outline-none transition-colors border-b border-slate-50 last:border-0';
+                        item.innerHTML = `
+                            <div class="flex items-baseline justify-between mb-0.5">
+                                <span class="text-sm font-semibold text-slate-800">${m.name}</span>
+                                <span class="text-xs text-slate-400 font-mono">${m.member_code}</span>
+                            </div>
+                            <div class="text-xs text-slate-500">${m.member_type} &bull; ${m.status}</div>
+                        `;
                         item.addEventListener('click', () => selectMember(m));
                         memberDropdown.appendChild(item);
                     });
                 }
-                memberDropdown.style.display = 'block';
+                memberDropdown.classList.remove('hidden');
             });
     }, 300);
 });
@@ -202,12 +263,18 @@ memberSearch.addEventListener('keydown', function(e) {
                     data.forEach(m => {
                         const item = document.createElement('button');
                         item.type = 'button';
-                        item.className = 'dropdown-item py-2';
-                        item.innerHTML = `<strong>${m.name}</strong> <small class="text-muted ms-1">${m.member_code}</small><br><small class="text-muted">${m.member_type} • ${m.status}</small>`;
+                        item.className = 'w-full text-left px-4 py-2 hover:bg-slate-50 focus:bg-slate-50 focus:outline-none transition-colors border-b border-slate-50 last:border-0';
+                        item.innerHTML = `
+                            <div class="flex items-baseline justify-between mb-0.5">
+                                <span class="text-sm font-semibold text-slate-800">${m.name}</span>
+                                <span class="text-xs text-slate-400 font-mono">${m.member_code}</span>
+                            </div>
+                            <div class="text-xs text-slate-500">${m.member_type} &bull; ${m.status}</div>
+                        `;
                         item.addEventListener('click', () => selectMember(m));
                         memberDropdown.appendChild(item);
                     });
-                    memberDropdown.style.display = 'block';
+                    memberDropdown.classList.remove('hidden');
                 }
             });
     }
@@ -216,10 +283,10 @@ memberSearch.addEventListener('keydown', function(e) {
 function selectMember(m) {
     memberIdInput.value = m.id;
     memberSearch.value = m.name;
-    memberDropdown.style.display = 'none';
+    memberDropdown.classList.add('hidden');
     document.getElementById('memberCardName').textContent = `${m.name} (${m.member_code})`;
     document.getElementById('memberCardInfo').textContent = `${m.member_type} • ${m.status}`;
-    memberCard.style.display = 'block';
+    memberCard.classList.remove('hidden');
     checkSubmit();
     setTimeout(() => barcodeInput.focus(), 100);
 }
@@ -227,7 +294,7 @@ function selectMember(m) {
 document.getElementById('clearMember').addEventListener('click', () => {
     memberIdInput.value = '';
     memberSearch.value = '';
-    memberCard.style.display = 'none';
+    memberCard.classList.add('hidden');
     checkSubmit();
 });
 
@@ -235,23 +302,90 @@ document.getElementById('clearMember').addEventListener('click', () => {
 function lookupBarcode() {
     const barcode = barcodeInput.value.trim();
     if (!barcode) return;
+    
+    // Check if already in cart
+    if (selectedBooks.find(b => b.barcode === barcode || b.id == barcode)) {
+        barcodeInput.value = '';
+        if(window.Swal) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Sudah di Keranjang',
+                text: 'Buku ini sudah ditambahkan ke dalam daftar pinjaman.',
+                confirmButtonColor: '#4f46e5'
+            });
+        }
+        return;
+    }
+    
+    // Disable input while searching
+    barcodeInput.disabled = true;
+    document.getElementById('lookupBarcode').disabled = true;
+    
     fetch('{{ route("book-items.ajax-lookup") }}?barcode=' + encodeURIComponent(barcode))
         .then(r => r.json())
         .then(data => {
             if (!data.found) {
-                alert(data.message);
+                if(window.Swal) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tidak Ditemukan',
+                        text: data.message,
+                        confirmButtonColor: '#4f46e5'
+                    });
+                } else {
+                    alert(data.message);
+                }
                 return;
             }
             if (data.status !== 'Tersedia') {
-                alert(`Eksemplar ini berstatus: ${data.status}. Tidak bisa dipinjam.`);
+                if(window.Swal) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tidak Bisa Dipinjam',
+                        text: `Eksemplar ini berstatus: ${data.status}`,
+                        confirmButtonColor: '#4f46e5'
+                    });
+                } else {
+                    alert(`Eksemplar ini berstatus: ${data.status}. Tidak bisa dipinjam.`);
+                }
                 return;
             }
-            bookItemInput.value = data.id;
-            document.getElementById('bookCardTitle').textContent = data.book.title;
-            document.getElementById('bookCardAuthor').textContent = data.book.author || '';
-            document.getElementById('bookCardCallNumber').innerHTML = `<code>${data.book.call_number || ''}</code>`;
-            bookCard.style.display = 'block';
-            checkSubmit();
+            
+            // Limit check (frontend side)
+            const maxItems = {{ \App\Models\Setting::get('max_loan_items', 3) }};
+            if (selectedBooks.length >= maxItems) {
+                if(window.Swal) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Batas Peminjaman',
+                        text: `Maksimal hanya dapat meminjam ${maxItems} buku sekaligus.`,
+                        confirmButtonColor: '#4f46e5'
+                    });
+                }
+                return;
+            }
+
+            // Check if THIS specific copy is already added (in case ISBN was scanned)
+            if (selectedBooks.find(b => b.id === data.id)) {
+                if(window.Swal) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Sudah di Keranjang',
+                        text: 'Eksemplar buku ini sudah ditambahkan.',
+                        confirmButtonColor: '#4f46e5'
+                    });
+                }
+                return;
+            }
+            
+            selectedBooks.push(data);
+            barcodeInput.value = '';
+            renderBookList();
+        })
+        .finally(() => {
+            barcodeInput.disabled = false;
+            document.getElementById('lookupBarcode').disabled = false;
+            barcodeInput.focus();
         });
 }
 
@@ -268,16 +402,9 @@ barcodeInput.addEventListener('input', function() {
 
 barcodeInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); lookupBarcode(); } });
 
-document.getElementById('clearBook').addEventListener('click', () => {
-    bookItemInput.value = '';
-    barcodeInput.value = '';
-    bookCard.style.display = 'none';
-    checkSubmit();
-});
-
 // Close dropdown on outside click
 document.addEventListener('click', e => {
-    if (!memberSearch.contains(e.target)) memberDropdown.style.display = 'none';
+    if (!memberSearch.contains(e.target)) memberDropdown.classList.add('hidden');
 });
 </script>
 @endpush

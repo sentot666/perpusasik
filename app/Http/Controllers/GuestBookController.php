@@ -35,9 +35,10 @@ class GuestBookController extends Controller
             $query->whereDate('visit_date', '<=', $endDate);
         }
 
+        $totalParticipants = (clone $query)->sum('participants_count');
         $activities = $query->paginate(20)->withQueryString();
 
-        return view('guest-books.index', compact('activities', 'startDate', 'endDate'));
+        return view('guest-books.index', compact('activities', 'startDate', 'endDate', 'totalParticipants'));
     }
 
     /**
@@ -142,5 +143,34 @@ class GuestBookController extends Controller
     {
         $guestBook->delete();
         return back()->with('success', 'Catatan kunjungan tamu berhasil dihapus.');
+    }
+
+    /**
+     * Display public visitor self-service guest book form.
+     */
+    public function visitorForm()
+    {
+        return view('guest-books.visitor');
+    }
+
+    /**
+     * Store visitor entry from public self-service form.
+     */
+    public function visitorStore(Request $request)
+    {
+        $validated = $request->validate([
+            'name'               => 'required|string|max:200',
+            'institution'        => 'required|string|max:200',
+            'purpose'            => 'required|string|max:200',
+            'participants_count' => 'required|integer|min:1',
+            'notes'              => 'nullable|string',
+        ]);
+
+        $validated['visit_date'] = Carbon::now()->toDateString();
+        $validated['visit_time'] = Carbon::now()->format('H:i');
+
+        GuestBook::create($validated);
+
+        return back()->with('success', 'Kunjungan Anda berhasil dicatat.');
     }
 }

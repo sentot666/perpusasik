@@ -43,6 +43,9 @@ class ImportSlimsData extends Command
 
         // Adjust column sizes if they are too small for SLiMS data to prevent truncation errors
         $this->info("🔧 Menyesuaikan tipe kolom database agar menampung data SLiMS...");
+        try {
+            DB::statement('ALTER TABLE books DROP INDEX books_title_index');
+        } catch (\Exception $e) {}
         DB::statement('ALTER TABLE books MODIFY title TEXT NOT NULL');
         DB::statement('ALTER TABLE books MODIFY subtitle TEXT NULL');
         DB::statement('ALTER TABLE books MODIFY publication_year VARCHAR(50) NULL');

@@ -21,8 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Use Bootstrap 5 for Pagination
-        Paginator::useBootstrapFive();
+        // Use Tailwind for Pagination
+        Paginator::useTailwind();
 
         // Super-admin bypass gate for Spatie Permissions
         Gate::before(function ($user, $ability) {
