@@ -16,11 +16,25 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'settings' => 'required|array',
+            'settings' => 'nullable|array',
+            'carousel_1' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'carousel_2' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'carousel_3' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        foreach ($request->settings as $key => $value) {
-            Setting::set($key, $value);
+        if ($request->has('settings') && is_array($request->settings)) {
+            foreach ($request->settings as $key => $value) {
+                Setting::set($key, $value);
+            }
+        }
+
+        // Simpan gambar carousel jika ada yang diupload
+        for ($i = 1; $i <= 3; $i++) {
+            if ($request->hasFile("carousel_$i")) {
+                $file = $request->file("carousel_$i");
+                $filename = "carousel-$i.jpg";
+                $file->move(public_path('images'), $filename);
+            }
         }
 
         return back()->with('success', 'Pengaturan perpustakaan berhasil diperbarui.');

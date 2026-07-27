@@ -1,25 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'Laporan Koleksi')
-@section('page-title', 'Laporan Koleksi')
+@section('title', __('Laporan Koleksi'))
+@section('page-title', __('Laporan Koleksi'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">Laporan</a></li>
-<li class="breadcrumb-item active">Koleksi</li>
+<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">{{ __('Laporan') }}</a></li>
+<li class="breadcrumb-item active">{{ __('Koleksi') }}</li>
 @endsection
 
 @section('content')
 <div class="page-header justify-between items-start flex">
     <div>
-        <h1>Laporan Koleksi Buku</h1>
-        <p>Total data judul buku dan ketersediaan eksemplar fisik</p>
+        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Laporan Koleksi Buku') }}</h1>
+        <p>{{ __('Total data judul buku dan ketersediaan eksemplar fisik') }}</p>
     </div>
     <div class="flex gap-2">
-        <a href="{{ route('reports.export', ['type' => 'collection'] + request()->all()) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-file-earmark-excel text-base"></i> Export Spreadsheet
+        <a href="{{ route('reports.export', ['type' => 'collection'] + request()->all()) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-green text-white transition-colors gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-file-earmark-excel text-base"></i> {{ __('Export Spreadsheet') }}
         </a>
-        <button onclick="window.print()" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 text-white hover:bg-slate-900 transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-printer"></i> Cetak Laporan</button>
-        <a href="{{ route('reports.index') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-arrow-left"></i> Kembali</a>
+        <button onclick="window.print()" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 hover:bg-slate-900 text-white  transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-printer"></i> {{ __('Cetak Laporan') }}</button>
+        <a href="{{ route('reports.index') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue text-white  transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-arrow-left"></i> {{ __('Kembali') }}</a>
     </div>
 </div>
 
@@ -30,13 +30,13 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>ISBN</th>
-                        <th>Judul Buku</th>
-                        <th>Pengarang</th>
-                        <th>Penerbit</th>
-                        <th>Tahun</th>
-                        <th>Jenis Koleksi</th>
-                        <th class="text-center">Total Kopi</th>
+                        <th>{{ __('ISBN') }}</th>
+                        <th>{{ __('Judul Buku') }}</th>
+                        <th>{{ __('Pengarang') }}</th>
+                        <th>{{ __('Penerbit') }}</th>
+                        <th>{{ __('Tahun') }}</th>
+                        <th>{{ __('Jenis Koleksi') }}</th>
+                        <th class="text-center">{{ __('Total Kopi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,7 +52,7 @@
                         <td class="text-indigo-600 text-center font-semibold">{{ $b->items_count }}</td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="text-center text-slate-500 py-6">Belum ada data buku</td></tr>
+                    <tr><td colspan="8" class="text-center text-slate-500 py-6">{{ __('Belum ada data buku') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -60,3 +60,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

@@ -10,12 +10,12 @@
 @section('content')
 <div class="page-header justify-between items-start flex">
     <div>
-        <h1>Master Buku</h1>
-        <p>Kelola koleksi katalog bibliografi perpustakaan</p>
+        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Master Buku') }}</h1>
+        <p>{{ __('Kelola koleksi katalog bibliografi perpustakaan') }}</p>
     </div>
     <div class="flex gap-2">
-        <a href="{{ route('books.create') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white gap-2 py-2 px-6" id="addBookBtn">
-            <i class="bi bi-plus-circle mr-1"></i>Tambah Buku
+        <a href="{{ route('books.create') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-6" id="addBookBtn">
+            <i class="bi bi-plus-circle mr-1"></i>{{ __('Tambah Buku') }}
         </a>
     </div>
 </div>
@@ -27,23 +27,23 @@
             <div class="col-md-5">
                 <div class="flex w-full text-sm">
                     <span class="flex items-center px-3 py-2 bg-slate-100 border border-slate-300 text-slate-600"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="Cari judul, pengarang, ISBN, no. panggil..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Cari judul, pengarang, ISBN, no. panggil...') }}" value="{{ request('search') }}">
                 </div>
             </div>
             <div class="w-full md:w-1/4 px-4">
                 <select name="collection_type" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                    <option value="">Semua Jenis</option>
+                    <option value="">{{ __('Semua Jenis') }}</option>
                     @foreach($collectionTypes as $type)
                     <option value="{{ $type }}" {{ request('collection_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white px-4"><i class="bi bi-funnel"></i> Filter</button>
-                <a href="{{ route('books.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> Reset</a>
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-funnel"></i> {{ __('Filter') }}</button>
+                <a href="{{ route('books.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
             </div>
             <div class="ml-auto text-slate-500 w-auto px-4" style="font-size:0.8rem">
-                {{ $books->total() }} judul ditemukan
+                {{ $books->total() }} {{ __('judul ditemukan') }}
             </div>
         </form>
     </div>
@@ -57,15 +57,15 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Judul</th>
-                        <th>Pengarang</th>
-                        <th>Penerbit</th>
-                        <th>Tahun</th>
-                        <th>No. Panggil</th>
-                        <th>Jenis</th>
-                        <th class="text-center">Eks.</th>
-                        <th class="text-center">Tersedia</th>
-                        <th class="text-center">Aksi</th>
+                        <th>{{ __('Judul') }}</th>
+                        <th>{{ __('Pengarang') }}</th>
+                        <th>{{ __('Penerbit') }}</th>
+                        <th>{{ __('Tahun') }}</th>
+                        <th>{{ __('No. Panggil') }}</th>
+                        <th>{{ __('Jenis') }}</th>
+                        <th class="text-center">{{ __('Eks.') }}</th>
+                        <th class="text-center">{{ __('Tersedia') }}</th>
+                        <th class="text-center">{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,15 +97,15 @@
                         </td>
                         <td class="text-center">
                             <div class="inline-flex rounded-md shadow-sm rounded-lg">
-                                <a href="{{ route('books.show', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors gap-2 py-2 px-6" title="Detail">
+                                <a href="{{ route('books.show', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors gap-2 py-2 px-6" title="{{ __('Detail') }}">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('books.edit', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="Edit">
+                                <a href="{{ route('books.edit', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('Hapus buku ini?')">
+                                <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('{{ __('Hapus buku ini?') }}')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6" title="Hapus">
+                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -116,7 +116,7 @@
                     <tr>
                         <td colspan="10" class="py-8 text-center text-slate-500">
                             <i class="bi bi-journals text-4xl font-bold block opacity-25 mb-2"></i>
-                            Belum ada data buku. <a href="{{ route('books.create') }}">Tambah buku pertama</a>
+                            {{ __('Belum ada data buku.') }} <a href="{{ route('books.create') }}">{{ __('Tambah buku pertama') }}</a>
                         </td>
                     </tr>
                     @endforelse
@@ -131,3 +131,5 @@
     @endif
 </div>
 @endsection
+
+

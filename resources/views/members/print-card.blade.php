@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Kartu Anggota - {{ $member->member_code }}</title>
+    <title>{{ __('Kartu Anggota') }} - {{ $member->member_code }}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         
@@ -206,7 +206,7 @@
 </head>
 <body>
 
-    <button class="print-btn" onclick="window.print()">Cetak Kartu</button>
+    <button class="print-btn" onclick="window.print()">{{ __('Cetak Kartu') }}</button>
 
     <div class="id-card">
         <div class="header">
@@ -217,8 +217,8 @@
                 </svg>
             </div>
             <div>
-                <div class="school-name">Perpustakaan Makarya</div>
-                <div class="school-sub">KARTU ANGGOTA DIGITAL</div>
+                <div class="school-name">{{ __('Perpustakaan Makarya') }}</div>
+                <div class="school-sub">{{ __('KARTU ANGGOTA DIGITAL') }}</div>
             </div>
         </div>
 
@@ -235,11 +235,11 @@
                     <div class="info-value">: {{ $member->member_code }}</div>
                 </div>
                 <div class="info-row">
-                    <div class="info-label">Gender</div>
-                    <div class="info-value">: {{ $member->gender === 'L' ? 'Laki-laki' : ($member->gender === 'P' ? 'Perempuan' : '-') }}</div>
+                    <div class="info-label">{{ __('Gender') }}</div>
+                    <div class="info-value">: {{ $member->gender === 'L' ? __('Laki-laki') : ($member->gender === 'P' ? __('Perempuan') : '-') }}</div>
                 </div>
                 <div class="info-row">
-                    <div class="info-label">Kota</div>
+                    <div class="info-label">{{ __('Kota') }}</div>
                     <div class="info-value">: {{ $member->city ?? '-' }}</div>
                 </div>
             </div>
@@ -250,8 +250,8 @@
                 <div class="barcode">*{{ $member->member_code }}*</div>
             </div>
             <div class="validity">
-                Berlaku s/d<br>
-                <strong>{{ $member->expired_date ? $member->expired_date->format('d M Y') : 'Seumur Hidup' }}</strong>
+                {{ __('Berlaku s/d') }}<br>
+                <strong>{{ $member->expired_date ? $member->expired_date->format('d M Y') : __('Seumur Hidup') }}</strong>
             </div>
         </div>
     </div>

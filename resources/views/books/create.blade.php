@@ -1,27 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Buku Baru')
-@section('page-title', 'Tambah Buku')
+@section('title', __('Tambah Buku Baru'))
+@section('page-title', __('Tambah Buku'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('books.index') }}">Master Buku</a></li>
-<li class="breadcrumb-item active">Tambah Buku</li>
+<li class="breadcrumb-item"><a href="{{ route('books.index') }}">{{ __('Master Buku') }}</a></li>
+<li class="breadcrumb-item active">{{ __('Tambah Buku') }}</li>
 @endsection
 
 @section('content')
 <div class="page-header">
-    <h1>Tambah Buku Baru</h1>
-    <p>Masukkan data bibliografi buku baru ke katalog perpustakaan</p>
+    <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Tambah Buku Baru') }}</h1>
+    <p>{{ __('Masukkan data bibliografi buku baru ke katalog perpustakaan') }}</p>
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-plus-circle-fill text-indigo-600 mr-2"></i>Form Data Bibliografi</div>
+    <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-plus-circle-fill text-indigo-600 mr-2"></i>{{ __('Form Data Bibliografi') }}</div>
     <div class="p-8">
 
         @if($errors->any())
         <div class="alert alert-danger border-0 mb-6 py-2" style="border-radius:8px">
             <i class="bi bi-exclamation-triangle-fill mr-1"></i>
-            Periksa kembali form Anda. Ada beberapa input yang tidak valid.
+            {{ __('Periksa kembali form Anda. Ada beberapa input yang tidak valid.') }}
         </div>
         @endif
 
@@ -32,14 +32,14 @@
                 {{-- Left Column --}}
                 <div class="w-full md:w-1/2 px-4">
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Judul Utama <span class="text-red-600">*</span></label>
-                        <input type="text" name="title" class="@error('title') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" value="{{ old('title') }}" required placeholder="Contoh: Pemrograman Web dengan Laravel">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Judul Utama') }} <span class="text-red-600">*</span></label>
+                        <input type="text" name="title" class="@error('title') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" value="{{ old('title') }}" required placeholder="{{ __('Contoh: Pemrograman Web dengan Laravel') }}">
                         @error('title')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Sub Judul</label>
-                        <input type="text" name="subtitle" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('subtitle') }}" placeholder="Anak judul atau penjelasan judul (opsional)">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Sub Judul') }}</label>
+                        <input type="text" name="subtitle" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('subtitle') }}" placeholder="{{ __('Anak judul atau penjelasan judul (opsional)') }}">
                     </div>
 
                     <div class="flex flex-wrap -mx-2 mb-6">
@@ -55,34 +55,34 @@
 
                     <div class="flex flex-wrap -mx-2 mb-6">
                         <div class="w-full md:w-1/2 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Panggil</label>
-                            <input type="text" name="call_number" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('call_number') }}" placeholder="Contoh: 005.3 WID p">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nomor Panggil') }}</label>
+                            <input type="text" name="call_number" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('call_number') }}" placeholder="{{ __('Contoh: 005.3 WID p') }}">
                         </div>
                         <div class="w-full md:w-1/2 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">DDC (Dewey Decimal)</label>
-                            <input type="text" name="ddc" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('ddc') }}" placeholder="Contoh: 005.3">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('DDC (Dewey Decimal)') }}</label>
+                            <input type="text" name="ddc" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('ddc') }}" placeholder="{{ __('Contoh: 005.3') }}">
                         </div>
                     </div>
 
                     <div class="flex flex-wrap -mx-3 mb-6">
                         <div class="w-full md:w-1/3 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Edisi</label>
-                            <input type="text" name="edition" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('edition') }}" placeholder="Contoh: Cet. 2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Edisi') }}</label>
+                            <input type="text" name="edition" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('edition') }}" placeholder="{{ __('Contoh: Cet. 2') }}">
                         </div>
                         <div class="w-full md:w-1/3 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Bahasa</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Bahasa') }}</label>
                             <select name="language" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4">
-                                <option value="id" {{ old('language') == 'id' ? 'selected' : '' }}>Indonesia (id)</option>
-                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>Inggris (en)</option>
+                                <option value="id" {{ old('language') == 'id' ? 'selected' : '' }}>{{ __('Indonesia (id)') }}</option>
+                                <option value="en" {{ old('language') == 'en' ? 'selected' : '' }}>{{ __('Inggris (en)') }}</option>
                             </select>
                         </div>
                         <div class="w-full md:w-1/3 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Koleksi <span class="text-red-600">*</span></label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Jenis Koleksi') }} <span class="text-red-600">*</span></label>
                             <select name="collection_type" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
-                                <option value="Buku Teks" {{ old('collection_type') == 'Buku Teks' ? 'selected' : '' }}>Buku Teks</option>
-                                <option value="Referensi" {{ old('collection_type') == 'Referensi' ? 'selected' : '' }}>Referensi</option>
-                                <option value="Majalah" {{ old('collection_type') == 'Majalah' ? 'selected' : '' }}>Majalah</option>
-                                <option value="Kamus" {{ old('collection_type') == 'Kamus' ? 'selected' : '' }}>Kamus</option>
+                                <option value="Buku Teks" {{ old('collection_type') == 'Buku Teks' ? 'selected' : '' }}>{{ __('Buku Teks') }}</option>
+                                <option value="Referensi" {{ old('collection_type') == 'Referensi' ? 'selected' : '' }}>{{ __('Referensi') }}</option>
+                                <option value="Majalah" {{ old('collection_type') == 'Majalah' ? 'selected' : '' }}>{{ __('Majalah') }}</option>
+                                <option value="Kamus" {{ old('collection_type') == 'Kamus' ? 'selected' : '' }}>{{ __('Kamus') }}</option>
                             </select>
                         </div>
                     </div>
@@ -91,44 +91,44 @@
                 {{-- Right Column --}}
                 <div class="w-full md:w-1/2 px-4">
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Pengarang <span class="text-slate-500">(Pilih beberapa jika ada)</span></label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Pengarang') }} <span class="text-slate-500">({{ __('Pilih beberapa jika ada') }})</span></label>
                         <select name="authors[]" class="@error('authors') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" multiple style="height:115px">
                             @foreach($authors as $author)
                             <option value="{{ $author->id }}" {{ is_array(old('authors')) && in_array($author->id, old('authors')) ? 'selected' : '' }}>{{ $author->name }} ({{ $author->type }})</option>
                             @endforeach
                         </select>
-                        <div class="form-text">Tahan Ctrl untuk memilih lebih dari satu pengarang</div>
+                        <div class="form-text">{{ __('Tahan Ctrl untuk memilih lebih dari satu pengarang') }}</div>
                     </div>
 
                     <div class="flex flex-wrap -mx-2 mb-6">
                         <div class="w-full md:w-1/2 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Penerbit</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Penerbit') }}</label>
                             <select name="publisher_id" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4">
-                                <option value="">Pilih Penerbit...</option>
+                                <option value="">{{ __('Pilih Penerbit...') }}</option>
                                 @foreach($publishers as $pub)
                                 <option value="{{ $pub->id }}" {{ old('publisher_id') == $pub->id ? 'selected' : '' }}>{{ $pub->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="w-full md:w-1/2 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Tahun Terbit</label>
-                            <input type="text" name="publication_year" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('publication_year') }}" placeholder="Contoh: 2023">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tahun Terbit') }}</label>
+                            <input type="text" name="publication_year" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('publication_year') }}" placeholder="{{ __('Contoh: 2023') }}">
                         </div>
                     </div>
 
                     <div class="flex flex-wrap -mx-2 mb-6">
                         <div class="w-full md:w-1/2 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Tempat Terbit</label>
-                            <input type="text" name="place_of_publication" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('place_of_publication') }}" placeholder="Kota/Negara">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tempat Terbit') }}</label>
+                            <input type="text" name="place_of_publication" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('place_of_publication') }}" placeholder="{{ __('Kota/Negara') }}">
                         </div>
                         <div class="w-full md:w-1/2 px-4">
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Jumlah Halaman</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Jumlah Halaman') }}</label>
                             <input type="number" name="pages" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('pages') }}" min="1">
                         </div>
                     </div>
 
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Subyek / Topik</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Subyek / Topik') }}</label>
                         <select name="subjects[]" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" multiple style="height:78px">
                             @foreach($subjects as $sub)
                             <option value="{{ $sub->id }}" {{ is_array(old('subjects')) && in_array($sub->id, old('subjects')) ? 'selected' : '' }}>{{ $sub->name }} @if($sub->ddc) ({{ $sub->ddc }}) @endif</option>
@@ -137,7 +137,7 @@
                     </div>
 
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Cover Sampul Buku</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Cover Sampul Buku') }}</label>
                         <input type="file" name="cover_image" class="@error('cover_image') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" accept="image/*">
                         @error('cover_image')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                     </div>
@@ -146,8 +146,8 @@
                 {{-- Full width --}}
                 <div class="w-full px-4">
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Abstrak / Deskripsi Singkat</label>
-                        <textarea name="abstract" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" rows="3" placeholder="Deskripsi singkat isi buku...">{{ old('abstract') }}</textarea>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Abstrak / Deskripsi Singkat') }}</label>
+                        <textarea name="abstract" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" rows="3" placeholder="{{ __('Deskripsi singkat isi buku...') }}">{{ old('abstract') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -155,11 +155,13 @@
             <hr>
 
             <div class="justify-end flex gap-2">
-                <a href="{{ route('books.index') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6">Batal</a>
-                <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold gap-2 py-2 px-6">Simpan Buku</button>
+                <a href="{{ route('books.index') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6">{{ __('Batal') }}</a>
+                <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white font-semibold gap-2 py-2 px-6">{{ __('Simpan Buku') }}</button>
             </div>
         </form>
 
     </div>
 </div>
 @endsection
+
+

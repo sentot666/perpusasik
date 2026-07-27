@@ -1,23 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'Riwayat Sirkulasi - ' . $member->name)
-@section('page-title', 'Riwayat Sirkulasi')
+@section('title', __('Riwayat Sirkulasi') . ' - ' . $member->name)
+@section('page-title', __('Riwayat Sirkulasi'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('members.index') }}">Daftar Anggota</a></li>
+<li class="breadcrumb-item"><a href="{{ route('members.index') }}">{{ __('Daftar Anggota') }}</a></li>
 <li class="breadcrumb-item"><a href="{{ route('members.show', $member) }}">{{ $member->name }}</a></li>
-<li class="breadcrumb-item active">Riwayat Sirkulasi</li>
+<li class="breadcrumb-item active">{{ __('Riwayat Sirkulasi') }}</li>
 @endsection
 
 @section('content')
 <div class="page-header justify-between items-start flex">
     <div>
-        <h1>Riwayat Sirkulasi</h1>
-        <p>Seluruh riwayat peminjaman dan pengembalian buku oleh <strong>{{ $member->name }}</strong></p>
+        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Riwayat Sirkulasi') }}</h1>
+        <p>{{ __('Seluruh riwayat peminjaman dan pengembalian buku oleh') }} <strong>{{ $member->name }}</strong></p>
     </div>
     <div>
         <a href="{{ route('members.show', $member) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6">
-            <i class="bi bi-arrow-left mr-1"></i>Kembali ke Detail
+            <i class="bi bi-arrow-left mr-1"></i>{{ __('Kembali ke Detail') }}
         </a>
     </div>
 </div>
@@ -29,14 +29,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Kode Transaksi</th>
-                        <th>Barcode</th>
-                        <th>Judul Buku</th>
-                        <th>Tgl Pinjam</th>
-                        <th>Jatuh Tempo</th>
-                        <th>Tgl Kembali</th>
-                        <th>Status</th>
-                        <th>Denda</th>
+                        <th>{{ __('Kode Transaksi') }}</th>
+                        <th>{{ __('Barcode') }}</th>
+                        <th>{{ __('Judul Buku') }}</th>
+                        <th>{{ __('Tgl Pinjam') }}</th>
+                        <th>{{ __('Jatuh Tempo') }}</th>
+                        <th>{{ __('Tgl Kembali') }}</th>
+                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('Denda') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,24 +51,24 @@
                         <td>{{ $c->return_date ? $c->return_date->format('d/m/Y') : '-' }}</td>
                         <td>
                             @if($c->status === 'Dikembalikan')
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">Selesai</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ __('Selesai') }}</span>
                             @elseif($c->is_overdue)
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-red-100 text-red-700 px-2">Terlambat</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-red-100 text-red-700 px-2">{{ __('Terlambat') }}</span>
                             @else
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-amber-100 text-amber-800 px-2">Dipinjam</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-amber-100 text-amber-800 px-2">{{ __('Dipinjam') }}</span>
                             @endif
                         </td>
                         <td>
                             @if($c->fine_amount > 0)
                             <div class="text-red-600 font-semibold">Rp {{ number_format($c->fine_amount, 0, ',', '.') }}</div>
-                            <div class="text-slate-500" style="font-size:0.72rem">{{ $c->fine_paid ? 'Lunas' : 'Belum Lunas' }}</div>
+                            <div class="text-slate-500" style="font-size:0.72rem">{{ $c->fine_paid ? __('Lunas') : __('Belum Lunas') }}</div>
                             @else
                             <span class="text-slate-500">-</span>
                             @endif
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="9" class="py-8 text-center text-slate-500">Belum ada riwayat transaksi</td></tr>
+                    <tr><td colspan="9" class="py-8 text-center text-slate-500">{{ __('Belum ada riwayat transaksi') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -81,3 +81,4 @@
     @endif
 </div>
 @endsection
+

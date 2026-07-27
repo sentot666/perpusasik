@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function __invoke(Request $request)
     {
         if (auth()->user()->hasRole('anggota')) {
-            return redirect()->route('opac.index');
+            return redirect()->route('member.dashboard');
         }
 
         $stats = [

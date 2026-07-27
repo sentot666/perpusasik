@@ -1,6 +1,5 @@
 @extends('layouts.auth')
-
-@section('title', 'Lupa Password')
+@section('title', __('Lupa Password'))
 
 @section('content')
 <div class="w-full max-w-[420px] mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -9,12 +8,12 @@
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white p-1 mb-4 shadow-lg">
             <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-xl">
         </div>
-        <h1 class="text-2xl font-extrabold leading-tight">Lupa Password</h1>
-        <p class="text-white/70 text-xs mt-1">Sistem Informasi Perpustakaan</p>
+        <h1 class="text-2xl font-extrabold leading-tight">{{ __('Lupa Password') }}</h1>
+        <p class="text-white/70 text-xs mt-1">{{ __('Sistem Informasi Perpustakaan') }}</p>
     </div>
 
     <div class="px-8 py-8">
-        <p class="text-center text-slate-500 text-sm mb-6">Masukkan alamat email Anda untuk menerima tautan reset password.</p>
+        <p class="text-center text-slate-500 text-sm mb-6">{{ __('Masukkan alamat email Anda untuk menerima tautan reset password.') }}</p>
 
         @if(session('status'))
         <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-xs mb-6 py-2 px-4">
@@ -33,7 +32,7 @@
         <form method="POST" action="{{ route('password.email') }}" id="forgotForm">
             @csrf
             <div class="mb-6">
-                <label class="block text-xs font-medium text-slate-700 mb-1">Email</label>
+                <label class="block text-xs font-medium text-slate-700 mb-1">{{ __('Email') }}</label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-slate-300 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition">
                     <span class="flex items-center px-3 bg-slate-50 border-r border-slate-300 text-slate-500"><i class="bi bi-envelope"></i></span>
                     <input
@@ -49,14 +48,14 @@
                 </div>
             </div>
 
-            <button type="submit" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg py-2.5 transition-colors" id="btnSubmit">
-                <i class="bi bi-send"></i> Kirim Tautan Reset
+            <button type="submit" class="w-full flex items-center justify-center gap-2 btn-gradient-blue text-white font-semibold text-sm rounded-lg py-2.5 transition-colors" id="btnSubmit">
+                <i class="bi bi-send"></i> {{ __('Kirim Tautan Reset') }}
             </button>
         </form>
 
         <div class="text-center mt-6">
             <a href="{{ route('login') }}" class="text-slate-500 hover:text-slate-700 transition-colors text-xs">
-                <i class="bi bi-arrow-left mr-1"></i>Kembali ke Halaman Login
+                <i class="bi bi-arrow-left mr-1"></i>{{ __('Kembali ke Halaman Login') }}
             </a>
         </div>
     </div>
@@ -66,9 +65,10 @@
 <script>
 document.getElementById('forgotForm').addEventListener('submit', function() {
     const btn = document.getElementById('btnSubmit');
-    btn.innerHTML = '<i class="bi bi-hourglass-split mr-2 animate-spin"></i>Memproses...';
+    btn.innerHTML = '<i class="bi bi-hourglass-split mr-2 animate-spin"></i>{{ __('Memproses...') }}';
     btn.disabled = true;
 });
 </script>
 @endpush
 @endsection
+

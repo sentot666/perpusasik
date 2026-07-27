@@ -18,6 +18,17 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
+    public function showMemberLoginForm()
+    {
+        if (Auth::check()) {
+            if (Auth::user()->hasRole('anggota')) {
+                return redirect()->route('member.dashboard');
+            }
+            return redirect()->route('dashboard');
+        }
+        return view('auth.member_login');
+    }
+
     public function login(Request $request)
     {
         $request->validate([

@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Data Anggota')
-@section('page-title', 'Data Anggota')
+@section('title', __('Data Anggota'))
+@section('page-title', __('Data Anggota'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item active">Data Anggota</li>
+<li class="breadcrumb-item active">{{ __('Data Anggota') }}</li>
 @endsection
 
 @section('content')
 <div class="page-header justify-between items-start flex">
     <div>
-        <h1>Daftar Anggota</h1>
-        <p>Kelola data anggota perpustakaan digital</p>
+        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Daftar Anggota') }}</h1>
+        <p>{{ __('Kelola data anggota perpustakaan digital') }}</p>
     </div>
     <div>
-        <a href="{{ route('members.create') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white gap-2 py-2 px-6">
-            <i class="bi bi-person-plus mr-1"></i>Tambah Anggota
+        <a href="{{ route('members.create') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-6">
+            <i class="bi bi-person-plus mr-1"></i>{{ __('Tambah Anggota') }}
         </a>
     </div>
 </div>
@@ -27,12 +27,12 @@
             <div class="col-md-5">
                 <div class="flex w-full text-sm">
                     <span class="flex items-center px-3 py-2 bg-slate-100 border border-slate-300 text-slate-600"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="Cari nama, kode, email, no. identitas..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Cari nama, kode, email, no. identitas...') }}" value="{{ request('search') }}">
                 </div>
             </div>
             <div class="col-md-2">
                 <select name="member_type" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                    <option value="">Semua Tipe</option>
+                    <option value="">{{ __('Semua Tipe') }}</option>
                     @foreach($memberTypes as $type)
                     <option value="{{ $type }}" {{ request('member_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
                     @endforeach
@@ -40,17 +40,17 @@
             </div>
             <div class="col-md-2">
                 <select name="status" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                    <option value="">Semua Status</option>
-                    <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                    <option value="">{{ __('Semua Status') }}</option>
+                    <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>{{ __('Aktif') }}</option>
+                    <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>{{ __('Nonaktif') }}</option>
                 </select>
             </div>
             <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white px-4"><i class="bi bi-funnel"></i> Filter</button>
-                <a href="{{ route('members.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> Reset</a>
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-funnel"></i> {{ __('Filter') }}</button>
+                <a href="{{ route('members.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
             </div>
             <div class="ml-auto text-slate-500 w-auto px-4" style="font-size:0.8rem">
-                {{ $members->total() }} anggota terdaftar
+                {{ $members->total() }} {{ __('anggota terdaftar') }}
             </div>
         </form>
     </div>
@@ -64,14 +64,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Kode Anggota</th>
-                        <th>Nama</th>
-                        <th>Kontak</th>
-                        <th>Tipe</th>
-                        <th>Tgl Daftar</th>
-                        <th>Masa Berlaku</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Aksi</th>
+                        <th>{{ __('Kode Anggota') }}</th>
+                        <th>{{ __('Nama') }}</th>
+                        <th>{{ __('Kontak') }}</th>
+                        <th>{{ __('Tipe') }}</th>
+                        <th>{{ __('Tgl Daftar') }}</th>
+                        <th>{{ __('Masa Berlaku') }}</th>
+                        <th class="text-center">{{ __('Status') }}</th>
+                        <th class="text-center">{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,18 +111,18 @@
                         </td>
                         <td class="text-center">
                             <div class="inline-flex rounded-md shadow-sm rounded-lg">
-                                <a href="{{ route('members.show', $member) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors gap-2 py-2 px-6" title="Detail">
+                                <a href="{{ route('members.show', $member) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors gap-2 py-2 px-6" title="{{ __('Detail') }}">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('members.edit', $member) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="Edit">
+                                <a href="{{ route('members.edit', $member) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="{{ route('members.print-card', $member) }}" target="_blank" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-amber-600 border border-slate-200 border-amber-600 hover:bg-amber-50 transition-colors gap-2 py-2 px-6" title="Cetak Kartu">
+                                <a href="{{ route('members.print-card', $member) }}" target="_blank" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-amber-600 border border-slate-200 border-amber-600 hover:bg-amber-50 transition-colors gap-2 py-2 px-6" title="{{ __('Cetak Kartu') }}">
                                     <i class="bi bi-printer"></i>
                                 </a>
-                                <form method="POST" action="{{ route('members.destroy', $member) }}" onsubmit="return confirm('Hapus anggota ini?')">
+                                <form method="POST" action="{{ route('members.destroy', $member) }}" onsubmit="return confirm('{{ __('Hapus anggota ini?') }}')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6" title="Hapus">
+                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -133,7 +133,7 @@
                     <tr>
                         <td colspan="9" class="py-8 text-center text-slate-500">
                             <i class="bi bi-people text-4xl font-bold block opacity-25 mb-2"></i>
-                            Belum ada data anggota. <a href="{{ route('members.create') }}">Tambah anggota pertama</a>
+                            {{ __('Belum ada data anggota.') }} <a href="{{ route('members.create') }}">{{ __('Tambah anggota pertama') }}</a>
                         </td>
                     </tr>
                     @endforelse
@@ -148,3 +148,5 @@
     @endif
 </div>
 @endsection
+
+

@@ -33,6 +33,13 @@
                 box-shadow: none !important;
                 border: none !important;
             }
+            /* Reset overflows for printing */
+            .overflow-hidden, .overflow-x-auto, .overflow-y-auto {
+                overflow: visible !important;
+            }
+            .whitespace-nowrap {
+                white-space: normal !important;
+            }
         }
     </style>
     @stack('styles')
@@ -52,7 +59,7 @@
         </div>
         <div>
             <div class="font-bold text-lg leading-tight text-slate-800">{{ config('app.name', 'Makarya') }}</div>
-            <div class="text-slate-500 text-xs font-normal">Perpustakaan Digital</div>
+            <div class="text-slate-500 text-xs font-normal">{{ __('Perpustakaan Digital') }}</div>
         </div>
     </a>
 
@@ -61,7 +68,7 @@
 
         @php
             $navLink = 'flex items-center gap-4 mx-3 px-4 py-3 rounded-xl text-base text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group relative no-underline';
-            $navLinkActive = 'flex items-center gap-4 mx-3 px-4 py-3 rounded-xl text-base bg-indigo-600 text-white font-semibold shadow-lg shadow-indigo-500/20 relative no-underline';
+            $navLinkActive = 'flex items-center gap-4 mx-3 px-4 py-3 rounded-xl text-base btn-gradient-blue font-semibold shadow-lg shadow-indigo-500/20 relative no-underline';
             $menuLabel = 'text-xs uppercase tracking-widest text-slate-400 font-semibold px-6 pt-4 pb-1';
         @endphp
 
@@ -69,107 +76,114 @@
         @can('view-full-dashboard')
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? $navLinkActive : $navLink }}">
             <i class="bi bi-speedometer2 text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Dashboard</span>
+            <span>{{ __('Dashboard') }}</span>
         </a>
         @endcan
 
-        {{-- Layanan Mandiri --}}
-        <p class="{{ $menuLabel }}">Layanan Mandiri</p>
-        <a href="{{ route('opac.index') }}" target="_blank" class="{{ $navLink }}">
-            <i class="bi bi-search text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Cari Buku (OPAC)</span>
-            <i class="bi bi-box-arrow-up-right text-xs ml-auto opacity-50"></i>
-        </a>
-        <a href="{{ route('guest-books.visitor') }}" target="_blank" class="{{ $navLink }}">
-            <i class="bi bi-journal-plus text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Buku Tamu Mandiri</span>
-            <i class="bi bi-box-arrow-up-right text-xs ml-auto opacity-50"></i>
-        </a>
-
         {{-- Sirkulasi Buku --}}
         @can('process-loans')
-        <p class="{{ $menuLabel }}">Sirkulasi Buku</p>
+        <p class="{{ $menuLabel }}">{{ __('Sirkulasi Buku') }}</p>
         <a href="{{ route('circulations.index') }}" class="{{ request()->routeIs('circulations.index') || request()->routeIs('circulations.show') ? $navLinkActive : $navLink }}">
             <i class="bi bi-arrow-left-right text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Transaksi Sirkulasi</span>
+            <span>{{ __('Transaksi Sirkulasi') }}</span>
         </a>
         <a href="{{ route('circulations.loan') }}" class="{{ request()->routeIs('circulations.loan') ? $navLinkActive : $navLink }}">
             <i class="bi bi-box-arrow-right text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Peminjaman</span>
+            <span>{{ __('Peminjaman') }}</span>
         </a>
         <a href="{{ route('circulations.return') }}" class="{{ request()->routeIs('circulations.return') ? $navLinkActive : $navLink }}">
             <i class="bi bi-box-arrow-in-left text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Pengembalian</span>
+            <span>{{ __('Pengembalian') }}</span>
         </a>
         @endcan
 
         {{-- Katalog & Koleksi --}}
         @can('view-books')
-        <p class="{{ $menuLabel }}">Katalog & Koleksi</p>
+        <p class="{{ $menuLabel }}">{{ __('Katalog & Koleksi') }}</p>
         <a href="{{ route('books.index') }}" class="{{ request()->routeIs('books.*') ? $navLinkActive : $navLink }}">
             <i class="bi bi-journals text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Master Buku</span>
+            <span>{{ __('Master Buku') }}</span>
         </a>
         <a href="{{ route('authors.index') }}" class="{{ request()->routeIs('authors.*') ? $navLinkActive : $navLink }}">
             <i class="bi bi-person-lines-fill text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Pengarang</span>
+            <span>{{ __('Pengarang') }}</span>
         </a>
         <a href="{{ route('publishers.index') }}" class="{{ request()->routeIs('publishers.*') ? $navLinkActive : $navLink }}">
             <i class="bi bi-building text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Penerbit</span>
+            <span>{{ __('Penerbit') }}</span>
         </a>
         <a href="{{ route('subjects.index') }}" class="{{ request()->routeIs('subjects.*') ? $navLinkActive : $navLink }}">
             <i class="bi bi-tags text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Subyek</span>
+            <span>{{ __('Subyek') }}</span>
         </a>
         <a href="{{ route('locations.index') }}" class="{{ request()->routeIs('locations.*') ? $navLinkActive : $navLink }}">
             <i class="bi bi-geo-alt text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Lokasi/Rak</span>
+            <span>{{ __('Lokasi/Rak') }}</span>
         </a>
         @endcan
 
         {{-- Keanggotaan --}}
         @can('view-members')
-        <p class="{{ $menuLabel }}">Keanggotaan</p>
+        <p class="{{ $menuLabel }}">{{ __('Keanggotaan') }}</p>
         <a href="{{ route('members.index') }}" class="{{ request()->routeIs('members.*') ? $navLinkActive : $navLink }}">
             <i class="bi bi-people text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Data Anggota</span>
-        </a>
-        @endcan
-
-        {{-- Laporan & Log --}}
-        <p class="{{ $menuLabel }}">Laporan & Log</p>
-        <a href="{{ route('guest-books.index') }}" class="{{ request()->routeIs('guest-books.index') ? $navLinkActive : $navLink }}">
-            <i class="bi bi-journal-text text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Log Buku Tamu</span>
-        </a>
-        @can('view-reports')
-        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? $navLinkActive : $navLink }}">
-            <i class="bi bi-file-earmark-bar-graph text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Laporan Transaksi</span>
+            <span>{{ __('Data Anggota') }}</span>
         </a>
         @endcan
 
         {{-- Administrasi --}}
         @canany(['manage-users', 'manage-settings'])
-        <p class="{{ $menuLabel }}">Administrasi</p>
+        <p class="{{ $menuLabel }}">{{ __('Administrasi') }}</p>
         @can('manage-users')
         <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? $navLinkActive : $navLink }}">
-            <i class="bi bi-shield-person text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Manajemen User</span>
+            <i class="bi bi-person-gear text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Manajemen User') }}</span>
         </a>
         @endcan
         @can('manage-settings')
         <a href="{{ route('settings.index') }}" class="{{ request()->routeIs('settings.*') ? $navLinkActive : $navLink }}">
             <i class="bi bi-gear text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
-            <span>Pengaturan</span>
+            <span>{{ __('Pengaturan') }}</span>
         </a>
         @endcan
         @endcanany
 
+        {{-- Portal Anggota --}}
+        @can('view-history')
+        <p class="{{ $menuLabel }}">{{ __('Portal Anggota') }}</p>
+        <a href="{{ route('member.dashboard') }}" class="{{ request()->routeIs('member.dashboard') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-house-door text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Dashboard Anggota') }}</span>
+        </a>
+        <a href="{{ route('member.catalog') }}" class="{{ request()->routeIs('member.catalog*') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-search text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Katalog Buku') }}</span>
+        </a>
+        <a href="{{ route('member.my-books') }}" class="{{ request()->routeIs('member.my-books') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-book-half text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Buku Saya') }}</span>
+        </a>
+        <a href="{{ route('member.loans') }}" class="{{ request()->routeIs('member.loans') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-clock-history text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Riwayat Pinjam') }}</span>
+        </a>
+        <a href="{{ route('member.wishlist') }}" class="{{ request()->routeIs('member.wishlist') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-heart text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Wishlist') }}</span>
+        </a>
+        <a href="{{ route('member.fines') }}" class="{{ request()->routeIs('member.fines') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-wallet2 text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Denda') }}</span>
+        </a>
+        <a href="{{ route('member.profile') }}" class="{{ request()->routeIs('member.profile*') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-person-badge text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Profil & Kartu') }}</span>
+        </a>
+        @endcan
+
     </div>
 
-    {{-- Footer --}}
+    {{-- Sidebar Footer --}}
     <div class="px-6 border-t border-slate-200 text-xs text-slate-400 flex-shrink-0 py-4">
         v3.0.0 &copy; {{ date('Y') }} {{ config('app.name', 'Makarya') }}
     </div>
@@ -185,17 +199,76 @@
             <i class="bi bi-list text-2xl"></i>
         </button>
 
-        <h1 class="text-xl font-bold text-slate-800 flex-shrink-0">@yield('page-title', 'Dashboard')</h1>
-
-        {{-- Quick search --}}
-        <form action="{{ route('opac.index') }}" method="GET" class="hidden md:flex flex-1 max-w-md ml-6">
-            <div class="relative w-full group flex items-center">
-                <i class="bi bi-search absolute left-4 text-slate-400 text-sm group-focus-within:text-indigo-600 transition-colors pointer-events-none mt-0.5"></i>
-                <input type="text" name="q" class="w-full pl-10 pr-5 py-2 text-sm bg-slate-100 hover:bg-slate-200/60 border border-transparent rounded-full focus:outline-none focus:bg-white focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-400" placeholder="Cari koleksi buku...">
-            </div>
-        </form>
-
         <div class="flex items-center ml-auto gap-2">
+
+            {{-- Notification Bell (for members) --}}
+            @can('view-history')
+            <div class="relative" x-data="{ open: false }">
+                <button @click="open = !open" @click.outside="open = false"
+                    class="relative w-10 h-10 flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
+                    <i class="bi bi-bell text-xl"></i>
+                    @php
+                        $pendingNotifCount = 0;
+                        $memberForNotif = auth()->user()?->member;
+                        if ($memberForNotif) {
+                            $pendingNotifCount = \App\Models\Circulation::where('member_id', $memberForNotif->id)
+                                ->where('status', 'Dipinjam')
+                                ->where('due_date', '<=', now()->addDays(3))
+                                ->count();
+                        }
+                    @endphp
+                    @if($pendingNotifCount > 0)
+                    <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white"></span>
+                    @endif
+                </button>
+
+                {{-- Notification Dropdown --}}
+                <div x-show="open" x-cloak x-transition
+                    class="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-slate-100 font-bold text-slate-700 flex items-center gap-2">
+                        <i class="bi bi-bell text-indigo-500"></i> Notifikasi
+                    </div>
+                    <div class="max-h-80 overflow-y-auto">
+                        @php
+                            $notifLoans = [];
+                            if ($memberForNotif) {
+                                $notifLoans = \App\Models\Circulation::with('bookItem.book')
+                                    ->where('member_id', $memberForNotif->id)
+                                    ->where('status', 'Dipinjam')
+                                    ->where('due_date', '<=', now()->addDays(3))
+                                    ->get();
+                            }
+                        @endphp
+                        @forelse($notifLoans as $notifLoan)
+                        @php
+                            $daysLeft = now()->diffInDays($notifLoan->due_date, false);
+                            $isOverdueNotif = $daysLeft < 0;
+                        @endphp
+                        <div class="px-5 py-4 border-b border-slate-50 hover:bg-slate-50 transition-colors flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center {{ $isOverdueNotif ? 'bg-red-100 text-red-500' : 'bg-amber-100 text-amber-600' }}">
+                                <i class="bi bi-{{ $isOverdueNotif ? 'exclamation-circle-fill' : 'clock-fill' }} text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-slate-800 line-clamp-1">{{ $notifLoan->bookItem?->book?->title }}</p>
+                                <p class="text-xs {{ $isOverdueNotif ? 'text-red-600 font-bold' : 'text-amber-600' }} mt-0.5">
+                                    {{ $isOverdueNotif ? 'Terlambat ' . abs($daysLeft) . ' hari!' : 'Jatuh tempo ' . ($daysLeft == 0 ? 'hari ini!' : 'dalam ' . $daysLeft . ' hari') }}
+                                </p>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="py-10 text-center">
+                            <div class="text-3xl mb-2">🎉</div>
+                            <p class="text-sm font-semibold text-slate-700">Semua aman!</p>
+                            <p class="text-xs text-slate-400 mt-1">Tidak ada buku yang akan jatuh tempo.</p>
+                        </div>
+                        @endforelse
+                    </div>
+                    <div class="px-5 py-3 border-t border-slate-100">
+                        <a href="{{ route('member.my-books') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800">Lihat Buku Saya →</a>
+                    </div>
+                </div>
+            </div>
+            @endcan
 
             {{-- Auto Refresh Widget --}}
             <div id="autoRefreshContainer" class="hidden sm:flex items-center gap-2" x-data="autoRefreshWidget()">
@@ -203,7 +276,7 @@
                     <button @click="open = !open" @click.outside="open = false"
                         class="flex items-center gap-1 px-3 py-2 text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200">
                         <i class="bi bi-arrow-clockwise"></i>
-                        <span x-text="label">Auto Refresh: Off</span>
+                        <span x-text="label">{{ __('Auto Refresh: Off') }}</span>
                         <i class="bi bi-chevron-down text-xs"></i>
                     </button>
                     <div x-show="open" x-transition
@@ -219,7 +292,7 @@
                 </div>
                 {{-- Progress bar --}}
                 <div x-show="interval > 0" class="w-10 h-0.5 bg-slate-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-indigo-500 rounded-full transition-all duration-1000"
+                    <div class="h-full btn-gradient-blue rounded-full transition-all duration-1000"
                         :style="'width:' + progress + '%'"></div>
                 </div>
             </div>
@@ -238,12 +311,15 @@
                     class="absolute right-0 w-52 bg-white rounded-xl shadow-lg border border-slate-200 border-slate-100 py-1 z-50 mt-1">
                     <div class="text-xs text-slate-400 truncate border-b border-slate-100 py-2 px-6">{{ auth()->user()->email }}</div>
                     <a href="{{ route('profile.edit') }}" class="flex items-center text-sm text-slate-700 hover:bg-slate-50 transition-colors no-underline gap-2 py-2 px-6">
-                        <i class="bi bi-person"></i> Profil
+                        <i class="bi bi-person"></i> {{ __('Profil') }}
                     </a>
+                    
+
+
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="w-full flex items-center text-sm text-red-500 hover:bg-red-50 transition-colors gap-2 py-2 px-6">
-                            <i class="bi bi-box-arrow-right"></i> Logout
+                            <i class="bi bi-box-arrow-right"></i> {{ __('Logout') }}
                         </button>
                     </form>
                 </div>
@@ -255,14 +331,6 @@
     {{-- Content --}}
     <main class="flex-1 p-6 content-area">
 
-        {{-- Breadcrumb --}}
-        @hasSection('breadcrumb')
-        <nav class="flex items-center gap-1 text-xs text-slate-400 mb-6">
-            <a href="{{ route('dashboard') }}" class="hover:text-slate-600 transition-colors no-underline"><i class="bi bi-house"></i></a>
-            <i class="bi bi-chevron-right text-[0.55rem]"></i>
-            @yield('breadcrumb')
-        </nav>
-        @endif
 
         {{-- Flash messages --}}
         @if(session('success'))
@@ -285,6 +353,76 @@
         @yield('content')
     </main>
 
+    {{-- Footer (visible for members) --}}
+    @can('view-history')
+    <footer class="bg-white border-t border-slate-200 mt-auto">
+        <div class="max-w-full px-6 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                {{-- Library Info --}}
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+                        <i class="bi bi-building text-indigo-500"></i> {{ config('app.name', 'Perpustakaan') }}
+                    </h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">Selamat datang di perpustakaan digital kami. Temukan ribuan koleksi buku pilihan untuk mendukung kegiatan belajar Anda.</p>
+                    <div class="flex gap-3 mt-4">
+                        <a href="#" class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors" title="Facebook"><i class="bi bi-facebook text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors" title="Instagram"><i class="bi bi-instagram text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 bg-sky-50 rounded-lg flex items-center justify-center text-sky-600 hover:bg-sky-100 transition-colors" title="Twitter"><i class="bi bi-twitter-x text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-100 transition-colors" title="YouTube"><i class="bi bi-youtube text-sm"></i></a>
+                    </div>
+                </div>
+
+                {{-- Jam Operasional --}}
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+                        <i class="bi bi-clock text-indigo-500"></i> Jam Operasional
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500">Senin – Jumat</span>
+                            <span class="font-semibold text-slate-700">08.00 – 16.00 WIB</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500">Sabtu</span>
+                            <span class="font-semibold text-slate-700">08.00 – 12.00 WIB</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-500">Minggu & Hari Libur</span>
+                            <span class="font-semibold text-red-500">Tutup</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Kontak & Alamat --}}
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
+                        <i class="bi bi-geo-alt text-indigo-500"></i> Kontak & Alamat
+                    </h4>
+                    <div class="space-y-2">
+                        <div class="flex items-start gap-2 text-xs text-slate-500">
+                            <i class="bi bi-geo-alt-fill text-slate-400 mt-0.5"></i>
+                            <span>Jl. Contoh No. 1, Kota, Provinsi 12345</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-slate-500">
+                            <i class="bi bi-telephone-fill text-slate-400"></i>
+                            <a href="tel:+628000000000" class="hover:text-indigo-600">(021) 000-0000</a>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-slate-500">
+                            <i class="bi bi-envelope-fill text-slate-400"></i>
+                            <a href="mailto:info@perpustakaan.ac.id" class="hover:text-indigo-600">info@perpustakaan.ac.id</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="border-t border-slate-100 mt-6 pt-4 text-center text-xs text-slate-400">
+                &copy; {{ date('Y') }} {{ config('app.name', 'Perpustakaan Digital') }} — Hak cipta dilindungi.
+            </div>
+        </div>
+    </footer>
+    @endcan
+
 </div>{{-- end main-wrapper --}}
 
 @stack('scripts')
@@ -300,11 +438,11 @@ document.addEventListener('alpine:init', () => {
         timer: null,
         timeLeft: 0,
         options: [
-            { value: 0,   label: 'Off' },
-            { value: 10,  label: '10 detik' },
-            { value: 30,  label: '30 detik' },
-            { value: 60,  label: '1 menit' },
-            { value: 300, label: '5 menit' },
+            { value: 0,   label: '{{ __('Off') }}' },
+            { value: 10,  label: '{{ __('10 detik') }}' },
+            { value: 30,  label: '{{ __('30 detik') }}' },
+            { value: 60,  label: '{{ __('1 menit') }}' },
+            { value: 300, label: '{{ __('5 menit') }}' },
         ],
 
         init() {
@@ -335,7 +473,7 @@ document.addEventListener('alpine:init', () => {
 
         updateLabel() {
             const opt = this.options.find(o => o.value === this.interval);
-            this.label = opt ? (this.interval === 0 ? 'Auto Refresh: Off' : `Auto: ${opt.label}`) : 'Auto Refresh: Off';
+            this.label = opt ? (this.interval === 0 ? '{{ __('Auto Refresh: Off') }}' : `Auto: ${opt.label}`) : '{{ __('Auto Refresh: Off') }}';
         },
 
         startTimer() {
@@ -433,3 +571,5 @@ document.addEventListener('alpine:init', () => {
     </script>
 </body>
 </html>
+
+

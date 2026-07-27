@@ -1,22 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Master Penerbit')
-@section('page-title', 'Master Penerbit')
+@section('title', __('Master Penerbit'))
+@section('page-title', __('Master Penerbit'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item active">Penerbit</li>
+<li class="breadcrumb-item active">{{ __('Penerbit') }}</li>
 @endsection
 
 @section('content')
 <div x-data="{ showAddModal: false }">
     <div class="page-header justify-between items-start flex mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800">Master Penerbit</h1>
-            <p class="text-slate-500 mt-1">Kelola data penerbit buku</p>
+            <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Master Penerbit') }}</h1>
+            <p class="text-slate-500 mt-1">{{ __('Kelola data penerbit buku') }}</p>
         </div>
         <div class="flex gap-2">
-            <button type="button" @click="showAddModal = true" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white gap-2 py-2 px-6">
-                <i class="bi bi-plus-circle mr-1"></i>Tambah Penerbit
+            <button type="button" @click="showAddModal = true" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-6">
+                <i class="bi bi-plus-circle mr-1"></i>{{ __('Tambah Penerbit') }}
             </button>
         </div>
     </div>
@@ -25,11 +25,11 @@
     <div class="px-8 py-2">
         <form method="GET" class="items-center flex flex-wrap -mx-2">
             <div class="w-full md:w-1/2 px-4">
-                <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" placeholder="Cari nama penerbit..." value="{{ request('search') }}">
+                <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" placeholder="{{ __('Cari nama penerbit...') }}" value="{{ request('search') }}">
             </div>
             <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white px-4"><i class="bi bi-search"></i> Cari</button>
-                <a href="{{ route('publishers.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> Reset</a>
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-search"></i> {{ __('Cari') }}</button>
+                <a href="{{ route('publishers.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
             </div>
         </form>
     </div>
@@ -42,11 +42,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nama Penerbit</th>
-                        <th>Kota</th>
-                        <th>Negara</th>
-                        <th>Website</th>
-                        <th class="text-center">Aksi</th>
+                        <th>{{ __('Nama Penerbit') }}</th>
+                        <th>{{ __('Kota') }}</th>
+                        <th>{{ __('Negara') }}</th>
+                        <th>{{ __('Website') }}</th>
+                        <th class="text-center">{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,19 +58,19 @@
                         <td>{{ $pub->country ?? '-' }}</td>
                         <td>
                             @if($pub->website)
-                            <a href="{{ $pub->website }}" target="_blank" class="no-underline"><i class="bi bi-globe mr-1"></i>Link</a>
+                            <a href="{{ $pub->website }}" target="_blank" class="no-underline"><i class="bi bi-globe mr-1"></i>{{ __('Link') }}</a>
                             @else
                             -
                             @endif
                         </td>
                         <td class="text-center" style="width:150px">
                             <div class="inline-flex gap-2">
-                                <button type="button" @click="showEditModal = true" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" title="Edit">
+                                <button type="button" @click="showEditModal = true" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <form method="POST" action="{{ route('publishers.destroy', $pub) }}" onsubmit="return confirm('Hapus penerbit ini?')">
+                                <form method="POST" action="{{ route('publishers.destroy', $pub) }}" onsubmit="return confirm('{{ __('Hapus penerbit ini?') }}')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors" title="Hapus">
+                                    <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -85,36 +85,36 @@
                                 @csrf @method('PUT')
                                 
                                 <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                                    <h5 class="font-semibold text-slate-800">Edit Penerbit</h5>
+                                    <h5 class="font-semibold text-slate-800">{{ __('Edit Penerbit') }}</h5>
                                     <button type="button" @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
                                 </div>
                                 <div class="p-8 text-left max-h-[70vh] overflow-y-auto">
                                         <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">Nama Penerbit</label>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Penerbit') }}</label>
                                             <input type="text" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $pub->name }}" required>
                                         </div>
                                         <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">Kota</label>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Kota') }}</label>
                                             <input type="text" name="city" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $pub->city }}">
                                         </div>
                                         <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">Negara</label>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Negara') }}</label>
                                             <input type="text" name="country" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $pub->country }}">
                                         </div>
                                         <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">Website</label>
+                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Website') }}</label>
                                             <input type="url" name="website" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $pub->website }}" placeholder="https://example.com">
                                         </div>
                                     </div>
                                     <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                                        <button type="button" @click="showEditModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">Batal</button>
-                                        <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white py-2 px-6">Simpan</button>
+                                        <button type="button" @click="showEditModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
+                                        <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
                                     </div>
                             </form>
                         </div>
                     </div>
                     @empty
-                    <tr><td colspan="6" class="text-center text-slate-500 py-6">Belum ada data penerbit</td></tr>
+                    <tr><td colspan="6" class="text-center text-slate-500 py-6">{{ __('Belum ada data penerbit') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -133,30 +133,30 @@
             <form method="POST" action="{{ route('publishers.store') }}">
                 @csrf
                 <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                    <h5 class="font-semibold text-slate-800">Tambah Penerbit</h5>
+                    <h5 class="font-semibold text-slate-800">{{ __('Tambah Penerbit') }}</h5>
                     <button type="button" @click="showAddModal = false" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="p-8 max-h-[70vh] overflow-y-auto">
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Penerbit</label>
-                        <input type="text" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="Contoh: Balai Pustaka" required>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Penerbit') }}</label>
+                        <input type="text" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Contoh: Balai Pustaka') }}" required>
                     </div>
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Kota</label>
-                        <input type="text" name="city" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="Contoh: Jakarta">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Kota') }}</label>
+                        <input type="text" name="city" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Contoh: Jakarta') }}">
                     </div>
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Negara</label>
-                        <input type="text" name="country" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="Contoh: Indonesia" value="Indonesia">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Negara') }}</label>
+                        <input type="text" name="country" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Contoh: Indonesia') }}" value="Indonesia">
                     </div>
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Website</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Website') }}</label>
                         <input type="url" name="website" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="Contoh: https://balaipustaka.co.id">
                     </div>
                 </div>
                 <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                    <button type="button" @click="showAddModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">Batal</button>
-                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white py-2 px-6">Simpan</button>
+                    <button type="button" @click="showAddModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
+                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
                 </div>
             </form>
         </div>
@@ -164,3 +164,5 @@
     
     </div> <!-- End x-data showAddModal wrapper -->
 @endsection
+
+

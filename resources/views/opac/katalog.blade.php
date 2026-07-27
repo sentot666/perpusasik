@@ -1,6 +1,6 @@
 @extends('layouts.opac')
 
-@section('title', 'Katalog Buku')
+@section('title', __('Katalog Buku'))
 
 @section('content')
 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-6 mt-8">
@@ -9,11 +9,11 @@
     <div class="mb-8 flex flex-col md:flex-row gap-4 items-center">
         <form action="{{ route('opac.katalog') }}" method="GET" class="w-full flex-1 shadow-sm rounded-xl overflow-hidden flex bg-white border border-slate-200 p-1">
             <span class="flex items-center px-4 bg-white text-slate-400"><i class="bi bi-search text-xl"></i></span>
-            <input type="text" name="q" class="w-full border-0 focus:ring-0 text-slate-700 py-3 px-2 text-base outline-none" placeholder="Ketik kata kunci judul, pengarang, penerbit, atau ISBN..." value="{{ request('q') }}">
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap">Cari</button>
+            <input type="text" name="q" class="w-full border-0 focus:ring-0 text-slate-700 py-3 px-2 text-base outline-none" placeholder="{{ __('Ketik kata kunci judul, pengarang, penerbit, atau ISBN...') }}" value="{{ request('q') }}">
+            <button type="submit" class="btn-gradient-blue text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap">{{ __('Cari') }}</button>
         </form>
         <a href="{{ route('opac.index') }}" class="w-full md:w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-md shadow-blue-500/30 rounded-xl px-6 py-3.5 flex items-center justify-center font-semibold transition-all whitespace-nowrap no-underline group border-0">
-            Kembali <i class="bi bi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
+            {{ __('Kembali') }} <i class="bi bi-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
         </a>
     </div>
 
@@ -21,7 +21,7 @@
         {{-- Left side: Filters --}}
         <div class="w-full lg:w-1/4 px-4">
             <div class="shadow-sm border-0 bg-white rounded-xl border border-slate-200 overflow-hidden mb-6" style="border-radius:12px">
-                <div class="bg-white px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 font-bold py-4"><i class="bi bi-funnel mr-2"></i>Filter Pencarian</div>
+                <div class="bg-white px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 font-bold py-4"><i class="bi bi-funnel mr-2"></i>{{ __('Filter Pencarian') }}</div>
                 <div class="p-8">
                     <form action="{{ route('opac.katalog') }}" method="GET" id="opacFilterForm">
                         @if(request('q'))
@@ -29,9 +29,9 @@
                         @endif
 
                         <div class="mb-6">
-                            <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">Jenis Koleksi</label>
+                            <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Jenis Koleksi') }}</label>
                             <select name="collection_type" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                                <option value="">Semua Jenis</option>
+                                <option value="">{{ __('Semua Jenis') }}</option>
                                 @foreach($collectionTypes as $type)
                                 <option value="{{ $type }}" {{ request('collection_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
                                 @endforeach
@@ -39,9 +39,9 @@
                         </div>
 
                         <div class="mb-6">
-                            <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">Tahun Terbit</label>
+                            <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Tahun Terbit') }}</label>
                             <select name="year" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                                <option value="">Semua Tahun</option>
+                                <option value="">{{ __('Semua Tahun') }}</option>
                                 @foreach($years as $yr)
                                 <option value="{{ $yr }}" {{ request('year') == $yr ? 'selected' : '' }}>{{ $yr }}</option>
                                 @endforeach
@@ -49,15 +49,15 @@
                         </div>
 
                         <div class="mb-6">
-                            <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">Bahasa</label>
+                            <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Bahasa') }}</label>
                             <select name="language" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                                <option value="">Semua Bahasa</option>
-                                <option value="id" {{ request('language') == 'id' ? 'selected' : '' }}>Indonesia</option>
-                                <option value="en" {{ request('language') == 'en' ? 'selected' : '' }}>Inggris</option>
+                                <option value="">{{ __('Semua Bahasa') }}</option>
+                                <option value="id" {{ request('language') == 'id' ? 'selected' : '' }}>{{ __('Indonesia') }}</option>
+                                <option value="en" {{ request('language') == 'en' ? 'selected' : '' }}>{{ __('Inggris') }}</option>
                             </select>
                         </div>
 
-                        <a href="{{ route('opac.katalog') }}" class="w-full inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> Bersihkan Filter</a>
+                        <a href="{{ route('opac.katalog') }}" class="w-full inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Bersihkan Filter') }}</a>
                     </form>
                 </div>
             </div>
@@ -68,13 +68,13 @@
             @if(request('q') || request('collection_type') || request('year') || request('language'))
                 <div class="alert alert-light border border-slate-200 shadow-sm justify-between items-center flex mb-6 py-2 px-4" style="border-radius:10px;font-size:0.85rem">
                     <div>
-                        Menampilkan hasil pencarian untuk:
+                        {{ __('Menampilkan hasil pencarian untuk:') }}
                         @if(request('q')) <strong>"{{ request('q') }}"</strong> @endif
                         @if(request('collection_type')) <span class="ml-1 inline-flex py-1 text-xs font-medium rounded-md bg-indigo-100 text-indigo-700 px-2">{{ request('collection_type') }}</span> @endif
                         @if(request('year')) <span class="ml-1 inline-flex py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-700 px-2">{{ request('year') }}</span> @endif
-                        @if(request('language')) <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-sky-500 text-white ml-1">{{ request('language') == 'id' ? 'Indonesia' : 'Inggris' }}</span> @endif
+                        @if(request('language')) <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-sky-500 text-white ml-1">{{ request('language') == 'id' ? __('Indonesia') : __('Inggris') }}</span> @endif
                     </div>
-                    <span class="text-slate-500">{{ $books->total() }} judul ditemukan</span>
+                    <span class="text-slate-500">{{ $books->total() }} {{ __('judul ditemukan') }}</span>
                 </div>
             @endif
 
@@ -104,13 +104,13 @@
                             <h6 class="fw-700 text-truncate-2 text-slate-800 mb-1" style="height:38px;line-height:1.2">
                                 <a href="{{ route('opac.show', $book) }}" class="no-underline text-slate-800">{{ $book->title }}</a>
                             </h6>
-                            <div class="truncate text-slate-500 mb-2" style="font-size:0.75rem">{{ $book->main_author ?? 'Pengarang tidak terdaftar' }}</div>
+                            <div class="truncate text-slate-500 mb-2" style="font-size:0.75rem">{{ $book->main_author ?? __('Pengarang tidak terdaftar') }}</div>
                             <div class="mt-auto border-t border-slate-200 pt-2 justify-between items-center flex">
                                 <span style="font-size:0.7rem" class="text-slate-500"><i class="bi bi-calendar3 mr-1"></i>{{ $book->publication_year ?? '-' }}</span>
                                 @if($book->available_items_count > 0)
-                                <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-success-subtle border border-slate-200 border-success-subtle text-emerald-600" style="font-size:0.68rem">Tersedia {{ $book->available_items_count }}</span>
+                                <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-success-subtle border border-slate-200 border-success-subtle text-emerald-600" style="font-size:0.68rem">{{ __('Tersedia') }} {{ $book->available_items_count }}</span>
                                 @else
-                                <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-danger-subtle border border-slate-200 border-danger-subtle text-red-600" style="font-size:0.68rem">Dipinjam</span>
+                                <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-danger-subtle border border-slate-200 border-danger-subtle text-red-600" style="font-size:0.68rem">{{ __('Dipinjam') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -119,7 +119,7 @@
                 @empty
                 <div class="py-8 text-center text-slate-500 w-full px-4">
                     <i class="bi bi-journals text-4xl font-bold block opacity-25 mb-6"></i>
-                    Buku tidak ditemukan. Coba masukkan kata kunci pencarian yang lain.
+                    {{ __('Buku tidak ditemukan. Coba masukkan kata kunci pencarian yang lain.') }}
                 </div>
                 @endforelse
             </div>
@@ -148,3 +148,4 @@
 
 
 @endsection
+

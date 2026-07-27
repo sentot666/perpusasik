@@ -1,6 +1,5 @@
 @extends('layouts.auth')
-
-@section('title', 'Login')
+@section('title', __('Login'))
 
 @section('content')
 <div class="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[550px]">
@@ -25,7 +24,7 @@
             
             <div class="text-center">
                 <h1 class="text-2xl lg:text-3xl font-extrabold leading-tight text-white">{{ config('app.name', 'Makarya') }}</h1>
-                <p class="text-white/80 text-sm mt-2 font-medium">Sistem Informasi Perpustakaan</p>
+                <p class="text-white/80 text-sm mt-2 font-medium">{{ __('Sistem Informasi Perpustakaan') }}</p>
             </div>
         </div>
     </div>
@@ -39,11 +38,11 @@
                 <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-xl">
             </div>
             <h1 class="text-xl font-extrabold text-slate-800">{{ config('app.name', 'Makarya') }}</h1>
-            <p class="text-slate-500 text-xs mt-1">Sistem Informasi Perpustakaan</p>
+            <p class="text-slate-500 text-xs mt-1">{{ __('Sistem Informasi Perpustakaan') }}</p>
         </div>
 
-        <h5 class="font-bold text-center text-slate-800 mb-1 text-xl md:text-2xl">Fasilitas Layanan SIP</h5>
-        <p class="text-center text-slate-500 text-sm mb-8">Sistem Informasi Perpustakaan</p>
+        <h5 class="font-bold text-center text-slate-800 mb-1 text-xl md:text-2xl">{{ __('Fasilitas Layanan SIP') }}</h5>
+        <p class="text-center text-slate-500 text-sm mb-8">{{ __('Sistem Informasi Perpustakaan') }}</p>
 
         @if(session('status'))
         <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-xs mb-6 py-2 px-4">
@@ -62,7 +61,7 @@
         <form method="POST" action="{{ route('login') }}" id="loginForm">
             @csrf
             <div class="mb-5">
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Username / Email</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Username / Email') }}</label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-slate-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 transition-all shadow-sm">
                     <span class="flex items-center px-3.5 bg-slate-50 border-r border-slate-300 text-slate-500"><i class="bi bi-person text-lg"></i></span>
                     <input
@@ -70,7 +69,7 @@
                         name="login"
                         id="login"
                         class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium"
-                        placeholder="Username atau email"
+                        placeholder="{{ __('Username atau email') }}"
                         value="{{ old('login') }}"
                         required
                         autofocus
@@ -79,7 +78,7 @@
             </div>
 
             <div class="mb-5">
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Password</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Password') }}</label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-slate-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 transition-all shadow-sm">
                     <span class="flex items-center px-3.5 bg-slate-50 border-r border-slate-300 text-slate-500"><i class="bi bi-lock text-lg"></i></span>
                     <input
@@ -87,7 +86,7 @@
                         name="password"
                         id="password"
                         class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium"
-                        placeholder="Masukkan password"
+                        placeholder="{{ __('Masukkan password') }}"
                         required
                     >
                     <button type="button" class="flex items-center px-3.5 bg-slate-50 border-l border-slate-300 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors" id="togglePassword">
@@ -99,19 +98,19 @@
             <div class="flex items-center justify-between mb-8">
                 <div class="flex items-center gap-2 cursor-pointer group">
                     <input class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer" type="checkbox" name="remember" id="remember">
-                    <label class="text-sm text-slate-600 font-medium cursor-pointer group-hover:text-slate-800 transition-colors" for="remember">Ingat saya</label>
+                    <label class="text-sm text-slate-600 font-medium cursor-pointer group-hover:text-slate-800 transition-colors" for="remember">{{ __('Ingat saya') }}</label>
                 </div>
-                <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 font-medium hover:text-indigo-800 transition-colors">Lupa password?</a>
+                <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 font-medium hover:text-indigo-800 transition-colors">{{ __('Lupa password?') }}</a>
             </div>
 
-            <button type="submit" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-lg py-3 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5" id="loginBtn">
-                <i class="bi bi-box-arrow-in-right text-lg"></i> Masuk ke Dashboard
+            <button type="submit" class="w-full flex items-center justify-center gap-2 btn-gradient-blue text-white font-bold text-sm rounded-lg py-3 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5" id="loginBtn">
+                <i class="bi bi-box-arrow-in-right text-lg"></i> {{ __('Masuk ke Dashboard') }}
             </button>
         </form>
 
         <div class="text-center mt-8 pt-6 border-t border-slate-100">
             <a href="javascript:history.back()" class="inline-flex items-center text-slate-500 hover:text-indigo-600 font-medium transition-colors text-sm">
-                <i class="bi bi-arrow-left mr-2"></i>Kembali
+                <i class="bi bi-arrow-left mr-2"></i>{{ __('Kembali') }}
             </a>
         </div>
     </div>
@@ -153,10 +152,11 @@ document.getElementById('togglePassword').addEventListener('click', function() {
 
 document.getElementById('loginForm').addEventListener('submit', function() {
     const btn = document.getElementById('loginBtn');
-    btn.innerHTML = '<i class="bi bi-hourglass-split text-lg mr-2 animate-spin"></i>Memproses...';
+    btn.innerHTML = '<i class="bi bi-hourglass-split text-lg mr-2 animate-spin"></i>{{ __('Memproses...') }}';
     btn.disabled = true;
     btn.classList.add('opacity-75', 'cursor-not-allowed');
 });
 </script>
 @endpush
 @endsection
+

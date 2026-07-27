@@ -1,25 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'Laporan Keterlambatan')
-@section('page-title', 'Laporan Keterlambatan')
+@section('title', __('Laporan Keterlambatan'))
+@section('page-title', __('Laporan Keterlambatan'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">Laporan</a></li>
-<li class="breadcrumb-item active">Keterlambatan</li>
+<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">{{ __('Laporan') }}</a></li>
+<li class="breadcrumb-item active">{{ __('Keterlambatan') }}</li>
 @endsection
 
 @section('content')
 <div class="page-header justify-between items-start flex">
     <div>
-        <h1>Laporan Keterlambatan Pengembalian</h1>
-        <p>Seluruh transaksi peminjaman aktif yang sudah melewati jatuh tempo</p>
+        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Laporan Keterlambatan Pengembalian') }}</h1>
+        <p>{{ __('Seluruh transaksi peminjaman aktif yang sudah melewati jatuh tempo') }}</p>
     </div>
     <div class="flex gap-2">
-        <a href="{{ route('reports.export', ['type' => 'overdue'] + request()->all()) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-file-earmark-excel text-base"></i> Export Spreadsheet
+        <a href="{{ route('reports.export', ['type' => 'overdue'] + request()->all()) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-green text-white transition-colors gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-file-earmark-excel text-base"></i> {{ __('Export Spreadsheet') }}
         </a>
-        <button onclick="window.print()" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 text-white hover:bg-slate-900 transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-printer"></i> Cetak Laporan</button>
-        <a href="{{ route('reports.index') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-arrow-left"></i> Kembali</a>
+        <button onclick="window.print()" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 hover:bg-slate-900 text-white  transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-printer"></i> {{ __('Cetak Laporan') }}</button>
+        <a href="{{ route('reports.index') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue text-white  transition-colors gap-2 py-2 px-6 shadow-sm"><i class="bi bi-arrow-left"></i> {{ __('Kembali') }}</a>
     </div>
 </div>
 
@@ -30,14 +30,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Kode TRX</th>
-                        <th>Anggota</th>
-                        <th>Judul Buku (Barcode)</th>
-                        <th>Tgl Pinjam</th>
-                        <th>Jatuh Tempo</th>
-                        <th>Keterlambatan</th>
-                        <th>Estimasi Denda</th>
-                        <th>Aksi</th>
+                        <th>{{ __('Kode TRX') }}</th>
+                        <th>{{ __('Anggota') }}</th>
+                        <th>{{ __('Judul Buku (Barcode)') }}</th>
+                        <th>{{ __('Tgl Pinjam') }}</th>
+                        <th>{{ __('Jatuh Tempo') }}</th>
+                        <th>{{ __('Keterlambatan') }}</th>
+                        <th>{{ __('Estimasi Denda') }}</th>
+                        <th>{{ __('Aksi') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,14 +49,14 @@
                         <td>{{ $loan->bookItem->book->title }} (<code>{{ $loan->bookItem->barcode }}</code>)</td>
                         <td>{{ $loan->loan_date->format('d/m/Y') }}</td>
                         <td class="text-red-600 font-semibold">{{ $loan->due_date->format('d/m/Y') }}</td>
-                        <td><span class="inline-flex py-1 text-xs font-medium rounded-md bg-red-100 text-red-700 px-2">{{ $loan->days_overdue }} Hari</span></td>
+                        <td><span class="inline-flex py-1 text-xs font-medium rounded-md bg-red-100 text-red-700 px-2">{{ $loan->days_overdue }} {{ __('Hari') }}</span></td>
                         <td class="text-red-600 font-semibold">Rp {{ number_format($loan->calculated_fine, 0, ',', '.') }}</td>
                         <td>
-                            <a href="{{ route('circulations.show', $loan) }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors px-4"><i class="bi bi-eye"></i> Detail</a>
+                            <a href="{{ route('circulations.show', $loan) }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors px-4"><i class="bi bi-eye"></i> {{ __('Detail') }}</a>
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="9" class="text-emerald-600 text-center py-6"><i class="bi bi-check-circle-fill mr-1"></i> Tidak ada peminjaman terlambat saat ini! Semua buku kembali tepat waktu.</td></tr>
+                    <tr><td colspan="9" class="text-emerald-600 text-center py-6"><i class="bi bi-check-circle-fill mr-1"></i> {{ __('Tidak ada peminjaman terlambat saat ini! Semua buku kembali tepat waktu.') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -64,3 +64,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

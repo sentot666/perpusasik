@@ -1,28 +1,28 @@
 @extends('layouts.app')
 
-@section('title', 'Laporan Anggota')
-@section('page-title', 'Laporan Anggota')
+@section('title', __('Laporan Anggota'))
+@section('page-title', __('Laporan Anggota'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">Laporan</a></li>
-<li class="breadcrumb-item active">Anggota</li>
+<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">{{ __('Laporan') }}</a></li>
+<li class="breadcrumb-item active">{{ __('Anggota') }}</li>
 @endsection
 
 @section('content')
 <div class="page-header justify-between items-start flex">
     <div>
-        <h1>Laporan Data Anggota</h1>
-        <p>Seluruh daftar anggota perpustakaan yang terdaftar</p>
+        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Laporan Data Anggota') }}</h1>
+        <p>{{ __('Seluruh daftar anggota perpustakaan yang terdaftar') }}</p>
     </div>
     <div class="flex gap-2">
-        <a href="{{ route('reports.export', ['type' => 'members']) }}" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors flex gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-file-earmark-excel text-base"></i> Export Spreadsheet
+        <a href="{{ route('reports.export', ['type' => 'members']) }}" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-green text-white transition-colors flex gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-file-earmark-excel text-base"></i> {{ __('Export Spreadsheet') }}
         </a>
-        <button type="button" onclick="window.print()" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 text-white hover:bg-slate-900 transition-colors flex gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-printer text-base"></i> Cetak Laporan
+        <button type="button" onclick="window.print()" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 hover:bg-slate-900 text-white  transition-colors flex gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-printer text-base"></i> {{ __('Cetak Laporan') }}
         </button>
-        <a href="{{ route('reports.index') }}" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors flex gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
+        <a href="{{ route('reports.index') }}" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue text-white  transition-colors flex gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-arrow-left"></i> {{ __('Kembali') }}
         </a>
     </div>
 </div>
@@ -34,13 +34,13 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Kode Anggota</th>
-                        <th>Nama Anggota</th>
-                        <th>Jenis Kelamin</th>
-                        <th>Tipe Anggota</th>
-                        <th>No. Telepon / Email</th>
-                        <th>Kota</th>
-                        <th>Status</th>
+                        <th>{{ __('Kode Anggota') }}</th>
+                        <th>{{ __('Nama Anggota') }}</th>
+                        <th>{{ __('Jenis Kelamin') }}</th>
+                        <th>{{ __('Tipe Anggota') }}</th>
+                        <th>{{ __('No. Telepon / Email') }}</th>
+                        <th>{{ __('Kota') }}</th>
+                        <th>{{ __('Status') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +49,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td><code>{{ $m->member_code }}</code></td>
                         <td class="font-semibold">{{ $m->name }}</td>
-                        <td>{{ $m->gender == 'L' ? 'Laki-laki' : ($m->gender == 'P' ? 'Perempuan' : '-') }}</td>
+                        <td>{{ $m->gender == 'L' ? __('Laki-laki') : ($m->gender == 'P' ? __('Perempuan') : '-') }}</td>
                         <td>{{ $m->member_type }}</td>
                         <td>{{ $m->phone ?? '-' }} / {{ $m->email ?? '-' }}</td>
                         <td>{{ $m->city ?? '-' }}</td>
@@ -58,7 +58,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="text-center text-slate-500 py-6">Belum ada data anggota</td></tr>
+                    <tr><td colspan="8" class="text-center text-slate-500 py-6">{{ __('Belum ada data anggota') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -66,3 +66,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

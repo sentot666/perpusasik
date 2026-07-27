@@ -24,8 +24,8 @@
             <img src="{{ asset('images/library-illustration.png') }}" alt="Library Illustration" class="w-full max-w-[260px] mx-auto hover:scale-105 transition-transform duration-500 rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.3)] border-4 border-white/20 mb-6 object-cover bg-white">
             
             <div class="text-center">
-                <h1 class="text-2xl lg:text-3xl font-extrabold leading-tight text-white">Buku Tamu Mandiri</h1>
-                <p class="text-white/80 text-sm mt-2 font-medium">Perpustakaan Sekolah Katolik Santo Paulus</p>
+                <h1 class="text-2xl lg:text-3xl font-extrabold leading-tight text-white">{{ __('Buku Tamu Mandiri') }}</h1>
+                <p class="text-white/80 text-sm mt-2 font-medium">{{ __('Perpustakaan Sekolah Katolik Santo Paulus') }}</p>
             </div>
         </div>
     </div>
@@ -38,12 +38,12 @@
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white p-1 mb-3 shadow border border-slate-100">
                 <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-xl">
             </div>
-            <h1 class="text-xl font-extrabold text-slate-800">Buku Tamu Mandiri</h1>
-            <p class="text-slate-500 text-xs mt-1">Perpustakaan Sekolah Katolik Santo Paulus</p>
+            <h1 class="text-xl font-extrabold text-slate-800">{{ __('Buku Tamu Mandiri') }}</h1>
+            <p class="text-slate-500 text-xs mt-1">{{ __('Perpustakaan Sekolah Katolik Santo Paulus') }}</p>
         </div>
 
-        <h5 class="font-bold text-center text-slate-800 mb-1 text-xl md:text-2xl">Selamat Datang</h5>
-        <p class="text-center text-slate-500 text-sm mb-6">Silakan isi buku tamu kunjungan harian perpustakaan</p>
+        <h5 class="font-bold text-center text-slate-800 mb-1 text-xl md:text-2xl">{{ __('Selamat Datang') }}</h5>
+        <p class="text-center text-slate-500 text-sm mb-6">{{ __('Silakan isi buku tamu kunjungan harian perpustakaan') }}</p>
 
         @if(session('success'))
             <script>
@@ -75,11 +75,11 @@
                     date = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 }, 1000);
             ">
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Waktu Kunjungan (Real-time)</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Waktu Kunjungan (Real-time)') }}</label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-indigo-200 transition-all shadow-sm">
                     <span class="flex items-center px-3.5 bg-indigo-50 border-r border-indigo-200 text-indigo-600"><i class="bi bi-clock-history text-lg"></i></span>
                     <div class="flex-1 bg-indigo-50/50 py-2.5 px-3 flex items-center justify-between text-indigo-800 font-medium text-sm">
-                        <span x-text="date">Memuat tanggal...</span>
+                        <span x-text="date">{{ __('Memuat tanggal...') }}</span>
                         <span x-text="time" class="font-bold tracking-wider">--:--:--</span>
                     </div>
                 </div>
@@ -87,64 +87,64 @@
 
             {{-- Input: Name --}}
             <div class="mb-5">
-                <label for="name" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Nama Lengkap Anda <span class="text-red-600">*</span></label>
+                <label for="name" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Nama Lengkap Anda') }} <span class="text-red-600">*</span></label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-slate-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 transition-all shadow-sm">
                     <span class="flex items-center px-3.5 bg-slate-50 border-r border-slate-300 text-slate-500"><i class="bi bi-person text-lg"></i></span>
-                    <input type="text" name="name" id="name" class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium" placeholder="Ketik nama lengkap..." value="{{ old('name') }}" required autofocus>
+                    <input type="text" name="name" id="name" class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium" placeholder="{{ __('Ketik nama lengkap...') }}" value="{{ old('name') }}" required autofocus>
                 </div>
             </div>
 
             {{-- Input: Institution --}}
             <div class="mb-5">
-                <label for="institution" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Asal Instansi / Kelas / Alamat <span class="text-red-600">*</span></label>
+                <label for="institution" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Asal Instansi / Kelas / Alamat') }} <span class="text-red-600">*</span></label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-slate-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 transition-all shadow-sm">
                     <span class="flex items-center px-3.5 bg-slate-50 border-r border-slate-300 text-slate-500"><i class="bi bi-building text-lg"></i></span>
-                    <input type="text" name="institution" id="institution" class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium" placeholder="Ketik sekolah/instansi/alamat..." value="{{ old('institution') }}" required>
+                    <input type="text" name="institution" id="institution" class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium" placeholder="{{ __('Ketik sekolah/instansi/alamat...') }}" value="{{ old('institution') }}" required>
                 </div>
             </div>
 
             {{-- Input: Purpose --}}
             <div class="mb-5">
-                <label for="purpose" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Tujuan Kunjungan <span class="text-red-600">*</span></label>
+                <label for="purpose" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Tujuan Kunjungan') }} <span class="text-red-600">*</span></label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-slate-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 transition-all shadow-sm">
                     <span class="flex items-center px-3.5 bg-slate-50 border-r border-slate-300 text-slate-500"><i class="bi bi-journal-check text-lg"></i></span>
                     <select name="purpose" id="purpose" x-model="purpose" class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium appearance-none" required>
-                        <option value="" disabled selected>Pilih tujuan kunjungan...</option>
-                        <option value="Membaca Buku">Membaca Buku / Referensi</option>
-                        <option value="Meminjam Buku">Meminjam Buku</option>
-                        <option value="Mengembalikan Buku">Mengembalikan Buku</option>
-                        <option value="Mengerjakan Tugas">Mengerjakan Tugas / Belajar Mandiri</option>
-                        <option value="Studi Banding">Studi Banding / Kunjungan Dinas</option>
-                        <option value="Lainnya">Lainnya</option>
+                        <option value="" disabled selected>{{ __('Pilih tujuan kunjungan...') }}</option>
+                        <option value="Membaca Buku">{{ __('Membaca Buku / Referensi') }}</option>
+                        <option value="Meminjam Buku">{{ __('Meminjam Buku') }}</option>
+                        <option value="Mengembalikan Buku">{{ __('Mengembalikan Buku') }}</option>
+                        <option value="Mengerjakan Tugas">{{ __('Mengerjakan Tugas / Belajar Mandiri') }}</option>
+                        <option value="Studi Banding">{{ __('Studi Banding / Kunjungan Dinas') }}</option>
+                        <option value="Lainnya">{{ __('Lainnya') }}</option>
                     </select>
                 </div>
             </div>
 
             {{-- Input: Notes (Shown only if purpose is Lainnya) --}}
             <div class="mb-5" x-show="purpose === 'Lainnya'" style="display: none;" x-transition>
-                <label for="notes" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Keterangan Tambahan <span class="text-red-600">*</span></label>
-                <textarea name="notes" id="notes" class="w-full rounded-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none py-2.5 px-3 text-slate-700 font-medium shadow-sm transition-all" rows="3" placeholder="Tuliskan tujuan kunjungan Anda secara spesifik..." :required="purpose === 'Lainnya'">{{ old('notes') }}</textarea>
+                <label for="notes" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Keterangan Tambahan') }} <span class="text-red-600">*</span></label>
+                <textarea name="notes" id="notes" class="w-full rounded-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none py-2.5 px-3 text-slate-700 font-medium shadow-sm transition-all" rows="3" placeholder="{{ __('Tuliskan tujuan kunjungan Anda secara spesifik...') }}" :required="purpose === 'Lainnya'">{{ old('notes') }}</textarea>
             </div>
 
             {{-- Input: Participants Count --}}
             <div class="mb-6">
-                <label for="participants_count" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">Jumlah Orang <span class="text-red-600">*</span></label>
+                <label for="participants_count" class="block text-xs font-semibold text-slate-700 mb-1.5 uppercase tracking-wide">{{ __('Jumlah Orang') }} <span class="text-red-600">*</span></label>
                 <div class="flex w-full rounded-lg overflow-hidden border border-slate-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-200 transition-all shadow-sm">
                     <span class="flex items-center px-3.5 bg-slate-50 border-r border-slate-300 text-slate-500"><i class="bi bi-people text-lg"></i></span>
                     <input type="number" name="participants_count" id="participants_count" class="flex-1 bg-white text-sm outline-none py-2.5 px-3 text-slate-700 font-medium" min="1" value="1" required>
-                    <span class="flex items-center px-3.5 bg-slate-50 border-l border-slate-300 text-slate-500 font-medium text-sm">Orang</span>
+                    <span class="flex items-center px-3.5 bg-slate-50 border-l border-slate-300 text-slate-500 font-medium text-sm">{{ __('Orang') }}</span>
                 </div>
             </div>
 
             {{-- Action Buttons --}}
-            <button type="submit" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-lg py-3 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-                <i class="bi bi-send text-lg"></i> Kirim Catatan Kunjungan
+            <button type="submit" class="w-full flex items-center justify-center gap-2 btn-gradient-blue text-white font-bold text-sm rounded-lg py-3 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                <i class="bi bi-send text-lg"></i> {{ __('Kirim Catatan Kunjungan') }}
             </button>
         </form>
 
         <div class="text-center mt-8 pt-6 border-t border-slate-100">
             <a href="{{ route('opac.index') }}" class="inline-flex items-center text-slate-500 hover:text-indigo-600 font-medium transition-colors text-sm">
-                <i class="bi bi-arrow-left mr-2"></i>Kembali ke Beranda
+                <i class="bi bi-arrow-left mr-2"></i>{{ __('Kembali ke Beranda') }}
             </a>
         </div>
     </div>
@@ -210,3 +210,4 @@
 </script>
 @endpush
 @endsection
+

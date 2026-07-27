@@ -23,18 +23,24 @@
                 <img src="{{ asset('images/logo.jpg') }}" alt="Logo" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;">
             </div>
             <div class="flex flex-col text-left hidden sm:flex">
-                <span class="text-xl md:text-2xl font-black text-slate-800 tracking-tight leading-none group-hover:text-indigo-600 transition-colors">Perpustakaan Sekolah</span>
-                <span class="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">Katolik Santo Paulus</span>
+                <span class="text-xl md:text-2xl font-black text-slate-800 tracking-tight leading-none group-hover:text-indigo-600 transition-colors">{{ __('landing.school_library') }}</span>
+                <span class="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">{{ __('landing.catholic_school') }}</span>
             </div>
         </a>
 
         <!-- Right: Links & Buttons (Desktop) -->
         <div class="hidden lg:flex items-center">
             <ul class="flex items-center gap-8 list-none pl-0 mb-0">
-                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#beranda">Beranda</a></li>
-                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#layanan">Layanan</a></li>
-                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#informasi">Informasi</a></li>
-                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="#tentang">Tentang</a></li>
+                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
+                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
+                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+                
+                <!-- Language Switcher -->
+                <li class="ml-2 flex items-center gap-2 border-l border-slate-200 pl-4">
+                    <a href="{{ route('lang.switch', 'id') }}" class="text-sm font-bold {{ app()->getLocale() == 'id' ? 'text-indigo-600' : 'text-slate-400 hover:text-indigo-600' }} transition-colors no-underline">ID</a>
+                    <span class="text-slate-300">|</span>
+                    <a href="{{ route('lang.switch', 'en') }}" class="text-sm font-bold {{ app()->getLocale() == 'en' ? 'text-indigo-600' : 'text-slate-400 hover:text-indigo-600' }} transition-colors no-underline">EN</a>
+                </li>
                 
                 <li class="ml-2">
                     @auth
@@ -61,10 +67,15 @@
     <!-- Mobile Menu -->
     <div x-show="mobileMenuOpen" class="lg:hidden bg-white border-t border-slate-100 mt-4" style="display: none;">
         <ul class="flex flex-col list-none pl-0 mb-0 py-4 px-4 space-y-4 text-center">
-            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#beranda">Beranda</a></li>
-            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#layanan">Layanan</a></li>
-            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#informasi">Informasi</a></li>
-            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="#tentang">Tentang</a></li>
+            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
+            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
+            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+            
+            <li class="flex justify-center gap-4 py-2">
+                <a href="{{ route('lang.switch', 'id') }}" class="font-bold {{ app()->getLocale() == 'id' ? 'text-indigo-600' : 'text-slate-400 hover:text-indigo-600' }} no-underline">ID</a>
+                <span class="text-slate-300">|</span>
+                <a href="{{ route('lang.switch', 'en') }}" class="font-bold {{ app()->getLocale() == 'en' ? 'text-indigo-600' : 'text-slate-400 hover:text-indigo-600' }} no-underline">EN</a>
+            </li>
             <li class="pt-4 border-t border-slate-100">
                 @auth
                 <a href="{{ route('dashboard') }}" class="inline-block bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-2 px-6 rounded-lg no-underline text-center w-full shadow-md">Dashboard</a>
@@ -87,16 +98,16 @@
             <div class="lg:col-span-2">
                 <div class="flex items-center gap-4 mb-6">
                     <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-12 h-12 object-contain rounded bg-white p-1">
-                    <span class="font-bold text-white text-lg uppercase tracking-wider">Perpustakaan Katolik Santo Paulus</span>
+                    <span class="font-bold text-white text-lg uppercase tracking-wider">{{ __('landing.school_library_full') }}</span>
                 </div>
                 <p class="leading-relaxed mb-6 max-w-2xl text-sm">
-                    Perpustakaan Sekolah Katolik Santo Paulus adalah pusat sumber belajar yang menyediakan berbagai koleksi cetak maupun digital. Kami berkomitmen untuk mendukung proses belajar mengajar, serta menumbuhkan budaya literasi dan minat baca yang kuat di lingkungan sekolah.
+                    {{ __('landing.about_desc') }}
                 </p>
             </div>
 
             <!-- Informasi -->
             <div>
-                <h3 class="text-white text-lg font-bold mb-6 uppercase tracking-wider">Informasi</h3>
+                <h3 class="text-white text-lg font-bold mb-6 uppercase tracking-wider">{{ __('landing.information') }}</h3>
                 <ul class="space-y-4 text-sm list-none pl-0 m-0">
                     <li class="flex items-start gap-3">
                         <i class="bi bi-geo-alt text-lg text-amber-400 mt-0.5"></i>
@@ -117,9 +128,9 @@
                     <li class="flex items-start gap-3">
                         <i class="bi bi-clock-history text-lg text-amber-400 mt-0.5"></i>
                         <span>
-                            <strong>Jam Operasional:</strong><br>
-                            Senin - Jumat: 07:00 - 15:00 WIB<br>
-                            Sabtu, Minggu & Hari Libur: Tutup
+                            <strong>{{ __('landing.operational_hours') }}</strong><br>
+                            {{ __('landing.weekday_hours') }}<br>
+                            {{ __('landing.weekend_hours') }}
                         </span>
                     </li>
                 </ul>
@@ -128,11 +139,11 @@
 
         <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
             <div>
-                &copy; {{ date('Y') }} {{ config('app.name', 'Makarya') }} — Sistem Informasi Perpustakaan. All rights reserved.
+                &copy; {{ date('Y') }} {{ config('app.name', 'Makarya') }} — {{ __('landing.system_name') }}. All rights reserved.
             </div>
             <div class="flex items-center gap-4">
-                <a href="#" class="text-white/50 hover:text-white transition-colors no-underline">Kebijakan Privasi</a>
-                <a href="#" class="text-white/50 hover:text-white transition-colors no-underline">Bantuan</a>
+                <a href="#" class="text-white/50 hover:text-white transition-colors no-underline">{{ __('landing.privacy_policy') }}</a>
+                <a href="#" class="text-white/50 hover:text-white transition-colors no-underline">{{ __('landing.help') }}</a>
             </div>
         </div>
     </div>

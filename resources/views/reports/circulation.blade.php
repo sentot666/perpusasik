@@ -1,41 +1,41 @@
 @extends('layouts.app')
 
-@section('title', 'Laporan Sirkulasi')
-@section('page-title', 'Laporan Sirkulasi')
+@section('title', __('Laporan Sirkulasi'))
+@section('page-title', __('Laporan Sirkulasi'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">Laporan</a></li>
-<li class="breadcrumb-item active">Sirkulasi</li>
+<li class="breadcrumb-item"><a href="{{ route('reports.index') }}">{{ __('Laporan') }}</a></li>
+<li class="breadcrumb-item active">{{ __('Sirkulasi') }}</li>
 @endsection
 
 @section('content')
 {{-- Print-only Header --}}
 <div class="hidden print-header mb-6">
     <h2 class="uppercase text-center font-bold" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
-        Laporan Transaksi Sirkulasi Buku<br>
+        {{ __('Laporan Transaksi Sirkulasi Buku') }}<br>
         <span style="font-size: 1.1rem; font-weight: normal; text-transform: none;">
             {{ config('app.name', 'Makarya') }}
         </span>
     </h2>
     <p class="text-center text-slate-500" style="margin-top: -10px;">
-        Rentang Tanggal: <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> s/d <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong>
+        {{ __('Rentang Tanggal') }}: <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> s/d <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong>
     </p>
 </div>
 
 <div class="page-header justify-between items-start flex">
     <div>
-        <h1>Laporan Sirkulasi Buku</h1>
-        <p>Rentang tanggal: <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> s/d <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong></p>
+        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Laporan Sirkulasi Buku') }}</h1>
+        <p>{{ __('Rentang tanggal') }}: <strong>{{ date('d/m/Y', strtotime($startDate)) }}</strong> s/d <strong>{{ date('d/m/Y', strtotime($endDate)) }}</strong></p>
     </div>
     <div class="flex gap-2">
-        <a href="{{ route('reports.export', ['type' => 'circulation'] + request()->all()) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-file-earmark-excel text-base"></i> Export Spreadsheet
+        <a href="{{ route('reports.export', ['type' => 'circulation'] + request()->all()) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-green text-white transition-colors gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-file-earmark-excel text-base"></i> {{ __('Export Spreadsheet') }}
         </a>
-        <button type="button" onclick="window.print()" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 text-white hover:bg-slate-900 transition-colors flex gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-printer text-base"></i> Cetak Laporan
+        <button type="button" onclick="window.print()" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-800 hover:bg-slate-900 text-white  transition-colors flex gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-printer text-base"></i> {{ __('Cetak Laporan') }}
         </button>
-        <a href="{{ route('reports.index') }}" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors flex gap-2 py-2 px-6 shadow-sm">
-            <i class="bi bi-arrow-left"></i> Kembali
+        <a href="{{ route('reports.index') }}" class="gap-1 inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue text-white  transition-colors flex gap-2 py-2 px-6 shadow-sm">
+            <i class="bi bi-arrow-left"></i> {{ __('Kembali') }}
         </a>
     </div>
 </div>
@@ -44,15 +44,15 @@
     <div class="px-8 py-2">
         <form method="GET" class="items-end flex flex-wrap -mx-2">
             <div class="w-full md:w-1/4 w-1/2 px-4">
-                <label class="block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600">MULAI TANGGAL</label>
+                <label class="block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600">{{ __('MULAI TANGGAL') }}</label>
                 <input type="date" name="start_date" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" value="{{ $startDate }}">
             </div>
             <div class="w-full md:w-1/4 w-1/2 px-4">
-                <label class="block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600">SAMPAI TANGGAL</label>
+                <label class="block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600">{{ __('SAMPAI TANGGAL') }}</label>
                 <input type="date" name="end_date" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" value="{{ $endDate }}">
             </div>
             <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white px-4"><i class="bi bi-funnel"></i> Filter</button>
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-funnel"></i> {{ __('Filter') }}</button>
             </div>
         </form>
     </div>
@@ -65,14 +65,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Kode TRX</th>
-                        <th>Anggota</th>
-                        <th>Buku (Barcode)</th>
-                        <th>Tgl Pinjam</th>
-                        <th>Jatuh Tempo</th>
-                        <th>Tgl Kembali</th>
-                        <th>Status</th>
-                        <th>Denda</th>
+                        <th>{{ __('Kode TRX') }}</th>
+                        <th>{{ __('Anggota') }}</th>
+                        <th>{{ __('Buku (Barcode)') }}</th>
+                        <th>{{ __('Tgl Pinjam') }}</th>
+                        <th>{{ __('Jatuh Tempo') }}</th>
+                        <th>{{ __('Tgl Kembali') }}</th>
+                        <th>{{ __('Status') }}</th>
+                        <th>{{ __('Denda') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,11 +87,11 @@
                         <td>{{ $c->return_date ? $c->return_date->format('d/m/Y') : '-' }}</td>
                         <td>
                             @if($c->status === 'Dikembalikan')
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">Kembali</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ __('Kembali') }}</span>
                             @elseif($c->is_overdue)
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-red-100 text-red-700 px-2">Terlambat</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-red-100 text-red-700 px-2">{{ __('Terlambat') }}</span>
                             @else
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-amber-100 text-amber-800 px-2">Dipinjam</span>
+                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-amber-100 text-amber-800 px-2">{{ __('Dipinjam') }}</span>
                             @endif
                         </td>
                         <td>
@@ -103,7 +103,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="9" class="text-center text-slate-500 py-6">Tidak ada data transaksi pada rentang tanggal ini</td></tr>
+                    <tr><td colspan="9" class="text-center text-slate-500 py-6">{{ __('Tidak ada data transaksi pada rentang tanggal ini') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -136,17 +136,17 @@
         box-shadow: none !important;
     }
     /* Format table for print */
-    .table {
+    table {
         width: 100% !important;
         border-collapse: collapse !important;
         font-size: 0.85rem !important;
     }
-    .table th, .table td {
+    table th, table td {
         border: 1px solid #000 !important;
         padding: 6px 8px !important;
         color: #000 !important;
     }
-    .table-light {
+    [class*="bg-slate-50"] {
         background-color: #f8f9fa !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -167,3 +167,8 @@
 }
 </style>
 @endpush
+
+
+
+
+

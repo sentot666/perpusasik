@@ -1,18 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Peminjaman Buku')
-@section('page-title', 'Proses Peminjaman')
+@section('title', __('Peminjaman Buku'))
+@section('page-title', __('Proses Peminjaman'))
 
-@section('breadcrumb')
-<li><a href="{{ route('circulations.index') }}" class="hover:text-slate-600 transition-colors no-underline">Sirkulasi</a></li>
-<li><i class="bi bi-chevron-right text-[0.55rem] mx-1"></i></li>
-<li class="text-slate-600">Peminjaman</li>
-@endsection
 
 @section('content')
 <div class="mb-6">
-    <h1 class="text-2xl font-bold text-slate-800">Proses Peminjaman</h1>
-    <p class="text-slate-500 text-sm mt-1">Scan atau cari anggota dan barcode buku untuk memproses peminjaman</p>
+    <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Proses Peminjaman') }}</h1>
+    <p class="text-slate-500 text-sm">{{ __('Scan atau cari anggota dan barcode buku untuk memproses peminjaman') }}</p>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -21,7 +16,7 @@
     <div class="lg:col-span-7">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-8 border-b border-slate-200 font-semibold text-slate-700 bg-slate-50/50 flex items-center py-6">
-                <i class="bi bi-box-arrow-right text-indigo-500 text-lg mr-2"></i> Form Peminjaman
+                <i class="bi bi-box-arrow-right text-indigo-500 text-lg mr-2"></i> {{ __('Form Peminjaman') }}
             </div>
             <div class="p-8">
 
@@ -50,12 +45,12 @@
 
                     {{-- Member Search --}}
                     <div class="relative">
-                        <label for="memberSearch" class="block text-sm font-medium text-slate-700 mb-1">Anggota <span class="text-red-500">*</span></label>
+                        <label for="memberSearch" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Anggota') }} <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                                 <i class="bi bi-person-badge"></i>
                             </span>
-                            <input type="text" id="memberSearch" class="w-full pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2" placeholder="Ketik nama atau kode anggota..." autocomplete="off">
+                            <input type="text" id="memberSearch" class="w-full pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2" placeholder="{{ __('Ketik nama atau kode anggota...') }}" autocomplete="off">
                         </div>
                         <div id="memberDropdown" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden mt-1"></div>
                         <input type="hidden" name="member_id" id="memberId">
@@ -79,12 +74,12 @@
 
                     {{-- Barcode Input --}}
                     <div>
-                        <label for="barcodeInput" class="block text-sm font-medium text-slate-700 mb-1">Barcode Buku <span class="text-red-500">*</span></label>
+                        <label for="barcodeInput" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Barcode Buku') }} <span class="text-red-500">*</span></label>
                         <div class="flex relative rounded-lg shadow-sm">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
                                 <i class="bi bi-upc-scan"></i>
                             </span>
-                            <input type="text" id="barcodeInput" class="flex-1 min-w-0 block w-full pl-10 bg-slate-50 border border-slate-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" placeholder="Scan atau ketik barcode eksemplar..." autocomplete="off">
+                            <input type="text" id="barcodeInput" class="flex-1 min-w-0 block w-full pl-10 bg-slate-50 border border-slate-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" placeholder="{{ __('Scan atau ketik barcode eksemplar...') }}" autocomplete="off">
                             <button type="button" class="inline-flex items-center border border-slate-200 border-l-0 rounded-r-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition py-2 px-6" id="lookupBarcode">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -99,12 +94,12 @@
                     </div>
 
                     <div>
-                        <label for="notesInput" class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
-                        <textarea name="notes" id="notesInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition resize-none py-2 px-4" rows="2" placeholder="Opsional..."></textarea>
+                        <label for="notesInput" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Catatan') }}</label>
+                        <textarea name="notes" id="notesInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition resize-none py-2 px-4" rows="2" placeholder="{{ __('Opsional...') }}"></textarea>
                     </div>
 
-                    <button type="submit" class="w-full flex items-center justify-center py-2.5 border border-slate-200 border-transparent rounded-lg shadow-sm text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed text-white gap-2 px-6" id="submitLoan" disabled>
-                        <i class="bi bi-box-arrow-right"></i> Proses Peminjaman
+                    <button type="submit" class="w-full flex items-center justify-center py-2.5 border border-slate-200 border-transparent rounded-lg shadow-sm text-sm font-semibold btn-gradient-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed text-white gap-2 px-6" id="submitLoan" disabled>
+                        <i class="bi bi-box-arrow-right"></i> {{ __('Proses Peminjaman') }}
                     </button>
                 </form>
             </div>
@@ -115,14 +110,14 @@
     <div class="lg:col-span-5">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-8 border-b border-slate-200 font-semibold text-slate-700 bg-slate-50/50 flex items-center py-6">
-                <i class="bi bi-info-circle text-sky-500 text-lg mr-2"></i> Panduan
+                <i class="bi bi-info-circle text-sky-500 text-lg mr-2"></i> {{ __('Panduan') }}
             </div>
             <div class="p-8">
                 <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-600">
-                    <li>Cari anggota dengan nama atau kode anggota</li>
-                    <li>Scan barcode eksemplar buku yang akan dipinjam</li>
-                    <li>Pastikan data anggota dan buku sudah benar</li>
-                    <li>Klik tombol <strong class="font-semibold text-slate-800">Proses Peminjaman</strong></li>
+                    <li>{{ __('Cari anggota dengan nama atau kode anggota') }}</li>
+                    <li>{{ __('Scan barcode eksemplar buku yang akan dipinjam') }}</li>
+                    <li>{{ __('Pastikan data anggota dan buku sudah benar') }}</li>
+                    <li>{{ __('Klik tombol') }} <strong class="font-semibold text-slate-800">{{ __('Proses Peminjaman') }}</strong></li>
                 </ol>
                 
                 <div class="my-8 border-t border-slate-100"></div>
@@ -130,15 +125,15 @@
                 <div class="flex flex-wrap gap-2">
                     <div class="inline-flex items-center gap-1.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-700 px-4">
                         <i class="bi bi-calendar text-slate-500"></i>
-                        <span>Durasi Pinjam: <strong class="font-semibold text-slate-900">{{ \App\Models\Setting::get('loan_duration', 14) }} hari</strong></span>
+                        <span>{{ __('Durasi Pinjam') }}: <strong class="font-semibold text-slate-900">{{ \App\Models\Setting::get('loan_duration', 14) }} {{ __('hari') }}</strong></span>
                     </div>
                     <div class="inline-flex items-center gap-1.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-700 px-4">
                         <i class="bi bi-stack text-slate-500"></i>
-                        <span>Maks Pinjam: <strong class="font-semibold text-slate-900">{{ \App\Models\Setting::get('max_loan_items', 3) }} eksemplar</strong></span>
+                        <span>{{ __('Maks Pinjam') }}: <strong class="font-semibold text-slate-900">{{ \App\Models\Setting::get('max_loan_items', 3) }} {{ __('eksemplar') }}</strong></span>
                     </div>
                     <div class="inline-flex items-center gap-1.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-700 px-4">
                         <i class="bi bi-cash text-slate-500"></i>
-                        <span>Denda: <strong class="font-semibold text-slate-900">Rp {{ number_format(\App\Models\Setting::get('fine_per_day', 1000)) }}/hari</strong></span>
+                        <span>{{ __('Denda') }}: <strong class="font-semibold text-slate-900">Rp {{ number_format(\App\Models\Setting::get('fine_per_day', 1000)) }}/{{ __('hari') }}</strong></span>
                     </div>
                 </div>
             </div>
@@ -226,7 +221,7 @@ memberSearch.addEventListener('input', function() {
             .then(data => {
                 memberDropdown.innerHTML = '';
                 if (data.length === 0) {
-                    memberDropdown.innerHTML = '<div class="text-sm text-slate-500 text-center py-4 px-6">Tidak ada hasil</div>';
+                    memberDropdown.innerHTML = '<div class="text-sm text-slate-500 text-center py-4 px-6">{{ __('Tidak ada hasil') }}</div>';
                 } else {
                     data.forEach(m => {
                         const item = document.createElement('button');
@@ -309,8 +304,8 @@ function lookupBarcode() {
         if(window.Swal) {
             Swal.fire({
                 icon: 'info',
-                title: 'Sudah di Keranjang',
-                text: 'Buku ini sudah ditambahkan ke dalam daftar pinjaman.',
+                title: '{{ __('Sudah di Keranjang') }}',
+                text: '{{ __('Buku ini sudah ditambahkan ke dalam daftar pinjaman.') }}',
                 confirmButtonColor: '#4f46e5'
             });
         }
@@ -328,7 +323,7 @@ function lookupBarcode() {
                 if(window.Swal) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Tidak Ditemukan',
+                        title: '{{ __('Tidak Ditemukan') }}',
                         text: data.message,
                         confirmButtonColor: '#4f46e5'
                     });
@@ -341,12 +336,12 @@ function lookupBarcode() {
                 if(window.Swal) {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Tidak Bisa Dipinjam',
-                        text: `Eksemplar ini berstatus: ${data.status}`,
+                        title: '{{ __('Tidak Bisa Dipinjam') }}',
+                        text: `{{ __('Eksemplar ini berstatus') }}: ${data.status}`,
                         confirmButtonColor: '#4f46e5'
                     });
                 } else {
-                    alert(`Eksemplar ini berstatus: ${data.status}. Tidak bisa dipinjam.`);
+                    alert(`{{ __('Eksemplar ini berstatus') }}: ${data.status}. {{ __('Tidak bisa dipinjam') }}.`);
                 }
                 return;
             }
@@ -357,8 +352,8 @@ function lookupBarcode() {
                 if(window.Swal) {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Batas Peminjaman',
-                        text: `Maksimal hanya dapat meminjam ${maxItems} buku sekaligus.`,
+                        title: '{{ __('Batas Peminjaman') }}',
+                        text: `{{ __('Maksimal hanya dapat meminjam') }} ${maxItems} {{ __('buku sekaligus.') }}`,
                         confirmButtonColor: '#4f46e5'
                     });
                 }
@@ -370,8 +365,8 @@ function lookupBarcode() {
                 if(window.Swal) {
                     Swal.fire({
                         icon: 'info',
-                        title: 'Sudah di Keranjang',
-                        text: 'Eksemplar buku ini sudah ditambahkan.',
+                        title: '{{ __('Sudah di Keranjang') }}',
+                        text: '{{ __('Eksemplar buku ini sudah ditambahkan.') }}',
                         confirmButtonColor: '#4f46e5'
                     });
                 }
@@ -408,3 +403,4 @@ document.addEventListener('click', e => {
 });
 </script>
 @endpush
+

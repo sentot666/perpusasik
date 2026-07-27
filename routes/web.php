@@ -17,6 +17,13 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\OpacController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GuestBookController;
+// ── Language Switcher ──────────────────────────────────────────────────────────
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        session()->put('locale', $locale);
+    }
+    return back();
+})->name('lang.switch');
 
 // ── OPAC (public) ─────────────────────────────────────────────────────────────
 Route::get('/', [OpacController::class, 'index'])->name('opac.index');
@@ -30,6 +37,7 @@ Route::post('/isi-buku-tamu', [GuestBookController::class, 'visitorStore'])->nam
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::get('/login-anggota', [LoginController::class, 'showMemberLoginForm'])->name('login.member');
     Route::post('/login', [LoginController::class, 'login']);
 
     // Password Reset
@@ -113,4 +121,33 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
 
+});
+
+// 🔴 Member Portal Routes
+Route::middleware(['auth'])->prefix('member')->name('member.')->group(function () {
+    Route::get('/dashboard', \App\Http\Controllers\Member\DashboardController::class)->name('dashboard')->middleware('can:view-history');
+    
+    // Catalog & Detail
+    Route::get('/catalog', \App\Http\Controllers\Member\CatalogController::class)->name('catalog')->middleware('can:view-history');
+    Route::get('/catalog/{book}', [\App\Http\Controllers\Member\CatalogController::class, 'show'])->name('catalog.show')->middleware('can:view-history');
+    
+    // My Books (Active Loans)
+    Route::get('/my-books', \App\Http\Controllers\Member\MyBookController::class)->name('my-books')->middleware('can:view-history');
+    
+    // Loan History
+    Route::get('/loans', \App\Http\Controllers\Member\LoanHistoryController::class)->name('loans')->middleware('can:view-history');
+    
+    // Fines
+    Route::get('/fines', \App\Http\Controllers\Member\FineController::class)->name('fines')->middleware('can:view-history');
+    
+    // Wishlists
+    Route::get('/wishlist', [\App\Http\Controllers\Member\WishlistController::class, 'index'])->name('wishlist')->middleware('can:view-history');
+    Route::post('/wishlist/{book}', [\App\Http\Controllers\Member\WishlistController::class, 'store'])->name('wishlist.store')->middleware('can:view-history');
+    Route::delete('/wishlist/{book}', [\App\Http\Controllers\Member\WishlistController::class, 'destroy'])->name('wishlist.destroy')->middleware('can:view-history');
+    
+    // Profile
+    Route::get('/profile', [\App\Http\Controllers\Member\ProfileController::class, 'index'])->name('profile')->middleware('can:view-history');
+    Route::get('/profile/edit', [\App\Http\Controllers\Member\ProfileController::class, 'edit'])->name('profile.edit')->middleware('can:view-history');
+    Route::put('/profile', [\App\Http\Controllers\Member\ProfileController::class, 'update'])->name('profile.update')->middleware('can:view-history');
+    Route::put('/profile/password', [\App\Http\Controllers\Member\ProfileController::class, 'updatePassword'])->name('profile.password')->middleware('can:view-history');
 });
