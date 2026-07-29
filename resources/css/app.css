@@ -30,10 +30,10 @@
     .page-header {
         @apply flex items-start justify-between mb-6;
         h1 {
-            @apply text-3xl font-bold text-slate-800 mb-1;
+            @apply text-xl font-bold text-slate-800;
         }
         p {
-            @apply text-slate-500 text-sm mt-0.5;
+            @apply text-slate-500 text-xs mt-0.5;
         }
     }
 
@@ -77,32 +77,6 @@
     .nav-pill-active::before {
         content: '';
         @apply absolute left-0 top-1/4 h-1/2 w-0.5 bg-white rounded;
-    }
-
-    /* ── Button Gradients ──────────────────────────────────────────── */
-    .btn-gradient-blue {
-        @apply bg-gradient-to-r from-[#38BDF8] to-[#3B82F6] hover:from-[#3B82F6] hover:to-[#2563EB] text-white shadow-sm hover:shadow-md transition-all;
-    }
-    .btn-gradient-red {
-        @apply bg-gradient-to-r from-[#FB7185] to-[#F43F5E] hover:from-[#F43F5E] hover:to-[#E11D48] text-white shadow-sm hover:shadow-md transition-all;
-    }
-    .btn-gradient-green {
-        @apply bg-gradient-to-r from-[#4ADE80] to-[#22C55E] hover:from-[#22C55E] hover:to-[#16A34A] text-white shadow-sm hover:shadow-md transition-all;
-    }
-    .btn-gradient-yellow {
-        @apply bg-gradient-to-r from-[#FDE047] to-[#FBBF24] hover:from-[#FBBF24] hover:to-[#F59E0B] text-slate-800 shadow-sm hover:shadow-md transition-all;
-    }
-    .btn-gradient-dark {
-        @apply bg-gradient-to-r from-slate-600 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white shadow-sm hover:shadow-md transition-all;
-    }
-    .btn-gradient-purple {
-        @apply bg-gradient-to-r from-[#A78BFA] to-[#7C3AED] hover:from-[#7C3AED] hover:to-[#6D28D9] text-white shadow-sm hover:shadow-md transition-all;
-    }
-    .btn-gradient-orange {
-        @apply bg-gradient-to-r from-[#FDBA74] to-[#F97316] hover:from-[#F97316] hover:to-[#EA580C] text-white shadow-sm hover:shadow-md transition-all;
-    }
-    .btn-gradient-cyan {
-        @apply bg-gradient-to-r from-[#67E8F9] to-[#22D3EE] hover:from-[#22D3EE] hover:to-[#0891B2] text-white shadow-sm hover:shadow-md transition-all;
     }
 }
 
