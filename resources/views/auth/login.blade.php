@@ -23,7 +23,7 @@
             <img src="{{ asset('images/library-illustration.png') }}" alt="Library Illustration" class="w-full max-w-[260px] mx-auto hover:scale-105 transition-transform duration-500 rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.3)] border-4 border-white/20 mb-6 object-cover bg-white">
             
             <div class="text-center">
-                <h1 class="text-2xl lg:text-3xl font-extrabold leading-tight text-white">{{ config('app.name', 'Makarya') }}</h1>
+                <h1 class="text-2xl lg:text-3xl font-extrabold leading-tight text-white">{{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</h1>
                 <p class="text-white/80 text-sm mt-2 font-medium">{{ __('Sistem Informasi Perpustakaan') }}</p>
             </div>
         </div>
@@ -37,7 +37,7 @@
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white p-1 mb-3 shadow border border-slate-100">
                 <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-xl">
             </div>
-            <h1 class="text-xl font-extrabold text-slate-800">{{ config('app.name', 'Makarya') }}</h1>
+            <h1 class="text-xl font-extrabold text-slate-800">{{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</h1>
             <p class="text-slate-500 text-xs mt-1">{{ __('Sistem Informasi Perpustakaan') }}</p>
         </div>
 

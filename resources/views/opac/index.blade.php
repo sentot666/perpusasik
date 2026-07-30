@@ -8,30 +8,34 @@
         <div class="swiper-wrapper">
             <!-- Slide 1 -->
             <div class="swiper-slide">
-                <div class="w-full h-full flex flex-col items-center justify-center text-white px-4" style="background: linear-gradient(rgba(15, 94, 197, 0.7), rgba(45, 82, 130, 0.7)), url('{{ asset('images/carousel-1.jpg') }}?v={{ @filemtime(public_path('images/carousel-1.jpg')) }}'); background-size: cover; background-position: center;">
-                    <h1 class="text-3xl md:text-5xl font-bold mb-4 text-center">{{ __('landing.hero_title') }}</h1>
-                    <p class="text-lg md:text-xl text-white/80 max-w-2xl text-center">{{ __('landing.hero_subtitle') }}</p>
+                <div class="w-full h-full flex items-center bg-cover bg-no-repeat bg-center relative" style="background-image: url('{{ asset('images/carousel-1.jpg') }}?v={{ @filemtime(public_path('images/carousel-1.jpg')) }}');">
+                    <div class="relative z-10 w-full px-8 md:px-16 lg:px-24">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Sekolah Katolik Santo Paulus') }}</h1>
+                        <p class="text-xs md:text-sm lg:text-base text-white font-bold max-w-2xl text-left uppercase tracking-wider drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)]">SUMBER PENGETAHUAN DAN INSPIRASI. TEMUKAN DUNIA BARU MELALUI BUKU!</p>
+                    </div>
                 </div>
             </div>
             <!-- Slide 2 -->
             <div class="swiper-slide">
-                <div class="w-full h-full flex flex-col items-center justify-center text-white px-4" style="background: linear-gradient(rgba(15, 94, 197, 0.7), rgba(45, 82, 130, 0.7)), url('{{ asset('images/carousel-2.jpg') }}?v={{ @filemtime(public_path('images/carousel-2.jpg')) }}'); background-size: cover; background-position: center;">
-                    <h1 class="text-3xl md:text-5xl font-bold mb-4 text-center"></h1>
-                    <p class="text-lg md:text-xl text-white/80 max-w-2xl text-center"></p>
+                <div class="w-full h-full flex items-center bg-cover bg-no-repeat bg-center relative" style="background-image: url('{{ asset('images/carousel-2.jpg') }}?v={{ @filemtime(public_path('images/carousel-2.jpg')) }}');">
+                    <div class="relative z-10 w-full px-8 md:px-16 lg:px-24">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Sekolah Katolik Santo Paulus') }}</h1>
+                        <p class="text-xs md:text-sm lg:text-base text-white font-bold max-w-2xl text-left uppercase tracking-wider drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)]">SUMBER PENGETAHUAN DAN INSPIRASI. TEMUKAN DUNIA BARU MELALUI BUKU!</p>
+                    </div>
                 </div>
             </div>
             <!-- Slide 3 -->
             <div class="swiper-slide">
-                <div class="w-full h-full flex flex-col items-center justify-center text-white px-4" style="background: linear-gradient(rgba(15, 94, 197, 0.7), rgba(45, 82, 130, 0.7)), url('{{ asset('images/carousel-3.jpg') }}?v={{ @filemtime(public_path('images/carousel-3.jpg')) }}'); background-size: cover; background-position: center;">
-                    <h1 class="text-3xl md:text-5xl font-bold mb-4 text-center"></h1>
-                    <p class="text-lg md:text-xl text-white/80 max-w-2xl text-center"></p>
+                <div class="w-full h-full flex items-center bg-cover bg-no-repeat bg-center relative" style="background-image: url('{{ asset('images/carousel-3.jpg') }}?v={{ @filemtime(public_path('images/carousel-3.jpg')) }}');">
+                    <div class="relative z-10 w-full px-8 md:px-16 lg:px-24">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Sekolah Katolik Santo Paulus') }}</h1>
+                        <p class="text-xs md:text-sm lg:text-base text-white font-bold max-w-2xl text-left uppercase tracking-wider drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)]">SUMBER PENGETAHUAN DAN INSPIRASI. TEMUKAN DUNIA BARU MELALUI BUKU!</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Pagination & Navigation -->
+        <!-- Pagination -->
         <div class="swiper-pagination"></div>
-        <div class="swiper-button-next text-white/50 hover:text-white"></div>
-        <div class="swiper-button-prev text-white/50 hover:text-white"></div>
     </div>
 
     
@@ -44,52 +48,42 @@
         <p class="text-slate-500">{{ __('landing.quick_services_desc') }}</p>
     </div>
 
-    {{-- Quick Menu Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+    {{-- Quick Menu Cards (Minimalist Circular) --}}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-16 px-4 md:px-12">
         <!-- Katalog -->
-        <a href="{{ route('opac.katalog') }}" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 py-12 px-8 md:px-10 min-h-[180px] flex items-center text-left no-underline border border-slate-100 group transform hover:-translate-y-1">
-            <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300 shadow-sm shrink-0">
-                <i class="bi bi-search text-3xl"></i>
+        <a href="{{ route('opac.katalog') }}" class="flex flex-col items-center justify-center group no-underline text-center">
+            <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-[3px] border-blue-600 text-blue-700 flex items-center justify-center mb-4 group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                <i class="bi bi-journals text-4xl md:text-5xl"></i>
             </div>
-            <div>
-                <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">{{ __('landing.catalog') }}</h3>
-                <p class="text-sm text-slate-500 font-medium m-0">{{ __('landing.catalog_desc') }}</p>
-            </div>
+            <h3 class="text-base md:text-lg font-medium text-blue-700 group-hover:text-blue-800 transition-colors">{{ __('landing.catalog') }}</h3>
         </a>
 
         <!-- Keanggotaan -->
-        <a href="{{ route('login.member') }}" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 py-12 px-8 md:px-10 min-h-[180px] flex items-center text-left no-underline border border-slate-100 group transform hover:-translate-y-1">
-            <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300 shadow-sm shrink-0">
-                <i class="bi bi-person-vcard text-3xl"></i>
+        <a href="{{ route('login.member') }}" class="flex flex-col items-center justify-center group no-underline text-center">
+            <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-[3px] border-blue-600 text-blue-700 flex items-center justify-center mb-4 group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                <i class="bi bi-people-fill text-4xl md:text-5xl"></i>
             </div>
-            <div>
-                <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">{{ __('landing.membership') }}</h3>
-                <p class="text-sm text-slate-500 font-medium m-0">{{ __('landing.membership_desc') }}</p>
-            </div>
+            <h3 class="text-base md:text-lg font-medium text-blue-700 group-hover:text-blue-800 transition-colors">{{ __('landing.membership') }}</h3>
         </a>
 
         <!-- Buku Kunjungan -->
-        <a href="{{ route('guest-books.visitor') }}" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 py-12 px-8 md:px-10 min-h-[180px] flex items-center text-left no-underline border border-slate-100 group transform hover:-translate-y-1">
-            <div class="w-20 h-20 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300 shadow-sm shrink-0">
-                <i class="bi bi-pen text-3xl"></i>
+        <a href="{{ route('guest-books.visitor') }}" class="flex flex-col items-center justify-center group no-underline text-center">
+            <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-[3px] border-blue-600 text-blue-700 flex items-center justify-center mb-4 group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                <i class="bi bi-book text-4xl md:text-5xl"></i>
             </div>
-            <div>
-                <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">{{ __('landing.guestbook') }}</h3>
-                <p class="text-sm text-slate-500 font-medium m-0">{{ __('landing.guestbook_desc') }}</p>
-            </div>
+            <h3 class="text-base md:text-lg font-medium text-blue-700 group-hover:text-blue-800 transition-colors">{{ __('landing.guestbook') }}</h3>
         </a>
 
         <!-- Agenda Kegiatan -->
-        <a href="{{ route('opac.agenda') }}" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 py-12 px-8 md:px-10 min-h-[180px] flex items-center text-left no-underline border border-slate-100 group transform hover:-translate-y-1">
-            <div class="w-20 h-20 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300 shadow-sm shrink-0">
-                <i class="bi bi-calendar-event text-3xl"></i>
+        <a href="{{ route('opac.agenda') }}" class="flex flex-col items-center justify-center group no-underline text-center">
+            <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-[3px] border-blue-600 text-blue-700 flex items-center justify-center mb-4 group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300 shadow-sm group-hover:shadow-md">
+                <i class="bi bi-calendar-event text-4xl md:text-5xl"></i>
             </div>
-            <div>
-                <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-2">{{ __('landing.agenda') }}</h3>
-                <p class="text-sm text-slate-500 font-medium m-0">{{ __('landing.agenda_desc') }}</p>
-            </div>
+            <h3 class="text-base md:text-lg font-medium text-blue-700 group-hover:text-blue-800 transition-colors">{{ __('landing.agenda') }}</h3>
         </a>
     </div>
+
+
 
     {{-- Section Heading for Stats --}}
     <div id="informasi" class="text-left mt-14 mb-6 scroll-mt-[140px]">
@@ -193,14 +187,11 @@
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,
+                pauseOnMouseEnter: true,
             },
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
             },
         });
     });

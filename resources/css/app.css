@@ -96,7 +96,7 @@
 .btn-gradient-green { background: linear-gradient(to right, #4ADE80, #22C55E); }
 .btn-gradient-green:hover { background: linear-gradient(to right, #22C55E, #16A34A); box-shadow: 0 4px 12px rgba(34,197,94,0.35); }
 
-.btn-gradient-yellow { background: linear-gradient(to right, #FDE047, #FBBF24); color: #1e293b; }
+.btn-gradient-yellow { background: linear-gradient(to right, #FDE047, #FBBF24); }
 .btn-gradient-yellow:hover { background: linear-gradient(to right, #FBBF24, #F59E0B); }
 
 .btn-gradient-dark { background: linear-gradient(to right, #475569, #1e293b); }

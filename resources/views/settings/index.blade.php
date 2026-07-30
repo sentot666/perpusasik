@@ -15,6 +15,17 @@
 
 <div class="flex flex-wrap -mx-3">
     <div class="w-full lg:w-2/3 px-4">
+        @if($errors->any())
+        <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6 shadow-sm">
+            <h4 class="font-bold mb-2 flex items-center gap-2"><i class="bi bi-exclamation-triangle-fill"></i> Terdapat Kesalahan:</h4>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <form method="POST" action="{{ route('settings.update') }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\GuestBook;
+use App\Models\Member;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -42,6 +44,68 @@ class GuestBookController extends Controller
     }
 
     /**
+     * Show barcode scanning form for members.
+     */
+    public function scanForm()
+    {
+        return view('guest-books.scan');
+    }
+
+    /**
+     * Handle barcode submission via AJAX.
+     */
+    public function scanSubmit(Request $request)
+    {
+        $request->validate([
+            'barcode' => 'required|string',
+        ]);
+
+        $barcode = $request->barcode;
+
+        // Cari member berdasarkan barcode atau member_code
+        $member = Member::where('barcode', $barcode)
+            ->orWhere('member_code', $barcode)
+            ->first();
+
+        if (!$member) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anggota tidak ditemukan. Pastikan barcode benar.'
+            ], 404);
+        }
+
+        // Cek apakah member aktif
+        if (!$member->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kartu Anggota ini tidak aktif.'
+            ], 400);
+        }
+
+        // Simpan ke buku tamu
+        GuestBook::create([
+            'visit_date' => now()->toDateString(),
+            'visit_time' => now()->toTimeString(),
+            'name' => $member->name,
+            'institution' => $member->member_type ?? 'Anggota',
+            'purpose' => Setting::get('default_guest_purpose', 'Membaca'),
+            'participants_count' => 1,
+            'notes' => 'via Scan Barcode'
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Selamat datang, ' . $member->name . '!',
+            'member' => [
+                'name' => $member->name,
+                'code' => $member->member_code,
+                'type' => $member->member_type,
+                'photo' => $member->photo ? asset('storage/' . $member->photo) : null,
+            ]
+        ]);
+    }
+
+    /**
      * Export guest book entries to CSV spreadsheet.
      */
     public function export(Request $request)
@@ -66,6 +130,10 @@ class GuestBookController extends Controller
             $query->whereDate('visit_date', '>=', $startDate);
         } elseif ($endDate) {
             $query->whereDate('visit_date', '<=', $endDate);
+        }
+
+        if ($request->has('selected_ids') && is_array($request->selected_ids)) {
+            $query->whereIn('id', $request->selected_ids);
         }
 
         $activities = $query->get();
@@ -134,6 +202,27 @@ class GuestBookController extends Controller
 
         return redirect()->route('guest-books.index')
             ->with('success', 'Kunjungan tamu berhasil dicatat.');
+    }
+
+    /**
+     * Update the specified guest book entry in storage.
+     */
+    public function update(Request $request, GuestBook $guestBook)
+    {
+        $validated = $request->validate([
+            'visit_date'         => 'required|date',
+            'name'               => 'required|string|max:200',
+            'institution'        => 'required|string|max:200',
+            'purpose'            => 'required|string|max:200',
+            'visit_time'         => 'required|string',
+            'participants_count' => 'required|integer|min:1',
+            'notes'              => 'nullable|string',
+        ]);
+
+        $guestBook->update($validated);
+
+        return redirect()->route('guest-books.index')
+            ->with('success', 'Kunjungan tamu berhasil diperbarui.');
     }
 
     /**

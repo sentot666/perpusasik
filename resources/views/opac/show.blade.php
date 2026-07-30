@@ -144,6 +144,44 @@
 
         {{-- Right: sidebar (related books) --}}
         <div class="w-full lg:w-1/3 px-4">
+            
+            {{-- Box Informasi Rak --}}
+            @php
+                $distinctLocations = $book->items->pluck('location')->filter()->unique('id');
+                $availableCount = $book->items->where('status', 'Tersedia')->count();
+                $totalCount = $book->items->count();
+            @endphp
+            @if($distinctLocations->count() > 0)
+            <div class="shadow-sm border-0 bg-white rounded-xl border border-indigo-200 overflow-hidden mb-6" style="border-radius:12px">
+                <div class="bg-indigo-50 px-8 border-b border-indigo-100 font-bold text-indigo-700 py-4 flex items-center justify-between">
+                    <span><i class="bi bi-geo-alt-fill mr-2"></i>{{ __('Lokasi di Rak') }}</span>
+                    @if($availableCount > 0)
+                        <span class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded">{{ __('Tersedia') }}</span>
+                    @else
+                        <span class="bg-rose-100 text-rose-700 text-xs px-2 py-0.5 rounded">{{ __('Dipinjam') }}</span>
+                    @endif
+                </div>
+                <div class="p-6">
+                    <div class="mb-4">
+                        <div class="text-xs text-slate-500 font-bold uppercase mb-1">Nomor Panggil (Call Number)</div>
+                        <div class="text-xl font-bold text-slate-800 font-mono bg-slate-100 inline-block px-3 py-1 rounded">{{ $book->call_number ?? '-' }}</div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="text-xs text-slate-500 font-bold uppercase mb-1">Kategori Rak</div>
+                        @foreach($distinctLocations as $loc)
+                            <div class="text-sm font-medium text-slate-700 mb-1"><i class="bi bi-bookshelf text-indigo-500 mr-2"></i>{{ $loc->name }}</div>
+                        @endforeach
+                    </div>
+                    <div class="text-sm text-slate-600 mb-6">
+                        Tersedia <strong>{{ $availableCount }}</strong> dari total <strong>{{ $totalCount }}</strong> eksemplar.
+                    </div>
+                    <button type="button" onclick="document.getElementById('mapModal').classList.remove('hidden')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md shadow-indigo-600/30">
+                        <i class="bi bi-map"></i> Lihat Denah Rak
+                    </button>
+                </div>
+            </div>
+            @endif
+
             <div class="shadow-sm border-0 bg-white rounded-xl border border-slate-200 overflow-hidden mb-6" style="border-radius:12px">
                 <div class="bg-white px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 font-bold py-4"><i class="bi bi-bookmarks-fill text-amber-500 mr-2"></i>{{ __('Koleksi Terkait') }}</div>
                 <div class="p-0">
@@ -161,5 +199,86 @@
             </div>
         </div>
     </div>
+    </div>
 </div>
+
+{{-- Peta Denah Rak Modal --}}
+@if(isset($distinctLocations) && $distinctLocations->count() > 0)
+<div id="mapModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <h3 class="font-bold text-lg text-slate-800"><i class="bi bi-map mr-2 text-indigo-600"></i>Denah Perpustakaan</h3>
+            <button type="button" onclick="document.getElementById('mapModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 transition-colors bg-transparent border-0 text-2xl leading-none">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto bg-slate-100 flex-1 relative">
+            {{-- Legend --}}
+            <div class="bg-white px-4 py-3 rounded-xl shadow-sm inline-flex flex-wrap items-center gap-4 mb-6 text-sm font-medium border border-slate-200">
+                <div class="flex items-center gap-2"><div class="w-4 h-4 bg-indigo-500 rounded ring-4 ring-indigo-200 animate-pulse"></div> Lokasi Buku Ini</div>
+                <div class="flex items-center gap-2"><div class="w-4 h-4 bg-slate-300 rounded"></div> Rak Lainnya</div>
+                <div class="flex items-center gap-2"><div class="w-4 h-4 bg-amber-200 border-2 border-amber-400 rounded"></div> Meja Layanan</div>
+            </div>
+
+            {{-- Floor Plan Container --}}
+            <div class="bg-white border-2 border-slate-300 rounded-lg p-8 shadow-inner min-w-[700px] max-w-[800px] mx-auto relative" style="height: 500px;">
+                <!-- Meja Layanan -->
+                <div class="absolute bottom-8 left-1/2 -translate-x-1/2 w-48 h-16 bg-amber-100 border-2 border-amber-400 rounded-lg flex items-center justify-center text-amber-800 font-bold shadow-sm">
+                    Meja Layanan / Sirkulasi
+                </div>
+                <!-- Pintu Masuk -->
+                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-2 bg-slate-300 rounded-t-lg flex justify-center -mb-2">
+                    <span class="text-[10px] font-bold text-slate-500 -mt-4 uppercase bg-white px-1">Pintu Masuk</span>
+                </div>
+
+                @php
+                    $highlightCodes = $distinctLocations->pluck('code')->toArray();
+                    
+                    $renderShelf = function($code, $label, $top, $left, $width = '140px', $height = '60px') use ($highlightCodes) {
+                        $isHighlight = in_array($code, $highlightCodes);
+                        $bgClass = $isHighlight ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/40 ring-4 ring-indigo-200 z-10' : 'bg-slate-200 text-slate-600 border border-slate-300 shadow-sm';
+                        $pulseClass = $isHighlight ? 'animate-pulse' : '';
+                        
+                        return '<div class="absolute flex flex-col items-center justify-center rounded-sm font-bold text-sm transition-all duration-300 text-center px-1 ' . $bgClass . ' ' . $pulseClass . '" style="top: '.$top.'; left: '.$left.'; width: '.$width.'; height: '.$height.';">
+                            <span class="text-[10px] opacity-80 font-normal leading-tight">'.$code.'</span>
+                            <span class="text-xs leading-tight">'.$label.'</span>
+                        </div>';
+                    };
+
+                    $renderShelfRight = function($code, $label, $top, $right, $width = '140px', $height = '60px') use ($highlightCodes) {
+                        $isHighlight = in_array($code, $highlightCodes);
+                        $bgClass = $isHighlight ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/40 ring-4 ring-indigo-200 z-10' : 'bg-slate-200 text-slate-600 border border-slate-300 shadow-sm';
+                        $pulseClass = $isHighlight ? 'animate-pulse' : '';
+                        
+                        return '<div class="absolute flex flex-col items-center justify-center rounded-sm font-bold text-sm transition-all duration-300 text-center px-1 ' . $bgClass . ' ' . $pulseClass . '" style="top: '.$top.'; right: '.$right.'; width: '.$width.'; height: '.$height.';">
+                            <span class="text-[10px] opacity-80 font-normal leading-tight">'.$code.'</span>
+                            <span class="text-xs leading-tight">'.$label.'</span>
+                        </div>';
+                    };
+                @endphp
+
+                <!-- Rak Sisi Kiri (000 - 400) -->
+                {!! $renderShelf('000', 'Karya Umum', '40px', '40px') !!}
+                {!! $renderShelf('100', 'Filsafat & Psikologi', '120px', '40px') !!}
+                {!! $renderShelf('200', 'Agama', '200px', '40px') !!}
+                {!! $renderShelf('300', 'Ilmu Sosial', '280px', '40px') !!}
+                {!! $renderShelf('400', 'Bahasa', '360px', '40px') !!}
+
+                <!-- Rak Sisi Kanan (500 - 900) -->
+                {!! $renderShelfRight('500', 'Ilmu Murni', '40px', '40px') !!}
+                {!! $renderShelfRight('600', 'Ilmu Terapan', '120px', '40px') !!}
+                {!! $renderShelfRight('700', 'Seni & Olahraga', '200px', '40px') !!}
+                {!! $renderShelfRight('800', 'Kesusastraan', '280px', '40px') !!}
+                {!! $renderShelfRight('900', 'Sejarah & Geografi', '360px', '40px') !!}
+                
+                <!-- Kategori Tambahan di Tengah (F, R, SL) -->
+                {!! $renderShelf('F', 'Fiksi', '80px', '300px', '160px', '40px') !!}
+                {!! $renderShelf('R', 'Referensi', '160px', '300px', '160px', '40px') !!}
+                {!! $renderShelf('SL', 'Buku Paket', '240px', '300px', '160px', '40px') !!}
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 @endsection

@@ -109,7 +109,7 @@
                     @forelse($circulations as $circ)
                     <tr>
                         <td class="text-slate-500">{{ $circulations->firstItem() + $loop->index }}</td>
-                        <td><code class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded text-xs">{{ $circ->circulation_code }}</code></td>
+                        <td><code class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded text-xs">{{ $circ->transaction_code }}</code></td>
                         <td>
                             <div class="font-medium text-slate-800">{{ $circ->member->name }}</div>
                             <div class="text-slate-500 text-xs">{{ $circ->member->member_code }}</div>
@@ -149,7 +149,7 @@
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 @if($circ->status === 'Dipinjam')
-                                <a href="{{ route('circulations.return') }}?code={{ $circ->circulation_code }}" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="{{ __('Proses Pengembalian') }}">
+                                <a href="{{ route('circulations.return') }}?code={{ $circ->transaction_code }}" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="{{ __('Proses Pengembalian') }}">
                                     <i class="bi bi-box-arrow-in-left"></i>
                                 </a>
                                 @endif

@@ -62,8 +62,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
     // ── Buku Tamu / Aktivitas Harian ───────────────────────────────────────────
+    Route::get('/guest-books/scan', [GuestBookController::class, 'scanForm'])->name('guest-books.scan');
+    Route::post('/guest-books/scan', [GuestBookController::class, 'scanSubmit'])->name('guest-books.scan.submit');
     Route::get('/guest-books/export', [GuestBookController::class, 'export'])->name('guest-books.export');
-    Route::resource('guest-books', GuestBookController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('guest-books', GuestBookController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('agendas', AgendaController::class);
 
     // ── Katalogisasi ────────────────────────────────────────────────────────

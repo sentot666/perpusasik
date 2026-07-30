@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') - {{ config('app.name', 'Makarya') }}</title>
+    <title>@yield('title', 'Dashboard') - {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -58,7 +58,7 @@
             <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-md">
         </div>
         <div>
-            <div class="font-bold text-lg leading-tight text-slate-800">{{ config('app.name', 'Makarya') }}</div>
+            <div class="font-bold text-lg leading-tight text-slate-800">{{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</div>
             <div class="text-slate-500 text-xs font-normal">{{ __('Perpustakaan Digital') }}</div>
         </div>
     </a>
@@ -209,7 +209,7 @@
 
     {{-- Sidebar Footer --}}
     <div class="px-6 border-t border-slate-200 text-xs text-slate-400 flex-shrink-0 py-4">
-        v3.0.0 &copy; {{ date('Y') }} {{ config('app.name', 'Makarya') }}
+        v3.0.0 &copy; {{ date('Y') }} {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}
     </div>
 </nav>
 
@@ -385,69 +385,69 @@
 
     {{-- Footer (visible only for members) --}}
     @role('anggota')
-    <footer class="bg-white border-t border-slate-200 mt-auto">
+    <footer class="bg-[#1e3a5f] border-t border-slate-700 mt-auto text-slate-300">
         <div class="max-w-full px-6 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
                 {{-- Library Info --}}
                 <div>
-                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                        <i class="bi bi-building text-indigo-500"></i> {{ config('app.name', 'Perpustakaan') }}
+                    <h4 class="font-bold text-white text-sm mb-3 flex items-center gap-2">
+                        <i class="bi bi-building text-sky-400"></i> {{ \App\Models\Setting::get('library_name', config('app.name', 'Perpustakaan')) }}
                     </h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Selamat datang di perpustakaan digital kami. Temukan ribuan koleksi buku pilihan untuk mendukung kegiatan belajar Anda.</p>
+                    <p class="text-xs text-slate-400 leading-relaxed">Selamat datang di perpustakaan digital kami. Temukan ribuan koleksi buku pilihan untuk mendukung kegiatan belajar Anda.</p>
                     <div class="flex gap-3 mt-4">
-                        <a href="#" class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-100 transition-colors" title="Facebook"><i class="bi bi-facebook text-sm"></i></a>
-                        <a href="#" class="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors" title="Instagram"><i class="bi bi-instagram text-sm"></i></a>
-                        <a href="#" class="w-8 h-8 bg-sky-50 rounded-lg flex items-center justify-center text-sky-600 hover:bg-sky-100 transition-colors" title="Twitter"><i class="bi bi-twitter-x text-sm"></i></a>
-                        <a href="#" class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-red-600 hover:bg-red-100 transition-colors" title="YouTube"><i class="bi bi-youtube text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white hover:bg-white/20 transition-colors" title="Facebook"><i class="bi bi-facebook text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white hover:bg-white/20 transition-colors" title="Instagram"><i class="bi bi-instagram text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white hover:bg-white/20 transition-colors" title="Twitter"><i class="bi bi-twitter-x text-sm"></i></a>
+                        <a href="#" class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white hover:bg-white/20 transition-colors" title="YouTube"><i class="bi bi-youtube text-sm"></i></a>
                     </div>
                 </div>
 
                 {{-- Jam Operasional --}}
                 <div>
-                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                        <i class="bi bi-clock text-indigo-500"></i> Jam Operasional
+                    <h4 class="font-bold text-white text-sm mb-3 flex items-center gap-2">
+                        <i class="bi bi-clock text-sky-400"></i> Jam Operasional
                     </h4>
                     <div class="space-y-2">
                         <div class="flex justify-between text-xs">
-                            <span class="text-slate-500">Senin – Jumat</span>
-                            <span class="font-semibold text-slate-700">08.00 – 16.00 WIB</span>
+                            <span class="text-slate-400">Senin – Jumat</span>
+                            <span class="font-semibold text-slate-200">08.00 – 16.00 WIB</span>
                         </div>
                         <div class="flex justify-between text-xs">
-                            <span class="text-slate-500">Sabtu</span>
-                            <span class="font-semibold text-slate-700">08.00 – 12.00 WIB</span>
+                            <span class="text-slate-400">Sabtu</span>
+                            <span class="font-semibold text-slate-200">08.00 – 12.00 WIB</span>
                         </div>
                         <div class="flex justify-between text-xs">
-                            <span class="text-slate-500">Minggu & Hari Libur</span>
-                            <span class="font-semibold text-red-500">Tutup</span>
+                            <span class="text-slate-400">Minggu & Hari Libur</span>
+                            <span class="font-semibold text-red-400">Tutup</span>
                         </div>
                     </div>
                 </div>
 
                 {{-- Kontak & Alamat --}}
                 <div>
-                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                        <i class="bi bi-geo-alt text-indigo-500"></i> Kontak & Alamat
+                    <h4 class="font-bold text-white text-sm mb-3 flex items-center gap-2">
+                        <i class="bi bi-geo-alt text-sky-400"></i> Kontak & Alamat
                     </h4>
                     <div class="space-y-2">
-                        <div class="flex items-start gap-2 text-xs text-slate-500">
-                            <i class="bi bi-geo-alt-fill text-slate-400 mt-0.5"></i>
-                            <span>Jl. Contoh No. 1, Kota, Provinsi 12345</span>
+                        <div class="flex items-start gap-2 text-xs text-slate-400">
+                            <i class="bi bi-geo-alt-fill text-slate-500 mt-0.5"></i>
+                            <span>{{ \App\Models\Setting::get('library_address', 'Jl. Contoh No. 1, Kota, Provinsi 12345') }}</span>
                         </div>
-                        <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <i class="bi bi-telephone-fill text-slate-400"></i>
-                            <a href="tel:+628000000000" class="hover:text-indigo-600">(021) 000-0000</a>
+                        <div class="flex items-center gap-2 text-xs text-slate-400">
+                            <i class="bi bi-telephone-fill text-slate-500"></i>
+                            <a href="tel:{{ \App\Models\Setting::get('library_phone', '+628000000000') }}" class="hover:text-sky-400 text-slate-400">{{ \App\Models\Setting::get('library_phone', '(021) 000-0000') }}</a>
                         </div>
-                        <div class="flex items-center gap-2 text-xs text-slate-500">
-                            <i class="bi bi-envelope-fill text-slate-400"></i>
-                            <a href="mailto:info@perpustakaan.ac.id" class="hover:text-indigo-600">info@perpustakaan.ac.id</a>
+                        <div class="flex items-center gap-2 text-xs text-slate-400">
+                            <i class="bi bi-envelope-fill text-slate-500"></i>
+                            <a href="mailto:{{ \App\Models\Setting::get('library_email', 'info@perpustakaan.ac.id') }}" class="hover:text-sky-400 text-slate-400">{{ \App\Models\Setting::get('library_email', 'info@perpustakaan.ac.id') }}</a>
                         </div>
                     </div>
                 </div>
 
             </div>
-            <div class="border-t border-slate-100 mt-6 pt-4 text-center text-xs text-slate-400">
-                &copy; {{ date('Y') }} {{ config('app.name', 'Perpustakaan Digital') }} — Hak cipta dilindungi.
+            <div class="border-t border-white/10 mt-6 pt-4 text-center text-xs text-slate-500">
+                &copy; {{ date('Y') }} {{ \App\Models\Setting::get('library_name', config('app.name', 'Perpustakaan Digital')) }} — Hak cipta dilindungi.
             </div>
         </div>
     </footer>

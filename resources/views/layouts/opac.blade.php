@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="@yield('meta_description', 'OPAC - Online Public Access Catalog Perpustakaan')">
-    <title>@hasSection('title')@yield('title') - @endif{{ config('app.name', 'Makarya') }} OPAC</title>
+    <title>@hasSection('title')@yield('title') - @endif{{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }} OPAC</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -98,7 +98,7 @@
             <div class="lg:col-span-2">
                 <div class="flex items-center gap-4 mb-6">
                     <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-12 h-12 object-contain rounded bg-white p-1">
-                    <span class="font-bold text-white text-lg uppercase tracking-wider">{{ __('landing.school_library_full') }}</span>
+                    <span class="font-bold text-white text-lg uppercase tracking-wider">{{ \App\Models\Setting::get('library_name', __('landing.school_library_full')) }}</span>
                 </div>
                 <p class="leading-relaxed mb-6 max-w-2xl text-sm">
                     {{ __('landing.about_desc') }}
@@ -111,15 +111,15 @@
                 <ul class="space-y-4 text-sm list-none pl-0 m-0">
                     <li class="flex items-start gap-3">
                         <i class="bi bi-geo-alt text-lg text-amber-400 mt-0.5"></i>
-                        <span>Jl. Danau Agung 13 Blok E19, <br>Sunter Agung Podomoro</span>
+                        <span>{{ \App\Models\Setting::get('library_address', 'Jl. Danau Agung 13 Blok E19, Sunter Agung Podomoro') }}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <i class="bi bi-telephone text-lg text-amber-400"></i>
-                        <span>021-6459109</span>
+                        <span>{{ \App\Models\Setting::get('library_phone', '021-6459109') }}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <i class="bi bi-envelope text-lg text-amber-400"></i>
-                        <span>yayasan@santopaulus.school</span>
+                        <span>{{ \App\Models\Setting::get('library_email', 'yayasan@santopaulus.school') }}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <i class="bi bi-instagram text-lg text-amber-400"></i>
@@ -139,7 +139,7 @@
 
         <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
             <div>
-                &copy; {{ date('Y') }} {{ config('app.name', 'Makarya') }} — {{ __('landing.system_name') }}. All rights reserved.
+                &copy; {{ date('Y') }} {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }} — {{ __('landing.system_name') }}. All rights reserved.
             </div>
             <div class="flex items-center gap-4">
                 <a href="#" class="text-white/50 hover:text-white transition-colors no-underline">{{ __('landing.privacy_policy') }}</a>

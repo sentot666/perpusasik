@@ -20,7 +20,7 @@ class MemberController extends Controller
         if ($type = $request->member_type) {
             $query->where('member_type', $type);
         }
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('is_active', $request->status === 'aktif');
         }
 

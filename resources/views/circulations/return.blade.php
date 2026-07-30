@@ -125,13 +125,30 @@
 @push('scripts')
 <script>
 // Auto-submit on Enter after barcode scan
-document.getElementById('returnBarcode').addEventListener('keydown', function(e) {
+let returnBarcode = document.getElementById('returnBarcode');
+let returnSubmitBtn = document.getElementById('returnSubmitBtn');
+let returnForm = document.getElementById('returnForm');
+
+function submitReturn() {
+    returnSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm mr-2"></span>{{ __('Memproses...') }}';
+    returnSubmitBtn.disabled = true;
+    returnForm.submit();
+}
+
+returnBarcode.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
-        const btn = document.getElementById('returnSubmitBtn');
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm mr-2"></span>{{ __('Memproses...') }}';
-        btn.disabled = true;
-        document.getElementById('returnForm').submit();
+        submitReturn();
+    }
+});
+
+let debounceTimer;
+returnBarcode.addEventListener('input', function(e) {
+    clearTimeout(debounceTimer);
+    if (this.value.trim().length >= 3) {
+        debounceTimer = setTimeout(() => {
+            submitReturn();
+        }, 500); // 500ms delay after typing stops (scanner is very fast)
     }
 });
 </script>

@@ -14,7 +14,7 @@
     <h2 class="uppercase text-center font-bold" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
         {{ __('Laporan Transaksi Sirkulasi Buku') }}<br>
         <span style="font-size: 1.1rem; font-weight: normal; text-transform: none;">
-            {{ config('app.name', 'Makarya') }}
+            {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}
         </span>
     </h2>
     <p class="text-center text-slate-500" style="margin-top: -10px;">

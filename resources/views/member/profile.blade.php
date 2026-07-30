@@ -22,7 +22,7 @@
                 <div class="p-6 relative pb-16 min-h-[210px]">
                     <div class="flex justify-between items-start mb-4 border-b border-white/10 pb-3">
                         <div>
-                            <h3 class="text-white font-bold text-base tracking-wide uppercase">{{ config('app.name', 'Makarya') }}</h3>
+                            <h3 class="text-white font-bold text-base tracking-wide uppercase">{{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</h3>
                             <p class="text-slate-400 text-xs">Kartu Anggota Digital</p>
                         </div>
                         <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-sm border border-white/20">

@@ -44,35 +44,89 @@
         .barcode-label {
             width: 7.5cm;
             height: 4.5cm;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 10px 12px;
+            border: 1px dashed #cbd5e1;
+            border-radius: 4px;
+            display: flex;
+            background: #ffffff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            overflow: hidden;
+        }
+
+        .label-left {
+            width: 60%;
+            padding: 8px;
+            border-right: 1px dashed #cbd5e1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background: #ffffff;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            align-items: center;
+            text-align: center;
         }
 
-        .label-header { border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 3px; text-align: center; }
-        .inst-title { font-size: 8.5pt; font-weight: 800; color: #0f172a; text-transform: uppercase; line-height: 1.2; text-align: center; }
-        .label-title { font-size: 9pt; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 3px 0; text-align: center; }
-        
-        .call-num-box { text-align: center; margin-bottom: 3px; }
-        .call-num { font-family: 'JetBrains Mono', monospace; font-size: 8pt; font-weight: 700; color: #1e3a8a; background: #eff6ff; border: 1px solid #dbeafe; padding: 2px 8px; border-radius: 4px; display: inline-block; }
+        .label-right {
+            width: 40%;
+            padding: 8px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 
-        .barcode-area { display: flex; flex-direction: column; align-items: center; margin: 4px 0; }
-        .barcode-img { max-width: 100%; height: 26px; display: block; }
-        .barcode-str { font-family: 'JetBrains Mono', monospace; font-size: 9pt; font-weight: 700; color: #0f172a; letter-spacing: 0.8px; margin-top: 2px; }
-        .label-footer { display: flex; justify-content: space-between; font-size: 7pt; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 2px; }
+        .book-title {
+            font-size: 8pt;
+            line-height: 1.1;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        .barcode-img {
+            max-width: 100%;
+            height: 40px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .barcode-str {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10pt;
+            font-weight: 700;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .inst-title {
+            font-size: 7.5pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+
+        .call-num-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .call-num-part {
+            font-size: 9.5pt;
+            font-weight: 800;
+            line-height: 1;
+        }
 
         @media print {
             @page { size: 7.5cm 4.5cm landscape; margin: 0; }
             body { background: #ffffff !important; padding: 0 !important; }
             .action-bar { display: none !important; }
-            .barcode-label { box-shadow: none !important; margin: 0 !important; border: 1px solid #94a3b8 !important; }
+            .barcode-label { box-shadow: none !important; margin: 0 !important; border: 1px dashed #000000 !important; }
+            .label-left { border-right: 1px dashed #000000 !important; }
         }
     </style>
 </head>
@@ -90,38 +144,38 @@
         $barcodeBase64 = null;
         try {
             $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
-            $barcodeBase64 = base64_encode($generator->getBarcode($item->barcode, $generator::TYPE_CODE_128, 1.3, 26));
+            $barcodeBase64 = base64_encode($generator->getBarcode($item->barcode, $generator::TYPE_CODE_128, 1.6, 40));
         } catch (\Throwable $e) {
             $barcodeBase64 = null;
         }
     @endphp
 
     <div class="barcode-label">
-        <!-- 1. Header (Nama Perpustakaan - Center) -->
-        <div class="label-header">
+        <!-- Bagian Kiri (Sisi Cover Buku) -->
+        <div class="label-left">
+            <div class="book-title">{{ $item->book?->title ?? '-' }}</div>
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
+                @if($barcodeBase64)
+                    <img src="data:image/png;base64,{{ $barcodeBase64 }}" class="barcode-img" alt="Barcode {{ $item->barcode }}">
+                @endif
+                <div class="barcode-str">{{ $item->barcode }}</div>
+            </div>
+        </div>
+
+        <!-- Bagian Kanan (Sisi Punggung Buku) -->
+        <div class="label-right">
             <div class="inst-title">{{ \App\Models\Setting::get('library_name', 'PERPUSTAKAAN') }}</div>
-        </div>
-
-        <!-- 2. Judul Buku (Center) -->
-        <div class="label-title" title="{{ $item->book?->title }}">{{ \Illuminate\Support\Str::limit($item->book?->title ?? '-', 40) }}</div>
-
-        <!-- 3. Code Panggil (Center) -->
-        <div class="call-num-box">
-            <span class="call-num">{{ $item->book?->call_number ?? ($item->book?->ddc ? 'DDC ' . $item->book?->ddc : '-') }}</span>
-        </div>
-
-        <!-- 4. Barcode Area -->
-        <div class="barcode-area">
-            @if($barcodeBase64)
-                <img src="data:image/png;base64,{{ $barcodeBase64 }}" class="barcode-img" alt="Barcode {{ $item->barcode }}">
-            @endif
-            <div class="barcode-str">{{ $item->barcode }}</div>
-        </div>
-
-        <!-- 5. Footer (No. Induk & Rak) -->
-        <div class="label-footer">
-            <div>No. Induk: {{ $item->accession_number ?? '-' }}</div>
-            <div>Rak: {{ $item->location?->name ?? '-' }}</div>
+            <div class="call-num-stack">
+                @php
+                    $callNumber = $item->book?->call_number ?? ($item->book?->ddc ? $item->book?->ddc : '-');
+                    $parts = explode(' ', $callNumber);
+                @endphp
+                @foreach($parts as $part)
+                    @if(trim($part) !== '')
+                    <span class="call-num-part">{{ $part }}</span>
+                    @endif
+                @endforeach
+            </div>
         </div>
     </div>
 

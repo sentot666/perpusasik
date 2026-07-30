@@ -57,6 +57,16 @@
                             </select>
                         </div>
 
+                        <div class="mb-6">
+                            <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Lokasi Rak') }}</label>
+                            <select name="location_id" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
+                                <option value="">{{ __('Semua Rak') }}</option>
+                                @foreach($locations as $loc)
+                                <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->code }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <a href="{{ route('opac.katalog') }}" class="w-full inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Bersihkan Filter') }}</a>
                     </form>
                 </div>
@@ -83,6 +93,7 @@
                 <div class="w-1/2 sm:w-1/3 lg:w-1/4 px-3 mb-6">
                     <div class="shadow-sm border-0 hover-card bg-white rounded-xl border border-slate-200 h-full overflow-hidden" style="border-radius:12px;overflow:hidden;transition:transform 0.2s">
                         <div style="aspect-ratio:3/4;background:#f8fafc;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border-bottom:1px solid #e9edf4">
+                            <a href="{{ route('opac.show', $book) }}" class="absolute inset-0 z-20" title="{{ $book->title }}"></a>
                             @if($book->cover_image)
                                 <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover">
                             @else

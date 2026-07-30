@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Member;
 use App\Models\BookItem;
 use App\Models\GuestBook;
+use App\Models\Location;
 use Illuminate\Http\Request;
 
 class OpacController extends Controller
@@ -19,7 +20,9 @@ class OpacController extends Controller
             'total_visitors'  => GuestBook::sum('participants_count'),
         ];
         
-        return view('opac.index', compact('stats'));
+        $locations = Location::orderBy('code')->get();
+
+        return view('opac.index', compact('stats', 'locations'));
     }
 
     public function katalog(Request $request)
@@ -40,13 +43,19 @@ class OpacController extends Controller
         if ($lang = $request->language) {
             $query->where('language', $lang);
         }
+        if ($locId = $request->location_id) {
+            $query->whereHas('items', function ($q) use ($locId) {
+                $q->where('location_id', $locId);
+            });
+        }
 
         $books = $query->latest()->paginate(12)->withQueryString();
 
         $collectionTypes = Book::distinct()->pluck('collection_type')->sort();
         $years = Book::distinct()->orderByDesc('publication_year')->pluck('publication_year')->filter();
+        $locations = Location::orderBy('code')->get();
 
-        return view('opac.katalog', compact('books', 'collectionTypes', 'years'));
+        return view('opac.katalog', compact('books', 'collectionTypes', 'years', 'locations'));
     }
 
     public function show(Book $book)
