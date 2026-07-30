@@ -17,6 +17,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\OpacController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GuestBookController;
+use App\Http\Controllers\AgendaController;
 // ── Language Switcher ──────────────────────────────────────────────────────────
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {
@@ -28,6 +29,7 @@ Route::get('/lang/{locale}', function ($locale) {
 // ── OPAC (public) ─────────────────────────────────────────────────────────────
 Route::get('/', [OpacController::class, 'index'])->name('opac.index');
 Route::get('/katalog', [OpacController::class, 'katalog'])->name('opac.katalog');
+Route::get('/opac/agenda', [OpacController::class, 'agenda'])->name('opac.agenda');
 Route::get('/opac/buku/{book}', [OpacController::class, 'show'])->name('opac.show');
 
 // ── Buku Tamu Mandiri (public) ────────────────────────────────────────────────
@@ -62,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
     // ── Buku Tamu / Aktivitas Harian ───────────────────────────────────────────
     Route::get('/guest-books/export', [GuestBookController::class, 'export'])->name('guest-books.export');
     Route::resource('guest-books', GuestBookController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('agendas', AgendaController::class);
 
     // ── Katalogisasi ────────────────────────────────────────────────────────
     Route::middleware(['can:view-books'])->group(function () {
@@ -79,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
 
     // ── Anggota ─────────────────────────────────────────────────────────────
     Route::middleware(['can:view-members'])->group(function () {
+        Route::post('members/print-bulk', [MemberController::class, 'printBulk'])->name('members.print-bulk');
         Route::get('members/{member}/print-card', [MemberController::class, 'printCard'])->name('members.print-card');
         Route::resource('members', MemberController::class);
         Route::get('/members/{member}/print-card', [MemberController::class, 'printCard'])->name('members.print-card');

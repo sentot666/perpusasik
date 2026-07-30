@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cetak Barcode Buku - {{ $book->title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0f172a;
+            color: #0f172a;
+            min-height: 100vh;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-bar {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 24px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .action-title {
+            color: #f8fafc;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-title span {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Sheet for labels */
+        .sheet {
+            background: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .book-info-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .book-info-header h2 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .book-info-header p {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* Label Grid */
+        .label-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(6.5cm, 1fr));
+            gap: 16px;
+        }
+
+        /* Single Barcode Sticker Label */
+        .barcode-label {
+            width: 100%;
+            height: 4.2cm;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #ffffff;
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* 1. Header (Nama Instansi - CENTERED) */
+        .label-header {
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 3px;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .inst-title {
+            font-size: 7.5pt;
+            font-weight: 800;
+            color: #0f172a;
+            text-transform: uppercase;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        /* 2. Judul Buku (Di Atas Code Panggil - CENTERED) */
+        .label-title {
+            font-size: 8.5pt;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 2px 0 3px 0;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        /* 3. Code Panggil (Di Atas Barcode - CENTERED) */
+        .call-num-box {
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .call-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 7.5pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            padding: 1.5px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* 4. Barcode Area */
+        .barcode-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2px 0;
+        }
+
+        .barcode-img {
+            max-width: 100%;
+            height: 24px;
+            display: block;
+        }
+
+        .barcode-str {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8.5pt;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: 0.8px;
+            margin-top: 2px;
+        }
+
+        /* 5. Footer (No. Induk & Rak) */
+        .label-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 6.5pt;
+            color: #64748b;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 3px;
+            margin-top: 2px;
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+            }
+
+            .action-bar {
+                display: none !important;
+            }
+
+            .sheet {
+                box-shadow: none !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+
+            .label-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 5mm !important;
+            }
+
+            .barcode-label {
+                border: 1px solid #94a3b8 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Action Bar -->
+    <div class="action-bar">
+        <div class="action-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+            </svg>
+            Cetak Label Barcode <span>({{ $items->count() }} eksemplar)</span>
+        </div>
+        <div class="action-btns">
+            <a href="{{ route('books.show', $book) }}" onclick="if (window.opener || window.history.length <= 1) { window.close(); return false; } else { window.history.back(); return false; }" class="btn btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Kembali
+            </a>
+            <button class="btn btn-primary" onclick="window.print()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                Cetak Label Barcode
+            </button>
+        </div>
+    </div>
+
+    <!-- Sheet Content -->
+    <div class="sheet">
+        <div class="book-info-header">
+            <h2>{{ $book->title }}</h2>
+            <p>Pengarang: {{ $book->main_author ?? '-' }} | No. Panggil: {{ $book->call_number ?? '-' }} | Total Eksemplar: {{ $items->count() }}</p>
+        </div>
+
+        <div class="label-grid">
+            @forelse($items as $item)
+                @php
+                    $barcodeBase64 = null;
+                    try {
+                        $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
+                        $barcodeBase64 = base64_encode($generator->getBarcode($item->barcode, $generator::TYPE_CODE_128, 1.2, 24));
+                    } catch (\Throwable $e) {
+                        $barcodeBase64 = null;
+                    }
+                @endphp
+
+                <div class="barcode-label">
+                    <!-- 1. Header (Nama Perpustakaan - Center) -->
+                    <div class="label-header">
+                        <div class="inst-title">{{ \App\Models\Setting::get('library_name', 'PERPUSTAKAAN') }}</div>
+                    </div>
+
+                    <!-- 2. Judul Buku (Center) -->
+                    <div class="label-title" title="{{ $book->title }}">{{ \Illuminate\Support\Str::limit($book->title, 40) }}</div>
+
+                    <!-- 3. Code Panggil (Center) -->
+                    <div class="call-num-box">
+                        <span class="call-num">{{ $book->call_number ?? ($book->ddc ? 'DDC ' . $book->ddc : '-') }}</span>
+                    </div>
+
+                    <!-- 4. Barcode Area -->
+                    <div class="barcode-area">
+                        @if($barcodeBase64)
+                            <img src="data:image/png;base64,{{ $barcodeBase64 }}" class="barcode-img" alt="Barcode {{ $item->barcode }}">
+                        @endif
+                        <div class="barcode-str">{{ $item->barcode }}</div>
+                    </div>
+
+                    <!-- 5. Footer (No. Induk & Rak) -->
+                    <div class="label-footer">
+                        <div>No. Induk: {{ $item->accession_number ?? '-' }}</div>
+                        <div>Rak: {{ $item->location?->name ?? '-' }}</div>
+                    </div>
+                </div>
+            @empty
+                <div style="grid-column: 1/-1; text-align: center; color: #94a3b8; padding: 40px;">
+                    Belum ada eksemplar fisik yang terdaftar untuk buku ini.
+                </div>
+            @endforelse
+        </div>
+    </div>
+
+</body>
+</html>

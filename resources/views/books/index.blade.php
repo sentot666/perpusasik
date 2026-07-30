@@ -8,42 +8,44 @@
 @endsection
 
 @section('content')
-<div class="page-header justify-between items-start flex">
+<div class="page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
-        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Master Buku') }}</h1>
-        <p>{{ __('Kelola koleksi katalog bibliografi perpustakaan') }}</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Master Buku') }}</h1>
+        <p class="text-slate-500 text-xs sm:text-sm">{{ __('Kelola koleksi katalog bibliografi perpustakaan') }}</p>
     </div>
-    <div class="flex gap-2">
-        <a href="{{ route('books.create') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-6" id="addBookBtn">
-            <i class="bi bi-plus-circle mr-1"></i>{{ __('Tambah Buku') }}
+    <div class="flex gap-2 w-full sm:w-auto">
+        <a href="{{ route('books.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-5" id="addBookBtn">
+            <i class="bi bi-plus-circle"></i>{{ __('Tambah Buku') }}
         </a>
     </div>
 </div>
 
 {{-- Filters --}}
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-    <div class="px-8 py-2">
-        <form method="GET" class="items-center flex flex-wrap -mx-2" id="filterForm">
-            <div class="col-md-5">
+    <div class="p-4 sm:p-6">
+        <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center" id="filterForm">
+            <div class="lg:col-span-6">
                 <div class="flex w-full text-sm">
-                    <span class="flex items-center px-3 py-2 bg-slate-100 border border-slate-300 text-slate-600"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Cari judul, pengarang, ISBN, no. panggil...') }}" value="{{ request('search') }}">
+                    <span class="flex items-center px-3 py-2 bg-slate-100 border border-slate-300 text-slate-600 rounded-l-lg"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="w-full rounded-r-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-3" placeholder="{{ __('Cari judul, pengarang, ISBN, no. panggil...') }}" value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="w-full md:w-1/4 px-4">
-                <select name="collection_type" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
+            <div class="lg:col-span-3">
+                <select name="collection_type" class="w-full rounded-lg border border-slate-300 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-3" onchange="this.form.submit()">
                     <option value="">{{ __('Semua Jenis') }}</option>
                     @foreach($collectionTypes as $type)
                     <option value="{{ $type }}" {{ request('collection_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
                     @endforeach
                 </select>
             </div>
-            <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-funnel"></i> {{ __('Filter') }}</button>
-                <a href="{{ route('books.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
-            </div>
-            <div class="ml-auto text-slate-500 w-auto px-4" style="font-size:0.8rem">
-                {{ $books->total() }} {{ __('judul ditemukan') }}
+            <div class="lg:col-span-3 flex items-center justify-between gap-2">
+                <div class="flex gap-2">
+                    <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-lg btn-gradient-blue transition-colors text-white px-3"><i class="bi bi-funnel"></i> {{ __('Filter') }}</button>
+                    <a href="{{ route('books.index') }}" class="inline-flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-lg text-slate-700 border border-slate-300 hover:bg-slate-50 transition-colors px-3"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
+                </div>
+                <div class="text-slate-500 text-xs font-medium whitespace-nowrap">
+                    {{ $books->total() }} {{ __('judul') }}
+                </div>
             </div>
         </form>
     </div>
@@ -74,62 +76,65 @@
                         <td class="text-slate-500">{{ $books->firstItem() + $loop->index }}</td>
                         <td>
                             <div class="font-medium">
-                                <a href="{{ route('books.show', $book) }}" class="no-underline text-slate-800">
+                                <a href="{{ route('books.show', $book) }}" class="no-underline text-slate-800 hover:text-indigo-600">
                                     {{ Str::limit($book->title, 60) }}
                                 </a>
                             </div>
                             @if($book->isbn)
-                            <div class="text-slate-500" style="font-size:0.72rem">ISBN: {{ $book->isbn }}</div>
+                            <div class="text-slate-500 text-xs">ISBN: {{ $book->isbn }}</div>
                             @endif
                         </td>
                         <td>{{ $book->main_author ?? '-' }}</td>
                         <td>{{ $book->publisher?->name ?? '-' }}</td>
                         <td>{{ $book->publication_year ?? '-' }}</td>
-                        <td><code style="font-size:0.75rem">{{ $book->call_number ?? '-' }}</code></td>
+                        <td><code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">{{ $book->call_number ?? '-' }}</code></td>
                         <td><span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-50 border border-slate-200 text-slate-800">{{ $book->collection_type }}</span></td>
                         <td class="text-center font-semibold">{{ $book->items_count }}</td>
                         <td class="text-center">
                             @if($book->available_items_count > 0)
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ $book->available_items_count }}</span>
+                            <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ $book->available_items_count }}</span>
                             @else
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-700 px-2">0</span>
+                            <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-slate-100 text-slate-700 px-2">0</span>
                             @endif
                         </td>
                         <td class="text-center">
-                            <div class="inline-flex rounded-md shadow-sm rounded-lg">
-                                <a href="{{ route('books.show', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-indigo-600 border border-slate-200 border-indigo-600 hover:bg-indigo-50 transition-colors gap-2 py-2 px-6" title="{{ __('Detail') }}">
+                            <div class="inline-flex items-center gap-1">
+                                <a href="{{ route('books.show', $book) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Detail') }}">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('books.edit', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="{{ __('Edit') }}">
+                                @can('edit-books')
+                                <a href="{{ route('books.edit', $book) }}" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="POST" action="{{ route('books.destroy', $book) }}" onsubmit="return confirm('{{ __('Hapus buku ini?') }}')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6" title="{{ __('Hapus') }}">
+                                @endcan
+                                @can('delete-books')
+                                <form action="{{ route('books.destroy', $book) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
+                                @endcan
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="10" class="py-8 text-center text-slate-500">
-                            <i class="bi bi-journals text-4xl font-bold block opacity-25 mb-2"></i>
-                            {{ __('Belum ada data buku.') }} <a href="{{ route('books.create') }}">{{ __('Tambah buku pertama') }}</a>
+                        <td colspan="10" class="text-center py-8 text-slate-500">
+                            <i class="bi bi-journals text-3xl block mb-2 text-slate-300"></i>
+                            {{ __('Tidak ada data buku ditemukan') }}
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        @if($books->hasPages())
+        <div class="p-4 border-t border-slate-200">
+            {{ $books->links() }}
+        </div>
+        @endif
     </div>
-    @if($books->hasPages())
-    <div class="bg-white border-t border-slate-200 px-8 bg-slate-50 py-2 py-4">
-        {{ $books->links() }}
-    </div>
-    @endif
 </div>
 @endsection
-
-

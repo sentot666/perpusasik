@@ -9,14 +9,14 @@
 
 @section('content')
 <div x-data="{ showAddModal: false }">
-<div class="page-header justify-between items-start flex">
+<div class="page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
-        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Manajemen User / Petugas') }}</h1>
-        <p>{{ __('Kelola data hak akses petugas perpustakaan digital') }}</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Manajemen User / Petugas') }}</h1>
+        <p class="text-slate-500 text-xs sm:text-sm">{{ __('Kelola data hak akses petugas perpustakaan digital') }}</p>
     </div>
-    <div>
-        <button type="button" @click="showAddModal = true" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-6">
-            <i class="bi bi-person-plus mr-1"></i>{{ __('Tambah Petugas') }}
+    <div class="w-full sm:w-auto">
+        <button type="button" @click="showAddModal = true" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-5">
+            <i class="bi bi-person-plus"></i>{{ __('Tambah Petugas') }}
         </button>
     </div>
 </div>
@@ -28,7 +28,7 @@
                 <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" placeholder="{{ __('Cari nama atau username...') }}" value="{{ request('search') }}">
             </div>
             <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-search"></i> {{ __('Cari') }}</button>
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg btn-gradient-dark transition-colors text-white px-4"><i class="bi bi-search"></i> {{ __('Cari') }}</button>
                 <a href="{{ route('users.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
             </div>
         </form>

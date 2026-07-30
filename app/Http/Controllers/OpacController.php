@@ -61,4 +61,13 @@ class OpacController extends Controller
 
         return view('opac.show', compact('book', 'relatedBooks'));
     }
+
+    public function agenda(Request $request)
+    {
+        $agendas = \App\Models\Agenda::where('is_published', true)
+            ->latest('event_date')
+            ->paginate(12);
+
+        return view('opac.agenda', compact('agendas'));
+    }
 }

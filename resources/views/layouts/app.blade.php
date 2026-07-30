@@ -72,8 +72,14 @@
             $menuLabel = 'text-xs uppercase tracking-widest text-slate-400 font-semibold px-6 pt-4 pb-1';
         @endphp
 
-        {{-- Dashboard --}}
+        @unlessrole('anggota')
+        {{-- Dashboard Admin --}}
         @can('view-full-dashboard')
+        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-speedometer2 text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Dashboard Admin') }}</span>
+        </a>
+        @elsecan('process-loans')
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? $navLinkActive : $navLink }}">
             <i class="bi bi-speedometer2 text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
             <span>{{ __('Dashboard') }}</span>
@@ -131,6 +137,23 @@
         </a>
         @endcan
 
+        {{-- Layanan & Agenda --}}
+        <p class="{{ $menuLabel }}">{{ __('Layanan & Agenda') }}</p>
+        <a href="{{ route('agendas.index') }}" class="{{ request()->routeIs('agendas.*') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-calendar-event text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Agenda Perpustakaan') }}</span>
+        </a>
+        <a href="{{ route('guest-books.index') }}" class="{{ request()->routeIs('guest-books.index') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-journal-check text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Buku Tamu') }}</span>
+        </a>
+        @can('view-reports')
+        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? $navLinkActive : $navLink }}">
+            <i class="bi bi-bar-chart-line text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
+            <span>{{ __('Laporan') }}</span>
+        </a>
+        @endcan
+
         {{-- Administrasi --}}
         @canany(['manage-users', 'manage-settings'])
         <p class="{{ $menuLabel }}">{{ __('Administrasi') }}</p>
@@ -147,9 +170,10 @@
         </a>
         @endcan
         @endcanany
+        @endunlessrole
 
         {{-- Portal Anggota --}}
-        @can('view-history')
+        @role('anggota')
         <p class="{{ $menuLabel }}">{{ __('Portal Anggota') }}</p>
         <a href="{{ route('member.dashboard') }}" class="{{ request()->routeIs('member.dashboard') ? $navLinkActive : $navLink }}">
             <i class="bi bi-house-door text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
@@ -179,7 +203,7 @@
             <i class="bi bi-person-badge text-xl w-7 transition-transform group-hover:scale-110 text-center"></i>
             <span>{{ __('Profil & Kartu') }}</span>
         </a>
-        @endcan
+        @endrole
 
     </div>
 
@@ -193,16 +217,16 @@
 <div class="lg:ml-72 min-h-screen flex flex-col">
 
     {{-- Topbar --}}
-    <header class="sticky top-0 z-20 h-20 bg-white border-b border-slate-200 shadow-sm flex items-center gap-6 px-6">
+    <header class="sticky top-0 z-20 h-16 sm:h-20 bg-white border-b border-slate-200 shadow-sm flex items-center gap-2 sm:gap-4 px-3 sm:px-6">
         {{-- Mobile toggle --}}
-        <button id="sidebarToggle" class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 transition-colors">
+        <button id="sidebarToggle" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
             <i class="bi bi-list text-2xl"></i>
         </button>
 
         <div class="flex items-center ml-auto gap-2">
 
             {{-- Notification Bell (for members) --}}
-            @can('view-history')
+            @role('anggota')
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" @click.outside="open = false"
                     class="relative w-10 h-10 flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors">
@@ -268,7 +292,7 @@
                     </div>
                 </div>
             </div>
-            @endcan
+            @endrole
 
             {{-- Auto Refresh Widget --}}
             <div id="autoRefreshContainer" class="hidden sm:flex items-center gap-2" x-data="autoRefreshWidget()">
@@ -298,11 +322,12 @@
             </div>
 
             {{-- User dropdown --}}
+            @auth
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" @click.outside="open = false"
                     class="flex items-center py-1.5 rounded-lg hover:bg-slate-100 transition-colors gap-2 px-2">
                     <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-sm font-bold flex-shrink-0 text-white">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                     </div>
                     <span class="hidden md:block text-base font-semibold text-slate-700 max-w-[120px] truncate">{{ auth()->user()->name }}</span>
                     <i class="bi bi-chevron-down text-slate-400 text-xs"></i>
@@ -314,8 +339,6 @@
                         <i class="bi bi-person"></i> {{ __('Profil') }}
                     </a>
                     
-
-
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="w-full flex items-center text-sm text-red-500 hover:bg-red-50 transition-colors gap-2 py-2 px-6">
@@ -324,12 +347,19 @@
                     </form>
                 </div>
             </div>
+            @else
+            <div class="flex items-center gap-2">
+                <a href="{{ route('login') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition-colors no-underline">
+                    <i class="bi bi-box-arrow-in-right mr-1.5"></i> {{ __('Masuk / Login') }}
+                </a>
+            </div>
+            @endauth
 
         </div>
     </header>
 
     {{-- Content --}}
-    <main class="flex-1 p-6 content-area">
+    <main class="flex-1 p-3.5 sm:p-6 content-area">
 
 
         {{-- Flash messages --}}
@@ -353,8 +383,8 @@
         @yield('content')
     </main>
 
-    {{-- Footer (visible for members) --}}
-    @can('view-history')
+    {{-- Footer (visible only for members) --}}
+    @role('anggota')
     <footer class="bg-white border-t border-slate-200 mt-auto">
         <div class="max-w-full px-6 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -421,7 +451,7 @@
             </div>
         </div>
     </footer>
-    @endcan
+    @endrole
 
 </div>{{-- end main-wrapper --}}
 

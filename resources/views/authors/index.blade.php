@@ -4,19 +4,20 @@
 @section('page-title', __('Master Pengarang'))
 
 @section('breadcrumb')
+<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
 <li class="breadcrumb-item active">{{ __('Pengarang') }}</li>
 @endsection
 
 @section('content')
 <div x-data="{ showAddModal: false }">
-    <div class="page-header justify-between items-start flex mb-6">
+    <div class="page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Master Pengarang') }}</h1>
-            <p class="text-slate-500 mt-1">{{ __('Kelola data pengarang/penulis buku') }}</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Master Pengarang') }}</h1>
+            <p class="text-slate-500 text-xs sm:text-sm mt-1">{{ __('Kelola data pengarang/penulis buku') }}</p>
         </div>
-        <div class="flex gap-2">
-            <button type="button" @click="showAddModal = true" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-6">
-                <i class="bi bi-plus-circle mr-1"></i>{{ __('Tambah Pengarang') }}
+        <div class="flex gap-2 w-full sm:w-auto">
+            <button type="button" @click="showAddModal = true" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-5">
+                <i class="bi bi-plus-circle"></i>{{ __('Tambah Pengarang') }}
             </button>
         </div>
     </div>
@@ -28,7 +29,7 @@
                 <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" placeholder="{{ __('Cari nama pengarang...') }}" value="{{ request('search') }}">
             </div>
             <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-search"></i> {{ __('Cari') }}</button>
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg btn-gradient-dark transition-colors text-white px-4"><i class="bi bi-search"></i> {{ __('Cari') }}</button>
                 <a href="{{ route('authors.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
             </div>
         </form>
@@ -50,24 +51,22 @@
                 </thead>
                 <tbody>
                     @forelse($authors as $author)
-                    <tr x-data="{ showEditModal: false }">
+                    <tr>
                         <td style="width:50px">{{ $authors->firstItem() + $loop->index }}</td>
                         <td class="font-semibold">{{ $author->name }}</td>
                         <td>
                             @if($author->type == 'personal')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800">
-                                    {{ __('Perorangan') }}
-                                </span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800">{{ __('Perorangan') }}</span>
                             @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
-                                    {{ __('Lembaga/Badan') }}
-                                </span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">{{ __('Lembaga/Badan') }}</span>
                             @endif
                         </td>
                         <td class="truncate" style="max-width:250px" title="{{ $author->biography }}">{{ $author->biography ?? '-' }}</td>
                         <td class="text-center" style="width:150px">
                             <div class="inline-flex gap-2">
-                                <button type="button" @click="showEditModal = true" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" title="{{ __('Edit') }}">
+                                <button type="button"
+                                    onclick="openEditAuthor({{ $author->id }}, {{ json_encode($author->name) }}, {{ json_encode($author->type) }}, {{ json_encode($author->biography ?? '') }})"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <form method="POST" action="{{ route('authors.destroy', $author) }}" onsubmit="return confirm('{{ __('Hapus pengarang ini?') }}')">
@@ -79,41 +78,6 @@
                             </div>
                         </td>
                     </tr>
-
-                    {{-- Edit Modal --}}
-                    <div x-show="showEditModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-                        <div @click.outside="showEditModal = false" class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden relative mt-10">
-                            <form method="POST" action="{{ route('authors.update', $author) }}">
-                                @csrf @method('PUT')
-                                
-                                <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                                    <h5 class="font-semibold text-slate-800">{{ __('Edit Pengarang') }}</h5>
-                                    <button type="button" @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
-                                </div>
-                                <div class="p-8 text-left max-h-[70vh] overflow-y-auto">
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Pengarang') }}</label>
-                                            <input type="text" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $author->name }}" required>
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tipe') }}</label>
-                                            <select name="type" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
-                                                <option value="personal" {{ $author->type == 'personal' ? 'selected' : '' }}>{{ __('Perorangan') }}</option>
-                                                <option value="organization" {{ $author->type == 'organization' ? 'selected' : '' }}>{{ __('Lembaga/Badan') }}</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Biografi Ringkas') }}</label>
-                                            <textarea name="biography" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" rows="3">{{ $author->biography }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                                        <button type="button" @click="showEditModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
-                                        <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
-                                    </div>
-                            </form>
-                        </div>
-                    </div>
                     @empty
                     <tr><td colspan="5" class="text-center text-slate-500 py-6">{{ __('Belum ada data pengarang') }}</td></tr>
                     @endforelse
@@ -126,6 +90,40 @@
         {{ $authors->links() }}
     </div>
     @endif
+</div>
+
+{{-- Edit Modal (satu, di luar tabel) --}}
+<div id="editAuthorModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden relative mt-10">
+        <form id="editAuthorForm" method="POST" action="">
+            @csrf @method('PUT')
+            <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h5 class="font-semibold text-slate-800">{{ __('Edit Pengarang') }}</h5>
+                <button type="button" onclick="closeEditAuthor()" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="p-8 text-left max-h-[70vh] overflow-y-auto">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Pengarang') }}</label>
+                    <input type="text" id="editAuthorName" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tipe') }}</label>
+                    <select id="editAuthorType" name="type" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
+                        <option value="personal">{{ __('Perorangan') }}</option>
+                        <option value="organization">{{ __('Lembaga/Badan') }}</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Biografi Ringkas') }}</label>
+                    <textarea id="editAuthorBio" name="biography" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+                <button type="button" onclick="closeEditAuthor()" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
+                <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 {{-- Add Modal --}}
@@ -161,8 +159,22 @@
             </form>
         </div>
     </div>
-    
-    </div> <!-- End x-data showAddModal wrapper -->
+
+    </div> <!-- End x-data -->
+
+<script>
+function openEditAuthor(id, name, type, biography) {
+    document.getElementById('editAuthorForm').action = '/authors/' + id;
+    document.getElementById('editAuthorName').value = name;
+    document.getElementById('editAuthorType').value = type;
+    document.getElementById('editAuthorBio').value = biography;
+    document.getElementById('editAuthorModal').style.display = 'flex';
+}
+function closeEditAuthor() {
+    document.getElementById('editAuthorModal').style.display = 'none';
+}
+document.getElementById('editAuthorModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditAuthor();
+});
+</script>
 @endsection
-
-

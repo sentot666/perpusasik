@@ -18,23 +18,52 @@ window.Toast = Swal.mixin({
     timerProgressBar: true,
 });
 
-// Sidebar mobile toggle
+// Sidebar mobile toggle & responsive behavior
 document.addEventListener('DOMContentLoaded', () => {
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
 
+    const closeSidebar = () => {
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (overlay) overlay.classList.add('hidden');
+    };
+
+    const openSidebar = () => {
+        if (sidebar) sidebar.classList.remove('-translate-x-full');
+        if (overlay) overlay.classList.remove('hidden');
+    };
+
     if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-            if (overlay) overlay.classList.toggle('hidden');
+        sidebarToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
         });
     }
 
     if (overlay) {
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
+        overlay.addEventListener('click', closeSidebar);
+    }
+
+    // Close sidebar on link click on mobile view
+    if (sidebar) {
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) { // < lg breakpoint
+                    closeSidebar();
+                }
+            });
         });
     }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+            if (overlay) overlay.classList.add('hidden');
+        }
+    });
 });

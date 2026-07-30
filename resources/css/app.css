@@ -86,3 +86,27 @@
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+/* ─── Button Gradients (plain CSS, outside @layer agar tidak di-strip Tailwind v4) ── */
+.btn-gradient-blue { background: linear-gradient(to right, #38BDF8, #3B82F6); }
+.btn-gradient-blue:hover { background: linear-gradient(to right, #3B82F6, #2563EB); box-shadow: 0 4px 12px rgba(59,130,246,0.35); }
+
+.btn-gradient-red { background: linear-gradient(to right, #FB7185, #F43F5E); }
+.btn-gradient-red:hover { background: linear-gradient(to right, #F43F5E, #E11D48); box-shadow: 0 4px 12px rgba(244,63,94,0.35); }
+
+.btn-gradient-green { background: linear-gradient(to right, #4ADE80, #22C55E); }
+.btn-gradient-green:hover { background: linear-gradient(to right, #22C55E, #16A34A); box-shadow: 0 4px 12px rgba(34,197,94,0.35); }
+
+.btn-gradient-yellow { background: linear-gradient(to right, #FDE047, #FBBF24); color: #1e293b; }
+.btn-gradient-yellow:hover { background: linear-gradient(to right, #FBBF24, #F59E0B); }
+
+.btn-gradient-dark { background: linear-gradient(to right, #475569, #1e293b); }
+.btn-gradient-dark:hover { background: linear-gradient(to right, #1e293b, #0f172a); }
+
+.btn-gradient-purple { background: linear-gradient(to right, #A78BFA, #7C3AED); }
+.btn-gradient-purple:hover { background: linear-gradient(to right, #7C3AED, #6D28D9); }
+
+.btn-gradient-orange { background: linear-gradient(to right, #FDBA74, #F97316); }
+.btn-gradient-orange:hover { background: linear-gradient(to right, #F97316, #EA580C); }
+
+.btn-gradient-cyan { background: linear-gradient(to right, #67E8F9, #22D3EE); }
+.btn-gradient-cyan:hover { background: linear-gradient(to right, #22D3EE, #0891B2); }

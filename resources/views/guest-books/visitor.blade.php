@@ -47,10 +47,10 @@
 
         @if(session('success'))
             <script>
-                // Auto redirect back to empty form after 4 seconds to allow next visitor to sign in
+                // Redirect setelah toast selesai (4.5 detik)
                 setTimeout(() => {
                     window.location.href = "{{ route('guest-books.visitor') }}";
-                }, 3000);
+                }, 4500);
             </script>
         @endif
 
@@ -170,7 +170,6 @@
 </style>
 @endpush
 
-@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -208,6 +207,5 @@
         @endif
     });
 </script>
-@endpush
 @endsection
 

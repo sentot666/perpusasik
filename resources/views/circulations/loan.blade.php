@@ -98,7 +98,7 @@
                         <textarea name="notes" id="notesInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition resize-none py-2 px-4" rows="2" placeholder="{{ __('Opsional...') }}"></textarea>
                     </div>
 
-                    <button type="submit" class="w-full flex items-center justify-center py-2.5 border border-slate-200 border-transparent rounded-lg shadow-sm text-sm font-semibold btn-gradient-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed text-white gap-2 px-6" id="submitLoan" disabled>
+                    <button type="submit" class="w-full flex items-center justify-center py-2.5 rounded-lg shadow-sm text-sm font-semibold focus:outline-none transition text-white gap-2 px-6" id="submitLoan" disabled style="background: linear-gradient(to right, #38BDF8, #3B82F6); opacity:0.5; cursor:not-allowed;">
                         <i class="bi bi-box-arrow-right"></i> {{ __('Proses Peminjaman') }}
                     </button>
                 </form>
@@ -157,7 +157,13 @@ const submitBtn     = document.getElementById('submitLoan');
 let selectedBooks = [];
 
 function checkSubmit() {
-    submitBtn.disabled = !(memberIdInput.value && selectedBooks.length > 0);
+    const ready = !!(memberIdInput.value && selectedBooks.length > 0);
+    submitBtn.disabled = !ready;
+    submitBtn.style.opacity = ready ? '1' : '0.5';
+    submitBtn.style.cursor = ready ? 'pointer' : 'not-allowed';
+    submitBtn.style.background = ready
+        ? 'linear-gradient(to right, #3B82F6, #2563EB)'
+        : 'linear-gradient(to right, #38BDF8, #3B82F6)';
 }
 
 // Render book list

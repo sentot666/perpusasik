@@ -9,102 +9,107 @@
 @endsection
 
 @section('content')
-<div class="page-header justify-between items-start flex">
+<div class="page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
-        <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Detail Buku') }}</h1>
-        <p>{{ __('Detail bibliografi dan eksemplar fisik buku') }}</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Detail Buku') }}</h1>
+        <p class="text-slate-500 text-xs sm:text-sm">{{ __('Detail bibliografi dan eksemplar fisik buku') }}</p>
     </div>
-    <div class="flex gap-2">
-        <a href="{{ route('books.barcode', $book) }}" target="_blank" class="btn btn-warning text-slate-800 font-medium">
-            <i class="bi bi-upc-scan mr-1"></i>{{ __('Cetak Barcode') }}
+    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+        <a href="{{ route('books.barcode', $book) }}" target="_blank" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 transition-colors text-white gap-1.5 py-2 px-4 shadow-sm">
+            <i class="bi bi-upc-scan"></i>{{ __('Cetak Barcode') }}
         </a>
-        <a href="{{ route('books.edit', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6">
-            <i class="bi bi-pencil mr-1"></i>{{ __('Edit') }}
+        <a href="{{ route('books.edit', $book) }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg text-slate-700 border border-slate-300 hover:bg-slate-50 transition-colors gap-1.5 py-2 px-4">
+            <i class="bi bi-pencil"></i>{{ __('Edit') }}
         </a>
     </div>
 </div>
 
-<div class="flex flex-wrap -mx-3">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     {{-- Left side: Bibliografi detail --}}
-    <div class="w-full lg:w-2/3 px-4">
+    <div class="lg:col-span-8">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-            <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-journal-text mr-2"></i>{{ __('Informasi Bibliografi') }}</div>
-            <div class="p-8">
-                <div class="flex flex-wrap -mx-3">
-                    <div class="text-center w-full md:w-1/4 px-4">
-                        <div style="width:100%;max-width:130px;aspect-ratio:3/4;background:#f1f5f9;border-radius:8px;border:1px solid #e2e8f0;overflow:hidden;margin:0 auto;display:flex;align-items:center;justify-content:center;color:#94a3b8">
-                            @if($book->cover_image)
-                                <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover">
+            <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 font-semibold text-slate-700 text-sm flex items-center gap-2">
+                <i class="bi bi-journal-text text-indigo-600"></i>{{ __('Informasi Bibliografi') }}
+            </div>
+            <div class="p-6">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="w-full md:w-1/4 flex justify-center">
+                        <div class="w-32 aspect-[3/4] bg-slate-100 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center text-slate-400">
+                            @if($book->cover_image && file_exists(public_path('storage/' . $book->cover_image)))
+                                <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full h-full object-cover" alt="{{ $book->title }}">
                             @else
-                                <i class="bi bi-book text-4xl font-bold"></i>
+                                <i class="bi bi-book text-4xl"></i>
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-9">
-                        <h3 class="fw-700 text-slate-800 mb-1">{{ $book->title }}</h3>
+                    <div class="w-full md:w-3/4">
+                        <h3 class="text-xl font-bold text-slate-800 mb-1">{{ $book->title }}</h3>
                         @if($book->subtitle)
-                        <h5 class="text-slate-500 mb-2">{{ $book->subtitle }}</h5>
+                        <h5 class="text-slate-500 text-sm mb-3">{{ $book->subtitle }}</h5>
                         @endif
 
-                        <div class="mb-6">
-                            <span class="inline-flex py-1 text-xs font-medium rounded-md bg-indigo-100 text-indigo-700 px-2">{{ $book->collection_type }}</span>
-                            <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-50 border border-slate-200 text-slate-800">{{ $book->language == 'id' ? __('Bahasa Indonesia') : __('Bahasa Asing') }}</span>
+                        <div class="mb-4 flex flex-wrap gap-2">
+                            <span class="inline-flex py-1 text-xs font-semibold rounded-md bg-indigo-100 text-indigo-700 px-2.5">{{ $book->collection_type }}</span>
+                            <span class="inline-flex py-1 text-xs font-semibold rounded-md bg-slate-100 border border-slate-200 text-slate-800 px-2.5">{{ $book->language == 'id' ? __('Bahasa Indonesia') : __('Bahasa Asing') }}</span>
                         </div>
 
-                        <table class="border-0 text-sm w-full text-left text-slate-600 whitespace-nowrap [&>thead>tr>th]:px-4 [&>thead>tr>th]:py-3 [&>thead>tr>th]:bg-slate-50 [&>thead>tr>th]:font-semibold [&>thead>tr>th]:text-slate-700 [&>thead>tr>th]:border-b [&>thead>tr>th]:border-slate-200 [&>tbody>tr>td]:px-4 [&>tbody>tr>td]:py-3 [&>tbody>tr]:border-b [&>tbody>tr]:border-slate-100 [&>tbody>tr:last-child]:border-0 mb-0" style="font-size:0.85rem">
-                            <tr>
-                                <td style="width:120px" class="text-slate-500">{{ __('PENGARANG') }}</td>
-                                <td>:
-                                    @forelse($book->authors as $author)
-                                        <span class="font-medium">{{ $author->name }}</span>{{ !$loop->last ? ', ' : '' }}
-                                    @empty
-                                        <span class="text-slate-500">-</span>
-                                    @endforelse
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-slate-500">{{ __('PENERBIT') }}</td>
-                                <td>: {{ $book->publisher?->name ?? '-' }} ({{ $book->publisher?->city ?? '' }})</td>
-                            </tr>
-                            <tr>
-                                <td class="text-slate-500">{{ __('TAHUN TERBIT') }}</td>
-                                <td>: {{ $book->publication_year ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-slate-500">{{ __('EDISI / SERI') }}</td>
-                                <td>: {{ $book->edition ?? '-' }} @if($book->series_title) ({{ __('Seri') }}: {{ $book->series_title }} #{{ $book->series_number }}) @endif</td>
-                            </tr>
-                            <tr>
-                                <td class="text-slate-500">{{ __('ISBN') }}</td>
-                                <td>: {{ $book->isbn ?? '-' }} @if($book->isbn13) / {{ $book->isbn13 }} @endif</td>
-                            </tr>
-                            <tr>
-                                <td class="text-slate-500">{{ __('KLASIFIKASI') }}</td>
-                                <td>: {{ __('DDC') }} {{ $book->ddc ?? '-' }} / {{ __('No. Panggil') }}: <code>{{ $book->call_number ?? '-' }}</code></td>
-                            </tr>
-                            <tr>
-                                <td class="text-slate-500">{{ __('FISIK') }}</td>
-                                <td>: {{ $book->pages ?? '-' }} {{ __('hlm') }}; {{ $book->dimensions ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-slate-500">{{ __('SUBYEK') }}</td>
-                                <td>:
-                                    @forelse($book->subjects as $sub)
-                                        <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-50 border border-slate-200 text-slate-800">{{ $sub->name }}</span>
-                                    @empty
-                                        <span class="text-slate-500">-</span>
-                                    @endforelse
-                                </td>
-                            </tr>
-                        </table>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs sm:text-sm text-slate-600">
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold w-32 uppercase text-xs">{{ __('PENGARANG') }}</td>
+                                        <td class="py-2">: 
+                                            @forelse($book->authors as $author)
+                                                <span class="font-medium text-slate-800">{{ $author->name }}</span>{{ !$loop->last ? ', ' : '' }}
+                                            @empty
+                                                <span class="text-slate-400">-</span>
+                                            @endforelse
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold uppercase text-xs">{{ __('PENERBIT') }}</td>
+                                        <td class="py-2">: {{ $book->publisher?->name ?? '-' }} @if($book->publisher?->city) ({{ $book->publisher->city }}) @endif</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold uppercase text-xs">{{ __('TAHUN TERBIT') }}</td>
+                                        <td class="py-2">: {{ $book->publication_year ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold uppercase text-xs">{{ __('EDISI / SERI') }}</td>
+                                        <td class="py-2">: {{ $book->edition ?? '-' }} @if($book->series_title) ({{ __('Seri') }}: {{ $book->series_title }} #{{ $book->series_number }}) @endif</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold uppercase text-xs">{{ __('ISBN') }}</td>
+                                        <td class="py-2">: {{ $book->isbn ?? '-' }} @if($book->isbn13) / {{ $book->isbn13 }} @endif</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold uppercase text-xs">{{ __('KLASIFIKASI') }}</td>
+                                        <td class="py-2">: {{ __('DDC') }} {{ $book->ddc ?? '-' }} / {{ __('No. Panggil') }}: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-xs">{{ $book->call_number ?? '-' }}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold uppercase text-xs">{{ __('FISIK') }}</td>
+                                        <td class="py-2">: {{ $book->pages ? $book->pages . ' hlm' : '-' }}; {{ $book->dimensions ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 pr-4 text-slate-500 font-semibold uppercase text-xs">{{ __('SUBYEK') }}</td>
+                                        <td class="py-2">: 
+                                            @forelse($book->subjects as $sub)
+                                                <span class="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700 mr-1">{{ $sub->name }}</span>
+                                            @empty
+                                                <span class="text-slate-400">-</span>
+                                            @endforelse
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 @if($book->abstract)
-                <hr>
-                <div style="font-size:0.85rem">
-                    <h6 class="font-semibold mb-2">{{ __('Abstrak/Catatan Ringkas') }}:</h6>
-                    <p class="text-slate-500 mb-0" style="line-height:1.6">{{ $book->abstract }}</p>
+                <div class="border-t border-slate-100 mt-6 pt-4 text-xs sm:text-sm">
+                    <h6 class="font-bold text-slate-800 mb-2">{{ __('Abstrak / Catatan Ringkas') }}:</h6>
+                    <p class="text-slate-600 leading-relaxed">{{ $book->abstract }}</p>
                 </div>
                 @endif
             </div>
@@ -112,36 +117,40 @@
     </div>
 
     {{-- Right side: Copies summary --}}
-    <div class="w-full lg:w-1/3 px-4">
-        <div class="text-center bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-            <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-info-circle mr-2"></i>{{ __('Ketersediaan') }}</div>
-            <div class="p-8">
-                <div class="justify-content-around items-center flex">
+    <div class="lg:col-span-4 flex flex-col gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden text-center">
+            <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 font-semibold text-slate-700 text-sm flex items-center justify-center gap-2">
+                <i class="bi bi-info-circle text-indigo-600"></i>{{ __('Ketersediaan Buku') }}
+            </div>
+            <div class="p-6">
+                <div class="flex items-center justify-around">
                     <div>
-                        <div class="text-3xl font-bold fw-800 text-indigo-600">{{ $book->items()->count() }}</div>
-                        <small class="text-slate-500" style="font-size:0.65rem;text-transform:uppercase">{{ __('Total Eksemplar') }}</small>
+                        <div class="text-3xl font-extrabold text-indigo-600">{{ $book->items()->count() }}</div>
+                        <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mt-1">{{ __('Total Eksemplar') }}</div>
                     </div>
-                    <div style="border-left:1px solid #e2e8f0;height:40px"></div>
+                    <div class="w-px h-10 bg-slate-200"></div>
                     <div>
-                        <div class="text-3xl font-bold fw-800 text-emerald-600">{{ $book->items()->where('status', 'Tersedia')->count() }}</div>
-                        <small class="text-slate-500" style="font-size:0.65rem;text-transform:uppercase">{{ __('Tersedia') }}</small>
+                        <div class="text-3xl font-extrabold text-emerald-600">{{ $book->items()->where('status', 'Tersedia')->count() }}</div>
+                        <div class="text-slate-500 text-xs font-semibold uppercase tracking-wider mt-1">{{ __('Tersedia') }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-geo-alt mr-2"></i>{{ __('Rak Penyimpanan') }}</div>
-            <div class="px-8 py-2">
+            <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 font-semibold text-slate-700 text-sm flex items-center gap-2">
+                <i class="bi bi-geo-alt text-red-500"></i>{{ __('Rak Penyimpanan') }}
+            </div>
+            <div class="p-4 space-y-2">
                 @php
-                $itemLocations = $book->items()->with('location')->get()->pluck('location.name')->unique()->filter();
+                    $itemLocations = $book->items()->with('location')->get()->pluck('location.name')->unique()->filter();
                 @endphp
                 @forelse($itemLocations as $loc)
-                    <div class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-50 border border-slate-200 p-2 w-full text-left text-slate-800 mb-1">
-                        <i class="bi bi-geo-alt-fill mr-1 text-red-600"></i>{{ $loc }}
+                    <div class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-50 border border-slate-200 text-slate-800 flex items-center gap-2">
+                        <i class="bi bi-geo-alt-fill text-red-500"></i>{{ $loc }}
                     </div>
                 @empty
-                    <span class="text-slate-500" style="font-size:0.82rem">{{ __('Belum ada penempatan lokasi eksemplar') }}</span>
+                    <div class="text-slate-400 text-xs text-center py-2">{{ __('Belum ada lokasi eksemplar') }}</div>
                 @endforelse
             </div>
         </div>
@@ -150,10 +159,10 @@
 
 {{-- Eksemplar Section --}}
 <div class="mt-6 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="justify-between items-center px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 flex py-4">
-        <span><i class="bi bi-upc-scan text-indigo-600 mr-2"></i>{{ __('Daftar Eksemplar Fisik') }}</span>
-        <a href="{{ route('books.items.create', $book) }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4">
-            <i class="bi bi-plus-circle mr-1"></i>{{ __('Tambah Eksemplar') }}
+    <div class="justify-between items-center px-6 py-4 border-b border-slate-200 bg-slate-50 font-semibold text-slate-700 text-sm flex flex-col sm:flex-row gap-3">
+        <span class="flex items-center gap-2"><i class="bi bi-upc-scan text-indigo-600"></i>{{ __('Daftar Eksemplar Fisik') }}</span>
+        <a href="{{ route('books.items.create', $book) }}" class="inline-flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-lg btn-gradient-blue transition-colors text-white px-4 w-full sm:w-auto">
+            <i class="bi bi-plus-circle"></i>{{ __('Tambah Eksemplar') }}
         </a>
     </div>
     <div class="p-0">
@@ -173,34 +182,42 @@
                 <tbody>
                     @forelse($book->items as $item)
                     <tr>
-                        <td><code class="font-semibold" style="font-size:0.85rem">{{ $item->barcode }}</code></td>
-                        <td>{{ $item->accession_number }}</td>
+                        <td><code class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded text-xs">{{ $item->barcode }}</code></td>
+                        <td>{{ $item->accession_number ?? '-' }}</td>
                         <td>
                             @if($item->location)
-                            <span class="font-medium"><i class="bi bi-geo-alt mr-1 text-red-600"></i>{{ $item->location->name }}</span>
+                            <span class="font-medium"><i class="bi bi-geo-alt mr-1 text-red-500"></i>{{ $item->location->name }}</span>
                             @else
-                            <span class="text-slate-500">-</span>
+                            <span class="text-slate-400">-</span>
                             @endif
                         </td>
                         <td>
-                            <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-{{ $item->condition == 'Baik' ? 'success' : ($item->condition 'Rusak' 'danger' 'warning') }}">
-                                {{ $item->condition }}
-                            </span>
+                            @if($item->condition === 'Baik')
+                            <span class="inline-flex py-0.5 text-xs font-semibold rounded-md bg-emerald-100 text-emerald-800 px-2.5">Baik</span>
+                            @elseif($item->condition === 'Rusak')
+                            <span class="inline-flex py-0.5 text-xs font-semibold rounded-md bg-red-100 text-red-800 px-2.5">Rusak</span>
+                            @else
+                            <span class="inline-flex py-0.5 text-xs font-semibold rounded-md bg-amber-100 text-amber-800 px-2.5">{{ $item->condition }}</span>
+                            @endif
                         </td>
                         <td>{{ $item->acquisition_date ? $item->acquisition_date->format('d/m/Y') : '-' }}</td>
                         <td>
-                            <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-{{ $item->status == 'Tersedia' ? 'success' : ($item->status 'Dipinjam' 'warning text-dark' 'secondary') }}">
-                                {{ $item->status }}
-                            </span>
+                            @if($item->status === 'Tersedia')
+                            <span class="inline-flex py-0.5 text-xs font-semibold rounded-md bg-emerald-100 text-emerald-800 px-2.5">Tersedia</span>
+                            @elseif($item->status === 'Dipinjam')
+                            <span class="inline-flex py-0.5 text-xs font-semibold rounded-md bg-amber-100 text-amber-800 px-2.5">Dipinjam</span>
+                            @else
+                            <span class="inline-flex py-0.5 text-xs font-semibold rounded-md bg-slate-100 text-slate-800 px-2.5">{{ $item->status }}</span>
+                            @endif
                         </td>
                         <td class="text-center">
-                            <div class="inline-flex rounded-md shadow-sm rounded-lg">
-                                <a href="{{ route('book-items.edit', $item) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="{{ __('Edit') }}">
+                            <div class="inline-flex items-center gap-1">
+                                <a href="{{ route('items.edit', $item) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="POST" action="{{ route('book-items.destroy', $item) }}" onsubmit="return confirm('{{ __('Hapus eksemplar ini?') }}')">
+                                <form method="POST" action="{{ route('items.destroy', $item) }}" onsubmit="return confirm('{{ __('Hapus eksemplar ini?') }}')" class="inline-block">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6" title="{{ __('Hapus') }}">
+                                    <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -209,8 +226,10 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center text-slate-500 py-6">
-                            {{ __('Belum ada eksemplar fisik untuk buku ini.') }} <a href="{{ route('books.items.create', $book) }}">{{ __('Tambah eksemplar pertama') }}</a>
+                        <td colspan="7" class="text-center text-slate-500 py-8">
+                            <i class="bi bi-upc-scan text-3xl block mb-2 text-slate-300"></i>
+                            {{ __('Belum ada eksemplar fisik untuk buku ini.') }} 
+                            <a href="{{ route('books.items.create', $book) }}" class="text-indigo-600 font-semibold hover:underline block mt-1">{{ __('Tambah eksemplar pertama') }}</a>
                         </td>
                     </tr>
                     @endforelse
@@ -220,5 +239,3 @@
     </div>
 </div>
 @endsection
-
-

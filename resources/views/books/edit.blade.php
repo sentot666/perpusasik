@@ -167,9 +167,11 @@
 
             <hr>
 
-            <div class="justify-end flex gap-2">
-                <a href="{{ route('books.show', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6">{{ __('Batal') }}</a>
-                <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white font-semibold gap-2 py-2 px-6">{{ __('Simpan Perubahan') }}</button>
+            <div class="justify-end flex gap-2 pt-4">
+                <a href="{{ route('books.show', $book) }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2.5 px-6">{{ __('Batal') }}</a>
+                <button type="submit" class="inline-flex items-center justify-center text-sm font-semibold rounded-lg btn-gradient-green hover:opacity-95 shadow-md shadow-emerald-500/20 text-white gap-2 py-2.5 px-6 transition-all transform hover:-translate-y-0.5">
+                    <i class="bi bi-check-circle-fill text-base"></i>{{ __('Simpan Perubahan') }}
+                </button>
             </div>
         </form>
 

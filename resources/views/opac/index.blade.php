@@ -1,5 +1,5 @@
 @extends('layouts.opac')
-@section('title', __('Katalog Online (OPAC)'))
+
 
 @section('content')
 {{-- Hero Carousel Section --}}
@@ -80,7 +80,7 @@
         </a>
 
         <!-- Agenda Kegiatan -->
-        <a href="#" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 py-12 px-8 md:px-10 min-h-[180px] flex items-center text-left no-underline border border-slate-100 group transform hover:-translate-y-1">
+        <a href="{{ route('opac.agenda') }}" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 py-12 px-8 md:px-10 min-h-[180px] flex items-center text-left no-underline border border-slate-100 group transform hover:-translate-y-1">
             <div class="w-20 h-20 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300 shadow-sm shrink-0">
                 <i class="bi bi-calendar-event text-3xl"></i>
             </div>

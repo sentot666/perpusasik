@@ -4,19 +4,20 @@
 @section('page-title', __('Master Subyek'))
 
 @section('breadcrumb')
+<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
 <li class="breadcrumb-item active">{{ __('Subyek') }}</li>
 @endsection
 
 @section('content')
 <div x-data="{ showAddModal: false }">
-    <div class="page-header justify-between items-start flex mb-6">
+    <div class="page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-            <h1 class="text-3xl font-bold text-slate-800 mb-1">{{ __('Master Subyek') }}</h1>
-            <p class="text-slate-500 mt-1">{{ __('Kelola klasifikasi subyek / topik buku (DDC)') }}</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Master Subyek') }}</h1>
+            <p class="text-slate-500 text-xs sm:text-sm mt-1">{{ __('Kelola klasifikasi subyek / topik buku (DDC)') }}</p>
         </div>
-        <div class="flex gap-2">
-            <button type="button" @click="showAddModal = true" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-6">
-                <i class="bi bi-plus-circle mr-1"></i>{{ __('Tambah Subyek') }}
+        <div class="flex gap-2 w-full sm:w-auto">
+            <button type="button" @click="showAddModal = true" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-5">
+                <i class="bi bi-plus-circle"></i>{{ __('Tambah Subyek') }}
             </button>
         </div>
     </div>
@@ -28,7 +29,7 @@
                 <input type="text" name="search" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none px-4" placeholder="{{ __('Cari nama subyek atau kode DDC...') }}" value="{{ request('search') }}">
             </div>
             <div class="w-auto px-4">
-                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg btn-gradient-blue transition-colors text-white px-4"><i class="bi bi-search"></i> {{ __('Cari') }}</button>
+                <button type="submit" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg btn-gradient-dark transition-colors text-white px-4"><i class="bi bi-search"></i> {{ __('Cari') }}</button>
                 <a href="{{ route('subjects.index') }}" class="inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Reset') }}</a>
             </div>
         </form>
@@ -49,13 +50,15 @@
                 </thead>
                 <tbody>
                     @forelse($subjects as $sub)
-                    <tr x-data="{ showEditModal: false }">
+                    <tr>
                         <td style="width:50px">{{ $subjects->firstItem() + $loop->index }}</td>
                         <td><code class="text-base font-semibold">{{ $sub->ddc ?? '-' }}</code></td>
                         <td class="text-slate-800 font-semibold">{{ $sub->name }}</td>
                         <td class="text-center" style="width:150px">
                             <div class="inline-flex gap-2">
-                                <button type="button" @click="showEditModal = true" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" title="{{ __('Edit') }}">
+                                <button type="button"
+                                    onclick="openEditSubject({{ $sub->id }}, {{ json_encode($sub->name) }}, {{ json_encode($sub->ddc ?? '') }})"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <form method="POST" action="{{ route('subjects.destroy', $sub) }}" onsubmit="return confirm('{{ __('Hapus subyek ini?') }}')">
@@ -67,34 +70,6 @@
                             </div>
                         </td>
                     </tr>
-
-                    {{-- Edit Modal --}}
-                    <div x-show="showEditModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-                        <div @click.outside="showEditModal = false" class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden relative mt-10">
-                            <form method="POST" action="{{ route('subjects.update', $sub) }}">
-                                @csrf @method('PUT')
-                                
-                                <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                                    <h5 class="font-semibold text-slate-800">{{ __('Edit Subyek') }}</h5>
-                                    <button type="button" @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
-                                </div>
-                                <div class="p-8 text-left">
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Subyek / Topik') }}</label>
-                                            <input type="text" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $sub->name }}" required>
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Klasifikasi DDC') }}</label>
-                                            <input type="text" name="ddc" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $sub->ddc }}" placeholder="{{ __('Contoh: 005.3') }}">
-                                        </div>
-                                    </div>
-                                    <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                                        <button type="button" @click="showEditModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
-                                        <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
-                                    </div>
-                            </form>
-                        </div>
-                    </div>
                     @empty
                     <tr><td colspan="4" class="text-center text-slate-500 py-6">{{ __('Belum ada data subyek') }}</td></tr>
                     @endforelse
@@ -107,6 +82,33 @@
         {{ $subjects->links() }}
     </div>
     @endif
+</div>
+
+{{-- Edit Modal (satu, di luar tabel) --}}
+<div id="editSubjectModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden relative mt-10">
+        <form id="editSubjectForm" method="POST" action="">
+            @csrf @method('PUT')
+            <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h5 class="font-semibold text-slate-800">{{ __('Edit Subyek') }}</h5>
+                <button type="button" onclick="closeEditSubject()" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="p-8 text-left">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Subyek / Topik') }}</label>
+                    <input type="text" id="editSubName" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Klasifikasi DDC') }}</label>
+                    <input type="text" id="editSubDdc" name="ddc" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Contoh: 005.3') }}">
+                </div>
+            </div>
+            <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+                <button type="button" onclick="closeEditSubject()" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
+                <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 {{-- Add Modal --}}
@@ -135,8 +137,21 @@
             </form>
         </div>
     </div>
-    
-    </div> <!-- End x-data showAddModal wrapper -->
+
+    </div> <!-- End x-data -->
+
+<script>
+function openEditSubject(id, name, ddc) {
+    document.getElementById('editSubjectForm').action = '/subjects/' + id;
+    document.getElementById('editSubName').value = name;
+    document.getElementById('editSubDdc').value = ddc;
+    document.getElementById('editSubjectModal').style.display = 'flex';
+}
+function closeEditSubject() {
+    document.getElementById('editSubjectModal').style.display = 'none';
+}
+document.getElementById('editSubjectModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditSubject();
+});
+</script>
 @endsection
-
-

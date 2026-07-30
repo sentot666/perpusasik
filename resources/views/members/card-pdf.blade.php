@@ -158,42 +158,37 @@
                         </tr>
                     </table>
 
-                    <!-- Name -->
-                    <div class="name-block">
-                        {{ $member->name }}
-                    </div>
-
-                    <!-- Details -->
-                    <table class="details-table">
+                    <!-- Details List -->
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 6pt;">
                         <tr>
-                            <td style="width: 52%;">
-                                <div class="label">Alamat</div>
-                                <div class="val" style="min-height: 18pt;">{{ \Illuminate\Support\Str::limit($member->address ?? '-', 60) }}</div>
-                            </td>
-                            <td style="width: 48%;">
-                                <div class="label">Nomor Identitas</div>
-                                <div class="val">{{ $member->member_code }}</div>
-                            </td>
+                            <td style="font-size: 6pt; font-weight: bold; color: #64748b; padding-bottom: 3pt; width: 60pt;">ID Anggota</td>
+                            <td style="font-size: 6.5pt; font-weight: bold; color: #0f172a; padding-bottom: 3pt;">: {{ $member->member_code }}</td>
                         </tr>
                         <tr>
-                            <td>
-                                <div class="label">Nomor Telepon</div>
-                                <div class="val">{{ $member->phone ?? '-' }}</div>
-                            </td>
-                            <td style="text-align: right; vertical-align: bottom;">
-                                <div style="font-size: 6pt; margin-bottom: 3pt; color: #64748b; font-weight: bold;">
-                                    EXP: {{ $member->expired_date ? $member->expired_date->format('Y-m-d') : '-' }}
-                                </div>
-                                <div>
-                                    @php
-                                        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
-                                        $barcode = base64_encode($generator->getBarcode($member->member_code, $generator::TYPE_CODE_128, 1.2, 22));
-                                    @endphp
-                                    <img src="data:image/png;base64,{{ $barcode }}" style="width: 75pt; height: 16pt;" alt="barcode">
-                                </div>
-                            </td>
+                            <td style="font-size: 6pt; font-weight: bold; color: #64748b; padding-bottom: 3pt;">Nama</td>
+                            <td style="font-size: 6.5pt; font-weight: bold; color: #0f172a; padding-bottom: 3pt;">: {{ $member->name }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 6pt; font-weight: bold; color: #64748b; padding-bottom: 3pt;">Nomor Identitas</td>
+                            <td style="font-size: 6.5pt; color: #0f172a; padding-bottom: 3pt;">: {{ $member->identity_number ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 6pt; font-weight: bold; color: #64748b; vertical-align: top;">Alamat</td>
+                            <td style="font-size: 6pt; color: #0f172a; vertical-align: top; line-height: 1.1; padding-right: 65pt;">: {{ \Illuminate\Support\Str::limit($member->address ?? '-', 45) }}</td>
                         </tr>
                     </table>
+
+                    <!-- Barcode at Bottom Right of Front Card (16pt safely inside card cut lines) -->
+                    <div style="position: absolute; bottom: 16pt; right: 16pt; text-align: right;">
+                        @php
+                            $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+                            $barcode = base64_encode($generator->getBarcode($member->member_code, $generator::TYPE_CODE_128, 1.1, 18));
+                        @endphp
+                        <div style="background: #ffffff; padding: 2pt 4pt; border-radius: 2pt; display: inline-block;">
+                            <img src="data:image/png;base64,{{ $barcode }}" style="width: 72pt; height: 16pt; display: block;" alt="barcode">
+                            <div style="font-size: 5.5pt; color: #1e293b; font-family: monospace; text-align: center; margin-top: 1pt; font-weight: bold;">{{ $member->member_code }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div style="font-size: 7pt; color: #94a3b8; margin-top: 5pt;">Bagian Depan</div>

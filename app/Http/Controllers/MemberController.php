@@ -129,10 +129,21 @@ class MemberController extends Controller
     public function printCard(Member $member)
     {
         $libraryName = Setting::get('library_name', 'Perpustakaan');
-        $pdf = Pdf::loadView('members.card-pdf', compact('member', 'libraryName'))
-            ->setPaper([0, 0, 242, 153], 'landscape'); // CR80 card size
+        $members = collect([$member]); // Pass as collection so the view can handle both single and multiple
+        return view('members.print-card', compact('members', 'libraryName'));
+    }
 
-        return $pdf->stream("kartu-{$member->member_code}.pdf");
+    public function printBulk(Request $request)
+    {
+        $request->validate([
+            'member_ids' => 'required|array',
+            'member_ids.*' => 'exists:members,id',
+        ]);
+
+        $members = Member::whereIn('id', $request->member_ids)->get();
+        $libraryName = Setting::get('library_name', 'Perpustakaan');
+        
+        return view('members.print-card', compact('members', 'libraryName'));
     }
 
     public function history(Member $member)

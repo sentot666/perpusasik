@@ -166,11 +166,18 @@ class GuestBookController extends Controller
             'notes'              => 'nullable|string',
         ]);
 
-        $validated['visit_date'] = Carbon::now()->toDateString();
-        $validated['visit_time'] = Carbon::now()->format('H:i');
+        try {
+            $validated['visit_date'] = Carbon::now()->toDateString();
+            $validated['visit_time'] = Carbon::now()->format('H:i');
 
-        GuestBook::create($validated);
+            GuestBook::create($validated);
 
-        return back()->with('success', 'Kunjungan Anda berhasil dicatat.');
+            return redirect()->route('guest-books.visitor')
+                ->with('success', 'Kunjungan Anda berhasil dicatat. Terima kasih!');
+        } catch (\Exception $e) {
+            return redirect()->route('guest-books.visitor')
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan, kunjungan gagal dicatat. Silakan coba lagi.');
+        }
     }
 }

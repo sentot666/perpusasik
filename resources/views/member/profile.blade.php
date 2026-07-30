@@ -19,30 +19,40 @@
                 <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 rounded-full bg-white opacity-5"></div>
                 <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-40 h-40 rounded-full bg-white opacity-5"></div>
                 
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-6">
+                <div class="p-6 relative pb-16 min-h-[210px]">
+                    <div class="flex justify-between items-start mb-4 border-b border-white/10 pb-3">
                         <div>
-                            <h3 class="text-white font-bold text-lg tracking-wide uppercase">{{ config('app.name', 'Makarya') }}</h3>
+                            <h3 class="text-white font-bold text-base tracking-wide uppercase">{{ config('app.name', 'Makarya') }}</h3>
                             <p class="text-slate-400 text-xs">Kartu Anggota Digital</p>
                         </div>
-                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-sm border border-white/20">
-                            <i class="bi bi-person-badge text-xl"></i>
+                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-sm border border-white/20">
+                            <i class="bi bi-person-badge text-lg"></i>
                         </div>
                     </div>
-                    
-                    <div class="mb-6 space-y-1">
-                        <div class="text-slate-400 text-xs uppercase tracking-wider">Nama Anggota</div>
-                        <div class="text-white font-semibold text-lg">{{ $member->name }}</div>
-                    </div>
-                    
-                    <div class="mb-6 space-y-1">
-                        <div class="text-slate-400 text-xs uppercase tracking-wider">ID Anggota</div>
-                        <div class="text-white font-mono text-lg tracking-widest">{{ $member->member_code }}</div>
+
+                    <div class="space-y-2 text-xs pr-32">
+                        <div class="flex">
+                            <span class="w-28 text-slate-400 font-semibold shrink-0">ID Anggota</span>
+                            <span class="text-white font-mono font-bold truncate">: {{ $member->member_code }}</span>
+                        </div>
+                        <div class="flex">
+                            <span class="w-28 text-slate-400 font-semibold shrink-0">Nama</span>
+                            <span class="text-white font-semibold uppercase truncate">: {{ $member->name }}</span>
+                        </div>
+                        <div class="flex">
+                            <span class="w-28 text-slate-400 font-semibold shrink-0">Nomor Identitas</span>
+                            <span class="text-white truncate">: {{ $member->identity_number ?? '-' }}</span>
+                        </div>
+                        <div class="flex">
+                            <span class="w-28 text-slate-400 font-semibold shrink-0">Alamat</span>
+                            <span class="text-white flex-1 truncate">: {{ \Illuminate\Support\Str::limit($member->address ?? '-', 35) }}</span>
+                        </div>
                     </div>
 
-                    <div class="bg-white p-3 rounded-xl shadow-inner mt-4">
-                        <img src="data:image/png;base64,{{ $barcodeBase64 }}" alt="Barcode {{ $member->barcode }}" class="w-full h-16 object-cover rounded">
-                        <div class="text-center font-mono text-xs mt-2 text-slate-800 tracking-[0.2em] font-semibold">{{ $member->barcode }}</div>
+                    <!-- Barcode Container at absolute bottom right -->
+                    <div class="absolute bottom-4 right-5 bg-white p-2 rounded-lg shadow-md text-right">
+                        <img src="data:image/png;base64,{{ $barcodeBase64 }}" alt="Barcode {{ $member->barcode }}" class="h-9 w-28 object-contain rounded">
+                        <div class="text-center font-mono text-[9px] mt-0.5 text-slate-800 tracking-wider font-semibold">{{ $member->member_code }}</div>
                     </div>
                 </div>
             </div>

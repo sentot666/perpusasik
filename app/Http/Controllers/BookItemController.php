@@ -69,7 +69,7 @@ class BookItemController extends Controller
 
         $item->update($validated);
 
-        return redirect()->route('book-items.show', $item)
+        return redirect()->route('books.show', $item->book_id)
             ->with('success', 'Data eksemplar berhasil diperbarui.');
     }
 

@@ -90,8 +90,10 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="justify-end p-8 flex gap-2">
-                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white font-semibold gap-2 py-2 px-6">{{ __('Simpan Pengaturan') }}</button>
+                <div class="justify-end p-6 flex gap-2">
+                    <button type="submit" class="inline-flex items-center justify-center text-sm font-bold rounded-xl btn-gradient-dark transition-all gap-2 py-3 px-8 shadow-md">
+                        <i class="bi bi-save2"></i> {{ __('Simpan Pengaturan') }}
+                    </button>
                 </div>
             </div>
         </form>
