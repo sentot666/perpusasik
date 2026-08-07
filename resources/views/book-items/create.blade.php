@@ -19,6 +19,27 @@
     <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-plus-circle-fill text-indigo-600 mr-2"></i>{{ __('Form Registrasi Eksemplar') }}</div>
     <div class="p-8">
 
+        @php
+            $nextCopyNum = $book->items()->count() + 1;
+            $nextCopyCode = 'c' . $nextCopyNum;
+        @endphp
+
+        <div class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                    {{ $nextCopyCode }}
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm md:text-base">Mendaftarkan Eksemplar ke-{{ $nextCopyNum }} (Kode Kopi: <span class="text-indigo-600 font-bold">{{ $nextCopyCode }}</span>)</h4>
+                    <p class="text-xs text-slate-500 mt-0.5">No. Panggil: <span class="font-semibold text-slate-700">{{ $book->call_number ?? ($book->ddc ? $book->ddc : '-') }}</span> &bull; Total Eksemplar Saat Ini: {{ $book->items()->count() }}</p>
+                </div>
+            </div>
+            <div class="text-xs text-slate-600 bg-white px-3 py-1.5 rounded-lg border border-indigo-200 shadow-xs self-start sm:self-auto">
+                <span class="font-medium text-slate-500">Label Punggung:</span> 
+                <span class="font-bold text-indigo-700">{{ $book->call_number ?? ($book->ddc ? $book->ddc : '-') }} {{ $nextCopyCode }}</span>
+            </div>
+        </div>
+
         @if($errors->any())
         <div class="alert alert-danger border-0 mb-6 py-2" style="border-radius:8px">
             <i class="bi bi-exclamation-triangle-fill mr-1"></i>

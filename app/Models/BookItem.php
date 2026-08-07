@@ -52,6 +52,21 @@ class BookItem extends Model
         return $query->where('status', 'Tersedia');
     }
 
+    // ── Accessors ─────────────────────────────────────────────────────────────
+
+    public function getCopyNumberAttribute(): int
+    {
+        if (!$this->book_id) return 1;
+        return static::where('book_id', $this->book_id)
+            ->where('id', '<=', $this->id)
+            ->count() ?: 1;
+    }
+
+    public function getCopyCodeAttribute(): string
+    {
+        return 'c' . $this->copy_number;
+    }
+
     // ── Static Helpers ────────────────────────────────────────────────────────
 
     public static function generateAccessionNumber(): string

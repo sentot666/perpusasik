@@ -39,25 +39,33 @@ class LoginController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $login = trim($request->login);
 
-        $credentials = [
-            $loginField  => $request->login,
-            'password'   => $request->password,
-            'is_active'  => true,
-        ];
+        // Cari user berdasarkan email, username, nama lengkap, atau NIS/Kode Anggota pada relasi member
+        $user = User::where('email', $login)
+            ->orWhere('username', $login)
+            ->orWhere('name', $login)
+            ->orWhereHas('member', function ($q) use ($login) {
+                $q->where('member_code', $login)
+                  ->orWhere('identity_number', $login);
+            })
+            ->first();
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if ($user && $user->is_active && \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            Auth::login($user, $request->boolean('remember'));
             $request->session()->regenerate();
 
             // Update last login
-            Auth::user()->update(['last_login_at' => now()]);
+            $user->update(['last_login_at' => now()]);
 
+            if ($user->hasRole('anggota')) {
+                return redirect()->intended(route('member.dashboard'));
+            }
             return redirect()->intended(route('dashboard'));
         }
 
         throw ValidationException::withMessages([
-            'login' => 'Username/email atau password yang Anda masukkan salah.',
+            'login' => 'Nama/Username atau password (tanggal lahir) yang Anda masukkan salah.',
         ]);
     }
 

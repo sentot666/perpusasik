@@ -18,48 +18,56 @@
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Sedang Dipinjam -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200/60 p-6 flex items-center gap-4 transition-all hover:shadow-md">
-            <div class="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0">
-                📚
-            </div>
-            <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Sedang Dipinjam</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ $activeLoans->count() }}</h3>
+        <div class="btn-gradient-blue text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
+            <div class="items-center flex gap-4">
+                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
+                    <i class="bi bi-book-half"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="stat-value text-white font-bold text-2xl truncate">{{ number_format($activeLoans->count()) }}</div>
+                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Sedang Dipinjam') }}</div>
+                </div>
             </div>
         </div>
 
         <!-- Total Dipinjam -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200/60 p-6 flex items-center gap-4 transition-all hover:shadow-md">
-            <div class="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl flex-shrink-0">
-                📖
-            </div>
-            <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Dipinjam</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ $totalLoans }}</h3>
+        <div class="btn-gradient-green text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
+            <div class="items-center flex gap-4">
+                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
+                    <i class="bi bi-journal-check"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="stat-value text-white font-bold text-2xl truncate">{{ number_format($totalLoans) }}</div>
+                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Total Dipinjam') }}</div>
+                </div>
             </div>
         </div>
 
         <!-- Jatuh Tempo -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200/60 p-6 flex items-center gap-4 transition-all hover:shadow-md">
-            <div class="w-12 h-12 rounded-lg bg-red-50 text-red-600 flex items-center justify-center text-xl flex-shrink-0">
-                ⏰
-            </div>
-            <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Jatuh Tempo</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ $overdueLoans->count() }}</h3>
+        <div class="btn-gradient-red text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
+            <div class="items-center flex gap-4">
+                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="stat-value text-white font-bold text-2xl truncate">{{ number_format($overdueLoans->count()) }}</div>
+                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Jatuh Tempo') }}</div>
+                </div>
             </div>
         </div>
 
         <!-- Denda -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200/60 p-6 flex items-center gap-4 transition-all hover:shadow-md">
-            <div class="w-12 h-12 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center text-xl flex-shrink-0">
-                💰
-            </div>
-            <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Denda</p>
-                <h3 class="text-2xl font-bold text-slate-800 mt-1">Rp{{ number_format($totalFines, 0, ',', '.') }}</h3>
+        <div class="btn-gradient-orange text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
+            <div class="items-center flex gap-4">
+                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="stat-value text-white font-bold text-2xl truncate">Rp{{ number_format($totalFines, 0, ',', '.') }}</div>
+                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Total Denda') }}</div>
+                </div>
             </div>
         </div>
     </div>

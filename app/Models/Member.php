@@ -92,11 +92,19 @@ class Member extends Model
 
     // ── Static Helpers ────────────────────────────────────────────────────────
 
-    public static function generateCode(): string
+    public static function generateCode(string $level = 'SMP'): string
     {
-        $year  = now()->format('Y');
-        $last  = static::whereYear('created_at', $year)->max('member_code');
-        $seq   = $last ? (intval(substr($last, -4)) + 1) : 1;
-        return 'M' . $year . str_pad($seq, 4, '0', STR_PAD_LEFT);
+        $year2Digits = now()->format('y'); // 26
+        $levelUpper = strtoupper($level);
+        $levelCode = '02'; // default SMP
+        if (str_contains($levelUpper, 'SD')) {
+            $levelCode = '01';
+        } elseif (str_contains($levelUpper, 'SMA')) {
+            $levelCode = '03';
+        }
+        $prefix = $year2Digits . $levelCode; // e.g. 2601 (SD), 2602 (SMP), 2603 (SMA)
+        $last = static::where('member_code', 'like', "{$prefix}%")->max('member_code');
+        $seq = $last ? (intval(substr($last, strlen($prefix))) + 1) : 1;
+        return $prefix . str_pad($seq, 4, '0', STR_PAD_LEFT);
     }
 }

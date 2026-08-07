@@ -98,6 +98,73 @@
                         @endfor
                     </div>
                 </div>
+            <!-- Pengaturan Pengesahan Kartu Anggota (Pustakawan) -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                <div class="capitalize px-8 border-b border-slate-200 bg-slate-50 font-semibold text-slate-800 py-5">
+                    <i class="bi bi-pen-fill text-indigo-600 mr-2"></i>
+                    {{ __('Pengesahan Kartu Anggota (Pustakawan)') }}
+                </div>
+                <div class="p-0">
+                    <div class="divide-y divide-slate-100">
+                        <!-- Nama Pustakawan -->
+                        <div class="p-6 sm:px-8 flex flex-col md:flex-row md:items-center gap-4 hover:bg-slate-50/50 transition-colors">
+                            <label class="w-full md:w-1/3 font-medium text-slate-700 text-sm md:text-base">{{ __('Nama Pustakawan') }}</label>
+                            <div class="w-full md:w-2/3 max-w-md">
+                                <input type="text" name="settings[librarian_name]" class="w-full rounded-lg border border-slate-300 text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none py-2.5 px-4 bg-white transition-all shadow-sm" value="{{ \App\Models\Setting::get('librarian_name', 'Felix Wijaya') }}" placeholder="Contoh: Felix Wijaya">
+                            </div>
+                        </div>
+
+                        <!-- NIY Pustakawan -->
+                        <div class="p-6 sm:px-8 flex flex-col md:flex-row md:items-center gap-4 hover:bg-slate-50/50 transition-colors">
+                            <label class="w-full md:w-1/3 font-medium text-slate-700 text-sm md:text-base">{{ __('Nomor NIY / NIP Pustakawan') }}</label>
+                            <div class="w-full md:w-2/3 max-w-md">
+                                <input type="text" name="settings[librarian_niy]" class="w-full rounded-lg border border-slate-300 text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none py-2.5 px-4 bg-white transition-all shadow-sm" value="{{ \App\Models\Setting::get('librarian_niy', 'NIY. -') }}" placeholder="Contoh: NIY. 19820514 200801 1 002">
+                            </div>
+                        </div>
+
+                        <!-- Jenis Pengesahan -->
+                        @php
+                            $signType = \App\Models\Setting::get('librarian_sign_type', 'qr_code');
+                        @endphp
+                        <div class="p-6 sm:px-8 flex flex-col md:flex-row md:items-center gap-4 hover:bg-slate-50/50 transition-colors">
+                            <label class="w-full md:w-1/3 font-medium text-slate-700 text-sm md:text-base">{{ __('Jenis Pengesahan TTD') }}</label>
+                            <div class="w-full md:w-2/3 max-w-md">
+                                <select name="settings[librarian_sign_type]" class="w-full rounded-lg border border-slate-300 text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none py-2.5 px-4 bg-white transition-all shadow-sm">
+                                    <option value="qr_code" {{ $signType == 'qr_code' ? 'selected' : '' }}>{{ __('QR Code Verifikasi Digital (Otomatis)') }}</option>
+                                    <option value="upload_image" {{ $signType == 'upload_image' ? 'selected' : '' }}>{{ __('Gambar Stempel / TTD Asli (Upload File)') }}</option>
+                                    <option value="blank" {{ $signType == 'blank' ? 'selected' : '' }}>{{ __('Kosongkan (Untuk Tanda Tangan / Stempel Manual)') }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Upload Stempel / TTD -->
+                        <div class="p-6 sm:px-8 flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-8 hover:bg-slate-50/50 transition-colors">
+                            <label class="w-full lg:w-1/3 font-medium text-slate-700 text-sm md:text-base pt-2">{{ __('Upload Gambar Stempel / TTD') }}</label>
+                            <div class="w-full lg:w-2/3 flex flex-col sm:flex-row gap-6 items-start">
+                                <div class="w-full sm:w-32 shrink-0">
+                                    <div class="h-20 bg-slate-100 rounded-lg overflow-hidden border border-slate-200 shadow-sm relative group flex items-center justify-center p-2">
+                                        @if(file_exists(public_path('images/stempel.png')))
+                                            <img src="{{ asset('images/stempel.png') }}?v={{ time() }}" class="max-h-full object-contain" alt="Stempel">
+                                        @else
+                                            <span class="text-xs text-slate-400 text-center"><i class="bi bi-image text-xl block mb-1"></i>Belum Ada</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex-1 w-full max-w-md">
+                                    <label class="block mb-2">
+                                        <input type="file" name="librarian_stamp" class="block w-full text-sm text-slate-500
+                                          file:mr-4 file:py-2.5 file:px-4
+                                          file:rounded-lg file:border-0
+                                          file:text-sm file:font-semibold
+                                          file:bg-indigo-50 file:text-indigo-700
+                                          hover:file:bg-indigo-100 transition-colors cursor-pointer border border-slate-200 rounded-lg" accept="image/jpeg,image/png,image/webp">
+                                    </label>
+                                    <p class="text-xs text-slate-500 leading-relaxed mt-2"><i class="bi bi-info-circle mr-1"></i>{{ __('Format: PNG/JPG transparan disarankan. Maks: 2MB.') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

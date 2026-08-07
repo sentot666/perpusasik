@@ -20,12 +20,19 @@ class SettingController extends Controller
             'carousel_1' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'carousel_2' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'carousel_3' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'librarian_stamp' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         if ($request->has('settings') && is_array($request->settings)) {
             foreach ($request->settings as $key => $value) {
                 Setting::set($key, $value);
             }
+        }
+
+        // Simpan gambar stempel/TTD jika ada yang diupload
+        if ($request->hasFile('librarian_stamp')) {
+            $file = $request->file('librarian_stamp');
+            $file->move(public_path('images'), 'stempel.png');
         }
 
         // Simpan gambar carousel jika ada yang diupload

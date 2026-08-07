@@ -57,8 +57,8 @@ class MemberController extends Controller
             'notes'          => 'nullable|string',
         ]);
 
-        // Auto-generate barcode
-        $validated['barcode'] = 'M' . str_pad($validated['member_code'], 10, '0', STR_PAD_LEFT);
+        // Auto-set barcode (murni angka mengikuti member_code)
+        $validated['barcode'] = $validated['member_code'];
 
         // Auto-set expired_date if not provided
         if (empty($validated['expired_date'])) {

@@ -68,7 +68,7 @@
         <form method="POST" action="{{ route('login') }}" id="memberLoginForm">
             @csrf
             <div class="mb-5">
-                <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">{{ __('Username / Email') }}</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">{{ __('Nama Lengkap / NIS / Username') }}</label>
                 <div class="flex w-full rounded-xl overflow-hidden border border-slate-300 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200 transition-all shadow-sm">
                     <span class="flex items-center px-4 bg-slate-50 border-r border-slate-200 text-slate-400"><i class="bi bi-person text-lg"></i></span>
                     <input
@@ -76,7 +76,7 @@
                         name="login"
                         id="login"
                         class="flex-1 bg-white text-sm outline-none py-3 px-3 text-slate-800 font-medium"
-                        placeholder="{{ __('Masukkan username atau email') }}"
+                        placeholder="{{ __('Masukkan nama lengkap atau NIS') }}"
                         value="{{ old('login') }}"
                         required
                         autofocus
@@ -85,7 +85,10 @@
             </div>
 
             <div class="mb-5">
-                <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">{{ __('Password') }}</label>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">{{ __('Password (Tanggal Lahir)') }}</label>
+                    <span class="text-[11px] text-emerald-600 font-semibold">Format: YYYY-MM-DD</span>
+                </div>
                 <div class="flex w-full rounded-xl overflow-hidden border border-slate-300 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-200 transition-all shadow-sm">
                     <span class="flex items-center px-4 bg-slate-50 border-r border-slate-200 text-slate-400"><i class="bi bi-lock text-lg"></i></span>
                     <input
@@ -93,13 +96,14 @@
                         name="password"
                         id="password"
                         class="flex-1 bg-white text-sm outline-none py-3 px-3 text-slate-800 font-medium"
-                        placeholder="{{ __('Masukkan password') }}"
+                        placeholder="{{ __('Contoh: 2012-08-17') }}"
                         required
                     >
                     <button type="button" class="flex items-center px-4 bg-slate-50 border-l border-slate-200 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors" id="togglePassword">
                         <i class="bi bi-eye text-lg" id="eyeIcon"></i>
                     </button>
                 </div>
+                <p class="text-[11px] text-slate-400 mt-1.5">Masukkan tanggal lahir Anda sesuai format (Tahun-Bulan-Hari, contoh: <code>2012-08-17</code>).</p>
             </div>
 
             <div class="flex items-center justify-between mb-8">

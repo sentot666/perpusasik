@@ -174,7 +174,7 @@
                         </tr>
                         <tr>
                             <td style="font-size: 6pt; font-weight: bold; color: #64748b; vertical-align: top;">Alamat</td>
-                            <td style="font-size: 6pt; color: #0f172a; vertical-align: top; line-height: 1.1; padding-right: 65pt;">: {{ \Illuminate\Support\Str::limit($member->address ?? '-', 45) }}</td>
+                            <td style="font-size: 5.5pt; color: #0f172a; vertical-align: top; line-height: 1.2; padding-right: 65pt;">: {{ $member->address ?? '-' }}</td>
                         </tr>
                     </table>
 

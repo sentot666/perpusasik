@@ -131,7 +131,7 @@
         /* Single Barcode Sticker Label */
         .barcode-label {
             width: 7.5cm;
-            height: 4.5cm;
+            height: 3.8cm;
             border: 1px dashed #cbd5e1;
             border-radius: 4px;
             display: flex;
@@ -144,7 +144,7 @@
 
         .label-left {
             width: 60%;
-            padding: 8px;
+            padding: 6px 8px;
             border-right: 1px dashed #cbd5e1;
             display: flex;
             flex-direction: column;
@@ -155,7 +155,7 @@
 
         .label-right {
             width: 40%;
-            padding: 8px 4px;
+            padding: 6px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -163,12 +163,12 @@
         }
 
         .book-title {
-            font-size: 8pt;
-            line-height: 1.1;
+            font-size: 7.5pt;
+            line-height: 1.15;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             word-wrap: break-word;
@@ -176,36 +176,36 @@
 
         .barcode-img {
             max-width: 100%;
-            height: 40px;
+            height: 32px;
             display: block;
             margin: 0 auto;
         }
 
         .barcode-str {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: 700;
-            margin-top: 4px;
+            margin-top: 3px;
             letter-spacing: 0.5px;
         }
 
         .inst-title {
-            font-size: 7.5pt;
+            font-size: 7pt;
             font-weight: 800;
             text-transform: uppercase;
             line-height: 1.1;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .call-num-stack {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 1.5px;
         }
 
         .call-num-part {
-            font-size: 9.5pt;
+            font-size: 9pt;
             font-weight: 800;
             line-height: 1;
         }
@@ -306,14 +306,36 @@
                         <div class="inst-title">{{ \App\Models\Setting::get('library_name', 'PERPUSTAKAAN') }}</div>
                         <div class="call-num-stack">
                             @php
-                                $callNumber = $book->call_number ?? ($book->ddc ? $book->ddc : '-');
-                                $parts = explode(' ', $callNumber);
+                                $baseCallNumber = trim($book->call_number ?? ($book->ddc ? $book->ddc : ''));
+                                $rawParts = array_values(array_filter(explode(' ', $baseCallNumber), fn($p) => trim($p) !== ''));
+                                
+                                $cleanParts = [];
+                                foreach ($rawParts as $p) {
+                                    if (!preg_match('/^c\.?\d+$/i', $p)) {
+                                        $cleanParts[] = $p;
+                                    }
+                                }
+
+                                if (empty($cleanParts)) {
+                                    if ($book->ddc) {
+                                        $cleanParts[] = $book->ddc;
+                                    }
+                                    $authorStr = $book->main_author ?? '';
+                                    if ($authorStr) {
+                                        $cleanParts[] = strtoupper(substr(preg_replace('/[^a-zA-Z]/', '', $authorStr), 0, 3));
+                                    }
+                                    $titleStr = $book->title ?? '';
+                                    if ($titleStr) {
+                                        $cleanParts[] = strtolower(substr(preg_replace('/[^a-zA-Z]/', '', $titleStr), 0, 1));
+                                    }
+                                }
+
+                                $copyCode = 'c' . $loop->iteration;
                             @endphp
-                            @foreach($parts as $part)
-                                @if(trim($part) !== '')
+                            @foreach($cleanParts as $part)
                                 <span class="call-num-part">{{ $part }}</span>
-                                @endif
                             @endforeach
+                            <span class="call-num-part">{{ $copyCode }}</span>
                         </div>
                     </div>
                 </div>

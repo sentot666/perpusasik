@@ -43,9 +43,9 @@
                             <span class="w-28 text-slate-400 font-semibold shrink-0">Nomor Identitas</span>
                             <span class="text-white truncate">: {{ $member->identity_number ?? '-' }}</span>
                         </div>
-                        <div class="flex">
+                        <div class="flex items-start">
                             <span class="w-28 text-slate-400 font-semibold shrink-0">Alamat</span>
-                            <span class="text-white flex-1 truncate">: {{ \Illuminate\Support\Str::limit($member->address ?? '-', 35) }}</span>
+                            <span class="text-white flex-1 pr-32 leading-snug break-words text-xs">: {{ $member->address ?? '-' }}</span>
                         </div>
                     </div>
 

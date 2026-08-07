@@ -138,7 +138,7 @@
         .panel-front {
             width: 8.75cm;
             height: 5.5cm;
-            padding: 10px 12px;
+            padding: 8px 10px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -150,12 +150,12 @@
         .front-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .logo-img {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             object-fit: contain;
             flex-shrink: 0;
         }
@@ -167,16 +167,16 @@
         }
 
         .header-label {
-            font-size: 6.5pt;
+            font-size: 6pt;
             font-weight: 700;
             color: #64748b;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             text-transform: uppercase;
             line-height: 1.2;
         }
 
         .header-title {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: 800;
             color: #0f172a;
             text-transform: uppercase;
@@ -185,13 +185,13 @@
         }
 
         .member-name {
-            font-size: 11pt;
+            font-size: 10pt;
             font-weight: 800;
             color: #0f172a;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-top: 6px;
-            margin-bottom: 6px;
+            margin-top: 3px;
+            margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -200,7 +200,7 @@
         .details-block {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2.5px;
         }
 
         .detail-row {
@@ -236,6 +236,14 @@
             white-space: nowrap;
         }
 
+        .detail-val.address-val {
+            font-size: 6.5pt;
+            white-space: normal;
+            line-height: 1.25;
+            word-break: break-word;
+            text-overflow: clip;
+        }
+
         .front-bottom {
             display: flex;
             justify-content: flex-end;
@@ -250,10 +258,10 @@
         }
 
         .exp-text {
-            font-size: 7pt;
+            font-size: 6.5pt;
             font-weight: 700;
             color: #0f172a;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .barcode-img {
@@ -268,7 +276,7 @@
         .panel-back {
             width: 8.75cm;
             height: 5.5cm;
-            padding: 10px 12px;
+            padding: 8px 10px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -281,24 +289,24 @@
         /* Background Shapes */
         .bg-shape-grey {
             position: absolute;
-            top: 0;
-            right: 0;
+            bottom: -1.2cm;
+            right: -1.2cm;
             width: 4.8cm;
             height: 4.8cm;
             background-color: #e2e8f0;
-            border-bottom-left-radius: 4.8cm;
-            z-index: 1;
+            border-radius: 50%;
+            z-index: 2;
         }
 
         .bg-shape-blue {
             position: absolute;
-            bottom: -1.2cm;
-            right: -1.2cm;
-            width: 5.2cm;
-            height: 5.2cm;
-            background-color: #2b6cb0;
-            border-radius: 50%;
-            z-index: 2;
+            top: 0;
+            right: 0;
+            width: 4.2cm;
+            height: 4.2cm;
+            background-color: #dbeafe;
+            border-bottom-left-radius: 4.2cm;
+            z-index: 1;
         }
 
         .back-content {
@@ -326,7 +334,7 @@
         }
 
         .rules-list li {
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
 
         .back-footer {
@@ -353,24 +361,37 @@
         }
 
         .pustakawan-box {
-            text-align: right;
+            text-align: center;
             color: #0f172a;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .pustakawan-date {
-            font-size: 6pt;
-            color: #1e293b;
+            font-size: 6.5pt;
+            color: #334155;
             margin-bottom: 1px;
+            font-weight: 600;
+            text-align: center;
         }
 
         .pustakawan-role {
-            font-size: 6.5pt;
+            font-size: 7pt;
             font-weight: 700;
             color: #0f172a;
+            text-align: center;
         }
 
         .pustakawan-sign-space {
-            height: 14px;
+            min-height: 28px;
+            height: auto;
+            margin: 3px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
         }
 
         .pustakawan-name {
@@ -378,11 +399,15 @@
             font-weight: 800;
             color: #0f172a;
             line-height: 1.1;
+            text-align: center;
         }
 
         .pustakawan-niy {
             font-size: 6pt;
-            color: #334155;
+            color: #475569;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 1px;
         }
 
         /* PRINT STYLES */
@@ -497,10 +522,10 @@
                         <div class="detail-colon">:</div>
                         <div class="detail-val">{{ $status }}</div>
                     </div>
-                    <div class="detail-row">
+                    <div class="detail-row" style="align-items: flex-start;">
                         <div class="detail-lbl">Alamat</div>
                         <div class="detail-colon">:</div>
-                        <div class="detail-val">{{ \Illuminate\Support\Str::limit($m->address ?? '-', 40) }}</div>
+                        <div class="detail-val address-val">{{ $m->address ?? '-' }}</div>
                     </div>
                 </div>
             </div>
@@ -536,11 +561,13 @@
 
             <div class="back-content">
                 <div>
-                    <div class="rules-title">Aturan Perpustakaan</div>
-                    <ul class="rules-list">
-                        <li>Kartu ini milik perpustakaan</li>
-                        <li>Tolong kembalikan ke perpustakaan apabila menemukan kartu ini..</li>
-                    </ul>
+                    <div class="rules-title">ATURAN PERPUSTAKAAN</div>
+                    <ol class="rules-list" style="padding-left: 14px; margin: 0; list-style-type: decimal;">
+                        <li>Kartu ini wajib dibawa setiap kali berkunjung dan bertransaksi di perpustakaan.</li>
+                        <li>Kartu ini bersifat pribadi dan tidak boleh dipindahtangankan.</li>
+                        <li>Pemilik kartu bertanggung jawab atas buku yang dipinjam.</li>
+                        <li>Apabila kartu ini hilang, harap segera melapor kepada petugas perpustakaan.</li>
+                    </ol>
                 </div>
 
                 <div class="back-footer">
@@ -552,6 +579,25 @@
                     <div class="pustakawan-box">
                         <div class="pustakawan-date">Jakarta Utara, {{ now()->format('d M Y') }}</div>
                         <div class="pustakawan-role">Pustakawan</div>
+                        @php
+                            $signType = \App\Models\Setting::get('librarian_sign_type', 'qr_code');
+                            $librarianName = \App\Models\Setting::get('librarian_name', 'Felix Wijaya');
+                        @endphp
+                        <div class="pustakawan-sign-space">
+                            @if($signType === 'upload_image' && file_exists(public_path('images/stempel.png')))
+                                <img src="{{ asset('images/stempel.png') }}?v={{ time() }}" style="max-height: 28px; margin: 0 auto;" alt="Cap/Stempel">
+                            @elseif($signType === 'upload_image' && file_exists(public_path('images/ttd.png')))
+                                <img src="{{ asset('images/ttd.png') }}?v={{ time() }}" style="max-height: 28px; margin: 0 auto;" alt="Cap/Stempel">
+                            @elseif($signType === 'blank')
+                                {{-- Space Kosong untuk TTD/Cap Manual --}}
+                            @else
+                                <div style="display: inline-flex; align-items: center; justify-content: center; margin: 2px auto;">
+                                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(28)->margin(0)->generate('VERIFIED-SIGNATURE-' . strtoupper(\Illuminate\Support\Str::slug($librarianName)) . '-' . date('Y')) !!}
+                                </div>
+                            @endif
+                        </div>
+                        <div class="pustakawan-name">{{ \App\Models\Setting::get('librarian_name', 'Felix Wijaya') }}</div>
+                        <div class="pustakawan-niy">{{ \App\Models\Setting::get('librarian_niy', 'NIY. -') }}</div>
                     </div>
                 </div>
             </div>

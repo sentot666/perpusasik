@@ -171,6 +171,7 @@
                 <thead>
                     <tr>
                         <th>{{ __('Barcode / RFID') }}</th>
+                        <th>{{ __('Kopi') }}</th>
                         <th>{{ __('Nomor Induk') }}</th>
                         <th>{{ __('Lokasi / Rak') }}</th>
                         <th>{{ __('Kondisi') }}</th>
@@ -183,6 +184,11 @@
                     @forelse($book->items as $item)
                     <tr>
                         <td><code class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded text-xs">{{ $item->barcode }}</code></td>
+                        <td>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                c{{ $loop->iteration }}
+                            </span>
+                        </td>
                         <td>{{ $item->accession_number ?? '-' }}</td>
                         <td>
                             @if($item->location)
@@ -212,6 +218,9 @@
                         </td>
                         <td class="text-center">
                             <div class="inline-flex items-center gap-1">
+                                <a href="{{ route('book-items.barcode', $item) }}" target="_blank" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="{{ __('Cetak Barcode Eksemplar Ini') }}">
+                                    <i class="bi bi-upc-scan"></i>
+                                </a>
                                 <a href="{{ route('items.edit', $item) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
@@ -226,7 +235,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center text-slate-500 py-8">
+                        <td colspan="8" class="text-center text-slate-500 py-8">
                             <i class="bi bi-upc-scan text-3xl block mb-2 text-slate-300"></i>
                             {{ __('Belum ada eksemplar fisik untuk buku ini.') }} 
                             <a href="{{ route('books.items.create', $book) }}" class="text-indigo-600 font-semibold hover:underline block mt-1">{{ __('Tambah eksemplar pertama') }}</a>

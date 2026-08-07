@@ -19,6 +19,27 @@
     <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-pencil-square text-indigo-600 mr-2"></i>{{ __('Form Perubahan Eksemplar') }}</div>
     <div class="p-8">
 
+        @php
+            $copyCode = $item->copy_code;
+        @endphp
+
+        <div class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                    {{ $copyCode }}
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm md:text-base">Eksemplar Fisik (Kode Kopi: <span class="text-indigo-600 font-bold">{{ $copyCode }}</span>)</h4>
+                    <p class="text-xs text-slate-500 mt-0.5">Judul: <strong class="text-slate-700">{{ $item->book?->title }}</strong> &bull; No. Panggil: <span class="font-semibold text-slate-700">{{ $item->book?->call_number ?? ($item->book?->ddc ? $item->book?->ddc : '-') }}</span></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('book-items.barcode', $item) }}" target="_blank" class="inline-flex items-center gap-1 text-xs bg-amber-500 hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg shadow-xs transition-colors">
+                    <i class="bi bi-upc-scan"></i> {{ __('Cetak Label Barcode') }}
+                </a>
+            </div>
+        </div>
+
         @if($errors->any())
         <div class="alert alert-danger border-0 mb-6 py-2" style="border-radius:8px">
             <i class="bi bi-exclamation-triangle-fill mr-1"></i>

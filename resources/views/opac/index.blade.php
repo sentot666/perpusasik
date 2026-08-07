@@ -10,7 +10,7 @@
             <div class="swiper-slide">
                 <div class="w-full h-full flex items-center bg-cover bg-no-repeat bg-center relative" style="background-image: url('{{ asset('images/carousel-1.jpg') }}?v={{ @filemtime(public_path('images/carousel-1.jpg')) }}');">
                     <div class="relative z-10 w-full px-8 md:px-16 lg:px-24">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Sekolah Katolik Santo Paulus') }}</h1>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Perpustakaan Sekolah Katolik Santo Paulus') }}</h1>
                         <p class="text-xs md:text-sm lg:text-base text-white font-bold max-w-2xl text-left uppercase tracking-wider drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)]">SUMBER PENGETAHUAN DAN INSPIRASI. TEMUKAN DUNIA BARU MELALUI BUKU!</p>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
             <div class="swiper-slide">
                 <div class="w-full h-full flex items-center bg-cover bg-no-repeat bg-center relative" style="background-image: url('{{ asset('images/carousel-2.jpg') }}?v={{ @filemtime(public_path('images/carousel-2.jpg')) }}');">
                     <div class="relative z-10 w-full px-8 md:px-16 lg:px-24">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Sekolah Katolik Santo Paulus') }}</h1>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Perpustakaan Sekolah Katolik Santo Paulus') }}</h1>
                         <p class="text-xs md:text-sm lg:text-base text-white font-bold max-w-2xl text-left uppercase tracking-wider drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)]">SUMBER PENGETAHUAN DAN INSPIRASI. TEMUKAN DUNIA BARU MELALUI BUKU!</p>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
             <div class="swiper-slide">
                 <div class="w-full h-full flex items-center bg-cover bg-no-repeat bg-center relative" style="background-image: url('{{ asset('images/carousel-3.jpg') }}?v={{ @filemtime(public_path('images/carousel-3.jpg')) }}');">
                     <div class="relative z-10 w-full px-8 md:px-16 lg:px-24">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Sekolah Katolik Santo Paulus') }}</h1>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-4 text-left text-white tracking-tighter leading-tight drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">{{ \App\Models\Setting::get('library_name', 'Perpustakaan Sekolah Katolik Santo Paulus') }}</h1>
                         <p class="text-xs md:text-sm lg:text-base text-white font-bold max-w-2xl text-left uppercase tracking-wider drop-shadow-[0_3px_3px_rgba(0,0,0,0.8)]">SUMBER PENGETAHUAN DAN INSPIRASI. TEMUKAN DUNIA BARU MELALUI BUKU!</p>
                     </div>
                 </div>
