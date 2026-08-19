@@ -33,8 +33,8 @@
                 <div class="w-full md:w-1/2 px-4">
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Kode Anggota') }} <span class="text-red-600">*</span></label>
-                        <input type="text" name="member_code" class="@error('member_code') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" value="{{ old('member_code', $memberCode) }}" required>
-                        @error('member_code')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
+                        <input type="text" name="member_code_display" class="w-full rounded-lg border border-slate-200 bg-slate-100 text-slate-500 text-sm py-2 px-4 cursor-not-allowed" value="[Otomatis dibuat oleh sistem]" readonly>
+                        <div class="text-xs text-slate-500 mt-1">Kode akan digenerate otomatis berdasarkan tipe anggota saat form disimpan.</div>
                     </div>
 
                     <div class="mb-6">
@@ -114,6 +114,17 @@
                         <div class="w-full md:w-1/2 px-4">
                             <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Provinsi') }}</label>
                             <input type="text" name="province" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('province') }}">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap -mx-2 mb-6">
+                        <div class="w-full md:w-1/2 px-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tempat Lahir') }}</label>
+                            <input type="text" name="birth_place" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('birth_place') }}">
+                        </div>
+                        <div class="w-full md:w-1/2 px-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tanggal Lahir') }}</label>
+                            <input type="date" name="birth_date" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('birth_date') }}">
                         </div>
                     </div>
 

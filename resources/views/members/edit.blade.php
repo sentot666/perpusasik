@@ -125,6 +125,17 @@
 
                     <div class="flex flex-wrap -mx-2 mb-6">
                         <div class="w-full md:w-1/2 px-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tempat Lahir') }}</label>
+                            <input type="text" name="birth_place" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('birth_place', $member->birth_place) }}">
+                        </div>
+                        <div class="w-full md:w-1/2 px-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tanggal Lahir') }}</label>
+                            <input type="date" name="birth_date" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('birth_date', $member->birth_date ? $member->birth_date->format('Y-m-d') : '') }}">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap -mx-2 mb-6">
+                        <div class="w-full md:w-1/2 px-4">
                             <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Tanggal Daftar') }}</label>
                             <input type="date" name="register_date" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ old('register_date', $member->register_date ? $member->register_date->format('Y-m-d') : '') }}">
                         </div>

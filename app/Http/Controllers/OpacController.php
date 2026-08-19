@@ -27,15 +27,40 @@ class OpacController extends Controller
 
     public function katalog(Request $request)
     {
+        $tab = $request->get('tab', 'home');
+
         $query = Book::with(['authors', 'publisher'])
             ->withCount(['items', 'availableItems'])
             ->where('is_active', true);
 
+        // Fetch filter data for all tabs
+        $collectionTypes = Book::distinct()->pluck('collection_type')->sort();
+        $years = Book::distinct()->orderByDesc('publication_year')->pluck('publication_year')->filter();
+        $locations = Location::orderBy('code')->get();
+
+        if ($tab == 'home') {
+            // Newest books (limit 10)
+            $newestBooks = (clone $query)->latest()->limit(10)->get();
+            // Popular books (using items_count as a proxy for popular)
+            $popularBooks = (clone $query)->orderByDesc('items_count')->limit(10)->get();
+
+            return view('opac.katalog', compact('tab', 'newestBooks', 'popularBooks', 'collectionTypes', 'years', 'locations'));
+        }
+
+        if ($tab == 'digital') {
+            $query->where(function($q) {
+                $q->where('collection_type', 'LIKE', '%digital%')
+                  ->orWhere('collection_type', 'LIKE', '%e-book%')
+                  ->orWhere('collection_type', 'LIKE', '%ebook%');
+            });
+        }
+
+        // Apply filters for 'koleksi' and 'digital'
         if ($search = $request->q) {
             $query->search($search);
         }
-        if ($type = $request->collection_type) {
-            $query->where('collection_type', $type);
+        if ($request->filled('collection_type') && $tab != 'digital') {
+            $query->where('collection_type', $request->collection_type);
         }
         if ($year = $request->year) {
             $query->where('publication_year', $year);
@@ -51,11 +76,7 @@ class OpacController extends Controller
 
         $books = $query->latest()->paginate(12)->withQueryString();
 
-        $collectionTypes = Book::distinct()->pluck('collection_type')->sort();
-        $years = Book::distinct()->orderByDesc('publication_year')->pluck('publication_year')->filter();
-        $locations = Location::orderBy('code')->get();
-
-        return view('opac.katalog', compact('books', 'collectionTypes', 'years', 'locations'));
+        return view('opac.katalog', compact('tab', 'books', 'collectionTypes', 'years', 'locations'));
     }
 
     public function show(Book $book)
@@ -78,5 +99,47 @@ class OpacController extends Controller
             ->paginate(12);
 
         return view('opac.agenda', compact('agendas'));
+    }
+
+    public function programKerja()
+    {
+        $page = \App\Models\Page::where('slug', 'program-kerja')->where('is_active', true)->first();
+        return view('opac.program-kerja', compact('page'));
+    }
+
+    public function sejarah()
+    {
+        $page = \App\Models\Page::where('slug', 'sejarah')->where('is_active', true)->first();
+        return view('opac.sejarah', compact('page'));
+    }
+
+    public function visiMisi()
+    {
+        $page = \App\Models\Page::where('slug', 'visi-misi')->where('is_active', true)->first();
+        return view('opac.visi-misi', compact('page'));
+    }
+
+    public function strukturOrganisasi()
+    {
+        $page = \App\Models\Page::where('slug', 'struktur-organisasi')->where('is_active', true)->first();
+        return view('opac.struktur-organisasi', compact('page'));
+    }
+
+    public function pustakawan()
+    {
+        $page = \App\Models\Page::where('slug', 'pustakawan')->where('is_active', true)->first();
+        return view('opac.pustakawan', compact('page'));
+    }
+
+    public function tataTertib()
+    {
+        $page = \App\Models\Page::where('slug', 'tata-tertib')->where('is_active', true)->first();
+        return view('opac.tata-tertib', compact('page'));
+    }
+
+    public function jamLayanan()
+    {
+        $page = \App\Models\Page::where('slug', 'jam-layanan')->where('is_active', true)->first();
+        return view('opac.jam-layanan', compact('page'));
     }
 }

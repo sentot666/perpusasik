@@ -36,7 +36,7 @@
                     <div class="w-full md:w-1/4 flex justify-center">
                         <div class="w-32 aspect-[3/4] bg-slate-100 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center text-slate-400">
                             @if($book->cover_image && file_exists(public_path('storage/' . $book->cover_image)))
-                                <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full h-full object-cover" alt="{{ $book->title }}">
+                                <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full h-full object-contain" alt="{{ $book->title }}">
                             @else
                                 <i class="bi bi-book text-4xl"></i>
                             @endif

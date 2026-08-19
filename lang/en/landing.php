@@ -9,7 +9,7 @@ return [
     'hero_title' => 'Welcome to Saint Paul School Library',
     'hero_subtitle' => 'Explore thousands of books, journals, and digital references in our library.',
     
-    'quick_services' => 'Quick Services',
+    'quick_services' => 'Library Services',
     'quick_services_desc' => 'Select a service menu below for faster access',
     
     'catalog' => 'Catalog',

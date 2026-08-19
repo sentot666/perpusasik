@@ -41,8 +41,8 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        // Chart Data: Visitors per day for last 14 days
-        $startDate = Carbon::today()->subDays(13);
+        // Chart Data: Visitors per day for last 7 days
+        $startDate = Carbon::today()->subDays(6);
         $visitsData = GuestBook::where('visit_date', '>=', $startDate)
             ->select('visit_date', DB::raw('SUM(participants_count) as total'))
             ->groupBy('visit_date')
@@ -55,7 +55,7 @@ class DashboardController extends Controller
         $chartLabels = [];
         $chartData = [];
         
-        for ($i = 0; $i < 14; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             $date = $startDate->copy()->addDays($i);
             $dateStr = $date->format('Y-m-d');
             
@@ -63,6 +63,32 @@ class DashboardController extends Controller
             $chartData[] = isset($visitsData[$dateStr]) ? (int) $visitsData[$dateStr]->total : 0;
         }
 
-        return view('dashboard', compact('stats', 'recentLoans', 'overdueLoans', 'chartLabels', 'chartData'));
+        // Top 5 Book Categories by Borrow Frequency (Popularity)
+        $popularCategories = \App\Models\Subject::select('subjects.name')
+            ->join('book_subject', 'subjects.id', '=', 'book_subject.subject_id')
+            ->join('books', 'book_subject.book_id', '=', 'books.id')
+            ->join('book_items', 'books.id', '=', 'book_items.book_id')
+            ->join('circulations', 'book_items.id', '=', 'circulations.book_item_id')
+            ->selectRaw('count(circulations.id) as borrow_count')
+            ->groupBy('subjects.id', 'subjects.name')
+            ->orderByDesc('borrow_count')
+            ->limit(5)
+            ->get();
+
+        // If no circulations yet, fallback to most owned subjects to avoid empty chart
+        if ($popularCategories->isEmpty()) {
+            $popularCategories = \App\Models\Subject::withCount('books as borrow_count')
+                ->having('borrow_count', '>', 0)
+                ->orderByDesc('borrow_count')
+                ->limit(5)
+                ->get();
+        }
+            
+        $categoryLabels = $popularCategories->pluck('name')->map(function($name) {
+            return preg_replace('/^.*?\. /', '', $name); 
+        })->toArray();
+        $categoryCounts = $popularCategories->pluck('borrow_count')->toArray();
+
+        return view('dashboard', compact('stats', 'recentLoans', 'overdueLoans', 'chartLabels', 'chartData', 'categoryLabels', 'categoryCounts'));
     }
 }

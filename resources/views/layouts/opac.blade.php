@@ -31,9 +31,29 @@
         <!-- Right: Links & Buttons (Desktop) -->
         <div class="hidden lg:flex items-center">
             <ul class="flex items-center gap-8 list-none pl-0 mb-0">
-                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
-                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
-                <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+                @if(request()->routeIs('opac.katalog') || request()->routeIs('opac.show'))
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors {{ request('tab', 'home') == 'home' && request()->routeIs('opac.katalog') ? 'text-indigo-600' : 'text-slate-600' }} no-underline" href="{{ route('opac.katalog', ['tab' => 'home']) }}">Home</a></li>
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors {{ request('tab') == 'koleksi' ? 'text-indigo-600' : 'text-slate-600' }} no-underline" href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}">Koleksi Buku</a></li>
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors {{ request('tab') == 'digital' ? 'text-indigo-600' : 'text-slate-600' }} no-underline" href="{{ route('opac.katalog', ['tab' => 'digital']) }}">Buku Digital</a></li>
+                @else
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+                    <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline flex items-center gap-1 focus:outline-none">
+                            Tentang Kami <i class="bi bi-chevron-down text-xs"></i>
+                        </button>
+                        <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute top-full left-0 mt-2 w-56 bg-white border border-slate-100 rounded-xl shadow-xl py-2 z-50" style="display: none;">
+                            <a href="{{ route('opac.sejarah') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline">Sejarah</a>
+                            <a href="{{ route('opac.visi-misi') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline">Visi dan Misi</a>
+                            <a href="{{ route('opac.struktur-organisasi') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline">Struktur Organisasi</a>
+                            <a href="{{ route('opac.pustakawan') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline">Pustakawan</a>
+                            <a href="{{ route('opac.program-kerja') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline">Program Kerja</a>
+                            <a href="{{ route('opac.tata-tertib') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline">Tata Tertib</a>
+                            <a href="{{ route('opac.jam-layanan') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline">Jam Layanan</a>
+                        </div>
+                    </li>
+                @endif
                 
                 <!-- Language Switcher -->
                 <li class="ml-2 flex items-center gap-2 border-l border-slate-200 pl-4">
@@ -44,9 +64,22 @@
                 
                 <li class="ml-2">
                     @auth
-                    <a href="{{ route('dashboard') }}" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold text-sm uppercase tracking-wider py-2.5 px-6 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 no-underline flex items-center gap-2">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
+                    <li class="relative ml-2" x-data="{ userMenu: false }">
+                        <button @click="userMenu = !userMenu" @click.away="userMenu = false" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold text-sm uppercase tracking-wider py-2.5 px-6 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 no-underline flex items-center gap-2">
+                            <i class="bi bi-person-circle text-lg"></i> {{ Auth::user()->name }} <i class="bi bi-chevron-down text-xs ml-1"></i>
+                        </button>
+                        <div x-show="userMenu" style="display: none;" class="absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-xl shadow-xl py-2 z-50">
+                            @if(Auth::user()->can('view-dashboard'))
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline"><i class="bi bi-speedometer2 mr-2"></i>Dashboard Admin</a>
+                            @endif
+                            <a href="{{ route('member.reservations.index') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline"><i class="bi bi-journal-bookmark mr-2"></i>Buku Saya (Reservasi)</a>
+                            <hr class="my-2 border-slate-100">
+                            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 no-underline"><i class="bi bi-box-arrow-right mr-2"></i>Logout</button>
+                            </form>
+                        </div>
+                    </li>
                     @else
                     <a href="{{ route('login') }}" class="bg-gradient-to-r from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white font-bold text-sm uppercase tracking-wider py-2.5 px-6 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 no-underline flex items-center gap-2">
                         <i class="bi bi-box-arrow-in-right text-lg"></i> Login
@@ -67,9 +100,29 @@
     <!-- Mobile Menu -->
     <div x-show="mobileMenuOpen" class="lg:hidden bg-white border-t border-slate-100 mt-4" style="display: none;">
         <ul class="flex flex-col list-none pl-0 mb-0 py-4 px-4 space-y-4 text-center">
-            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
-            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
-            <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+            @if(request()->routeIs('opac.katalog') || request()->routeIs('opac.show'))
+                <li><a class="block font-bold {{ request('tab', 'home') == 'home' && request()->routeIs('opac.katalog') ? 'text-indigo-600' : 'text-slate-600' }} hover:text-indigo-600 no-underline" href="{{ route('opac.katalog', ['tab' => 'home']) }}">Home</a></li>
+                <li><a class="block font-bold {{ request('tab') == 'koleksi' ? 'text-indigo-600' : 'text-slate-600' }} hover:text-indigo-600 no-underline" href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}">Koleksi Buku</a></li>
+                <li><a class="block font-bold {{ request('tab') == 'digital' ? 'text-indigo-600' : 'text-slate-600' }} hover:text-indigo-600 no-underline" href="{{ route('opac.katalog', ['tab' => 'digital']) }}">Buku Digital</a></li>
+            @else
+                <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
+                <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
+                <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+                <li x-data="{ open: false }" class="flex flex-col items-center w-full">
+                    <button @click="open = !open" class="font-bold text-slate-600 hover:text-indigo-600 focus:outline-none flex items-center gap-1 justify-center">
+                        Tentang <i class="bi bi-chevron-down text-sm transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    <ul x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="flex flex-col list-none pl-0 mt-3 space-y-3 text-center bg-slate-50 w-full py-4 rounded-xl shadow-inner" style="display: none;">
+                        <li><a href="{{ route('opac.sejarah') }}" class="block text-sm font-medium text-slate-600 hover:text-indigo-600 no-underline">Sejarah</a></li>
+                        <li><a href="{{ route('opac.visi-misi') }}" class="block text-sm font-medium text-slate-600 hover:text-indigo-600 no-underline">Visi dan Misi</a></li>
+                        <li><a href="{{ route('opac.struktur-organisasi') }}" class="block text-sm font-medium text-slate-600 hover:text-indigo-600 no-underline">Struktur Organisasi</a></li>
+                        <li><a href="{{ route('opac.pustakawan') }}" class="block text-sm font-medium text-slate-600 hover:text-indigo-600 no-underline">Pustakawan</a></li>
+                        <li><a href="{{ route('opac.program-kerja') }}" class="block text-sm font-medium text-slate-600 hover:text-indigo-600 no-underline">Program Kerja</a></li>
+                        <li><a href="{{ route('opac.tata-tertib') }}" class="block text-sm font-medium text-slate-600 hover:text-indigo-600 no-underline">Tata Tertib</a></li>
+                        <li><a href="{{ route('opac.jam-layanan') }}" class="block text-sm font-medium text-slate-600 hover:text-indigo-600 no-underline">Jam Layanan</a></li>
+                    </ul>
+                </li>
+            @endif
             
             <li class="flex justify-center gap-4 py-2">
                 <a href="{{ route('lang.switch', 'id') }}" class="font-bold {{ app()->getLocale() == 'id' ? 'text-indigo-600' : 'text-slate-400 hover:text-indigo-600' }} no-underline">ID</a>
@@ -151,43 +204,6 @@
 
 @stack('scripts')
 
-    <!-- SweetAlert2 Global Toast Handler -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            @if(session('success'))
-                Toast.fire({
-                    icon: 'success',
-                    title: "{{ session('success') }}"
-                });
-            @endif
-
-            @if(session('error'))
-                Toast.fire({
-                    icon: 'error',
-                    title: "{{ session('error') }}"
-                });
-            @endif
-
-            @if(session('warning'))
-                Toast.fire({
-                    icon: 'warning',
-                    title: "{{ session('warning') }}"
-                });
-            @endif
-        });
-    </script>
+    <x-toast />
 </body>
 </html>

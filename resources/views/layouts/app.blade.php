@@ -170,6 +170,11 @@
         @can('process-loans')
         <p class="{{ $menuLabel }}">{{ __('Sirkulasi Buku') }}</p>
         <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
+        <a href="{{ route('reservations.index') }}" class="{{ request()->routeIs('reservations.*') ? $navLinkActive : $navLink }}" title="{{ __('Reservasi Online') }}">
+            <i class="bi bi-journal-bookmark text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
+            <span class="sidebar-text truncate">{{ __('Reservasi Online') }}</span>
+            <span class="sidebar-tooltip">{{ __('Reservasi Online') }}</span>
+        </a>
         <a href="{{ route('circulations.index') }}" class="{{ request()->routeIs('circulations.index') || request()->routeIs('circulations.show') ? $navLinkActive : $navLink }}" title="{{ __('Transaksi Sirkulasi') }}">
             <i class="bi bi-arrow-left-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
             <span class="sidebar-text truncate">{{ __('Transaksi Sirkulasi') }}</span>
@@ -236,6 +241,11 @@
             <i class="bi bi-calendar-event text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
             <span class="sidebar-text truncate">{{ __('Agenda Perpustakaan') }}</span>
             <span class="sidebar-tooltip">{{ __('Agenda Perpustakaan') }}</span>
+        </a>
+        <a href="{{ route('pages.index') }}" class="{{ request()->routeIs('pages.*') ? $navLinkActive : $navLink }}" title="{{ __('Manajemen Halaman') }}">
+            <i class="bi bi-file-earmark-richtext text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
+            <span class="sidebar-text truncate">{{ __('Manajemen Halaman') }}</span>
+            <span class="sidebar-tooltip">{{ __('Manajemen Halaman') }}</span>
         </a>
         <a href="{{ route('guest-books.index') }}" class="{{ request()->routeIs('guest-books.index') ? $navLinkActive : $navLink }}" title="{{ __('Buku Tamu') }}">
             <i class="bi bi-journal-check text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
@@ -586,43 +596,10 @@ if (window.autoRefreshWidget) {
 }
 </script>
 
-    <!-- SweetAlert2 Global Toast Handler -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <x-toast />
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-
-            @if(session('success'))
-                Toast.fire({
-                    icon: 'success',
-                    title: "{{ session('success') }}"
-                });
-            @endif
-
-            @if(session('error'))
-                Toast.fire({
-                    icon: 'error',
-                    title: "{{ session('error') }}"
-                });
-            @endif
-
-            @if(session('warning'))
-                Toast.fire({
-                    icon: 'warning',
-                    title: "{{ session('warning') }}"
-                });
-            @endif
-
             // Mencegah scanner barcode (yang mengirim kombinasi tertentu) membuka tab console
             window.addEventListener('keydown', function(e) {
                 // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U

@@ -126,6 +126,11 @@
                                     <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                                     Tersedia {{ $book->available_items_count }}
                                 </div>
+                            @elseif(isset($book->items_count) && $book->items_count == 0)
+                                <div class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
+                                    Stok Kosong
+                                </div>
                             @else
                                 <div class="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-md">
                                     <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>

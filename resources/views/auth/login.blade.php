@@ -109,7 +109,17 @@
         </form>
 
         <div class="text-center mt-8 pt-6 border-t border-slate-100">
-            <a href="javascript:history.back()" class="inline-flex items-center text-slate-500 hover:text-indigo-600 font-medium transition-colors text-sm">
+            @php
+                $backUrl = url()->previous();
+                if (
+                    $backUrl == url()->current() || 
+                    !str_contains($backUrl, url('/')) ||
+                    str_contains($backUrl, '/password')
+                ) {
+                    $backUrl = route('opac.katalog');
+                }
+            @endphp
+            <a href="{{ $backUrl }}" class="inline-flex items-center text-slate-500 hover:text-indigo-600 font-medium transition-colors text-sm">
                 <i class="bi bi-arrow-left mr-2"></i>{{ __('Kembali') }}
             </a>
         </div>

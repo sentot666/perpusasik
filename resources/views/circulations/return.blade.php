@@ -142,15 +142,8 @@ returnBarcode.addEventListener('keydown', function(e) {
     }
 });
 
-let debounceTimer;
-returnBarcode.addEventListener('input', function(e) {
-    clearTimeout(debounceTimer);
-    if (this.value.trim().length >= 3) {
-        debounceTimer = setTimeout(() => {
-            submitReturn();
-        }, 500); // 500ms delay after typing stops (scanner is very fast)
-    }
-});
+// Auto submit on input removed to allow manual typing
+// Scanners will trigger the 'Enter' keydown event above
 </script>
 @endpush
 

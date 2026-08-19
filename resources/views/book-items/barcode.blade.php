@@ -44,8 +44,7 @@
         .barcode-label {
             width: 7.5cm;
             height: 3.8cm;
-            border: 1px dashed #cbd5e1;
-            border-radius: 4px;
+            border: 1px solid #000000;
             display: flex;
             background: #ffffff;
             -webkit-print-color-adjust: exact;
@@ -56,7 +55,7 @@
         .label-left {
             width: 60%;
             padding: 6px 8px;
-            border-right: 1px dashed #cbd5e1;
+            border-right: 1px solid #000000;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -66,7 +65,6 @@
 
         .label-right {
             width: 40%;
-            padding: 6px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -93,19 +91,23 @@
         }
 
         .barcode-str {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9pt;
+            font-family: 'Inter', sans-serif;
+            font-size: 8pt;
             font-weight: 700;
-            margin-top: 3px;
+            margin-top: 2px;
             letter-spacing: 0.5px;
         }
 
         .inst-title {
-            font-size: 7pt;
-            font-weight: 800;
-            text-transform: uppercase;
+            width: 100%;
+            background-color: #d1d5db; /* Gray background */
+            padding: 4px 2px;
+            font-size: 8pt;
+            font-weight: 700;
             line-height: 1.1;
             margin-bottom: 5px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .call-num-stack {
@@ -113,6 +115,7 @@
             flex-direction: column;
             align-items: center;
             gap: 1.5px;
+            padding: 0 4px 6px 4px;
         }
 
         .call-num-part {
@@ -125,8 +128,8 @@
             @page { size: 7.5cm 4.5cm landscape; margin: 0; }
             body { background: #ffffff !important; padding: 0 !important; }
             .action-bar { display: none !important; }
-            .barcode-label { box-shadow: none !important; margin: 0 !important; border: 1px dashed #000000 !important; }
-            .label-left { border-right: 1px dashed #000000 !important; }
+            .barcode-label { box-shadow: none !important; margin: 0 !important; border: 1px solid #000000 !important; }
+            .label-left { border-right: 1px solid #000000 !important; }
         }
     </style>
 </head>
@@ -156,7 +159,7 @@
             <div class="book-title">{{ $item->book?->title ?? '-' }}</div>
             <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
                 @if($barcodeBase64)
-                    <img src="data:image/png;base64,{{ $barcodeBase64 }}" class="barcode-img" alt="Barcode {{ $item->barcode }}">
+                    <img src="data:image/png;base64,{{ $barcodeBase64 }}" class="barcode-img" alt="Barcode {{ $item->barcode }}" style="height: 38px;">
                 @endif
                 <div class="barcode-str">{{ $item->barcode }}</div>
             </div>
@@ -164,7 +167,7 @@
 
         <!-- Bagian Kanan (Sisi Punggung Buku) -->
         <div class="label-right">
-            <div class="inst-title">{{ \App\Models\Setting::get('library_name', 'PERPUSTAKAAN') }}</div>
+            <div class="inst-title">Perpustakaan Sekolah Katolik<br>Santo Paulus</div>
             <div class="call-num-stack">
                 @php
                     $book = $item->book;

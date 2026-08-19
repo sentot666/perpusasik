@@ -103,7 +103,7 @@ class Member extends Model
             $levelCode = '03';
         }
         $prefix = $year2Digits . $levelCode; // e.g. 2601 (SD), 2602 (SMP), 2603 (SMA)
-        $last = static::where('member_code', 'like', "{$prefix}%")->max('member_code');
+        $last = static::withTrashed()->where('member_code', 'like', "{$prefix}%")->max('member_code');
         $seq = $last ? (intval(substr($last, strlen($prefix))) + 1) : 1;
         return $prefix . str_pad($seq, 4, '0', STR_PAD_LEFT);
     }

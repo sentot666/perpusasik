@@ -113,6 +113,22 @@
     </div>
 </div>
 
+{{-- ── Charts Row ───────────────────────────────────────────────────────────── --}}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-6">
+        <h3 class="text-base font-bold text-slate-800 mb-4"><i class="bi bi-graph-up text-blue-500 mr-2"></i>Statistik Kunjungan (7 Hari)</h3>
+        <div class="relative h-64">
+            <canvas id="visitorChart" data-labels="{{ json_encode($chartLabels) }}" data-values="{{ json_encode($chartData) }}"></canvas>
+        </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-6">
+        <h3 class="text-base font-bold text-slate-800 mb-4"><i class="bi bi-pie-chart-fill text-indigo-500 mr-2"></i>Kategori Buku Terfavorit</h3>
+        <div class="relative h-64">
+            <canvas id="categoryChart" data-labels="{{ json_encode($categoryLabels) }}" data-values="{{ json_encode($categoryCounts) }}"></canvas>
+        </div>
+    </div>
+</div>
+
 {{-- ── Tables Row ───────────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
@@ -223,3 +239,117 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let visitorChartInstance = null;
+    let categoryChartInstance = null;
+
+    function initDashboardCharts() {
+        // Destroy existing instances if they exist
+        if (visitorChartInstance) visitorChartInstance.destroy();
+        if (categoryChartInstance) categoryChartInstance.destroy();
+
+        // Visitor Chart
+        const visitorCanvas = document.getElementById('visitorChart');
+        if (visitorCanvas) {
+            const visitorLabels = JSON.parse(visitorCanvas.dataset.labels || '[]');
+            const visitorValues = JSON.parse(visitorCanvas.dataset.values || '[]');
+            
+            const visitorCtx = visitorCanvas.getContext('2d');
+            visitorChartInstance = new Chart(visitorCtx, {
+                type: 'line',
+                data: {
+                    labels: visitorLabels,
+                    datasets: [{
+                        label: 'Pengunjung',
+                        data: visitorValues,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#3b82f6',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 10,
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { stepSize: 1, color: '#94a3b8' },
+                            grid: { color: '#f1f5f9', drawBorder: false }
+                        },
+                        x: {
+                            ticks: { color: '#94a3b8' },
+                            grid: { display: false, drawBorder: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Category Chart
+        const categoryCanvas = document.getElementById('categoryChart');
+        if (categoryCanvas) {
+            const categoryLabels = JSON.parse(categoryCanvas.dataset.labels || '[]');
+            const categoryValues = JSON.parse(categoryCanvas.dataset.values || '[]');
+            
+            const categoryCtx = categoryCanvas.getContext('2d');
+            categoryChartInstance = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: [
+                            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { 
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                color: '#64748b',
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 10,
+                            cornerRadius: 8,
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', initDashboardCharts);
+    document.addEventListener('content-refreshed', initDashboardCharts);
+</script>
+@endpush

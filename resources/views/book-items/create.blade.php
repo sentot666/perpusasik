@@ -54,9 +54,10 @@
                 <div class="w-full md:w-1/2 px-4">
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Barcode / RFID') }} <span class="text-red-600">*</span></label>
-                        {{-- Quick helper: let's generate a unique barcode suggestion based on timestamp + random --}}
+                        {{-- Generate a sequential barcode suggestion like B002524 --}}
                         @php
-                            $barcodeSuggestion = 'B' . now()->format('ymdHis') . rand(10, 99);
+                            $maxId = \App\Models\BookItem::max('id') ?? 0;
+                            $barcodeSuggestion = 'B' . str_pad($maxId + 1, 6, '0', STR_PAD_LEFT);
                         @endphp
                         <input type="text" name="barcode" class="@error('barcode') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" value="{{ old('barcode', $barcodeSuggestion) }}" required placeholder="{{ __('Scan barcode atau ketik manual') }}">
                         @error('barcode')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror

@@ -100,7 +100,7 @@
 
                 {{-- Availability & Location --}}
                 @php
-                    $availableItems = $book->items->where('status', 'Available');
+                    $availableItems = $book->items->where('status', 'Tersedia');
                     $totalAvailable = $availableItems->count();
                 @endphp
                 <div class="mb-8">
@@ -116,7 +116,7 @@
                                     <span class="text-xs text-slate-400 font-mono">{{ $item->call_number }}</span>
                                     @endif
                                 </div>
-                                @if($item->status === 'Available')
+                                @if($item->status === 'Tersedia')
                                     <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
                                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Tersedia
                                     </span>
@@ -136,12 +136,19 @@
                 {{-- Action Buttons --}}
                 <div class="flex flex-wrap gap-3">
                     @if($totalAvailable > 0)
-                        <button type="button" onclick="alert('Silakan hubungi petugas perpustakaan untuk meminjam buku ini.')" class="btn-gradient-blue text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-sm flex items-center gap-2">
-                            <i class="bi bi-book"></i> Pinjam Buku
+                        <form action="{{ route('member.reservations.store', $book->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn-gradient-blue text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-sm flex items-center gap-2" onclick="return confirm('Apakah Anda yakin ingin meminjam/memesan buku ini?')">
+                                <i class="bi bi-book"></i> Pinjam / Pesan Buku
+                            </button>
+                        </form>
+                    @elseif(isset($book->items_count) && $book->items_count == 0)
+                        <button type="button" class="bg-slate-100 text-slate-500 font-bold py-3 px-8 rounded-xl border border-slate-200 flex items-center gap-2 cursor-not-allowed">
+                            <i class="bi bi-x-circle"></i> Stok Kosong
                         </button>
                     @else
-                        <button type="button" onclick="alert('Semua eksemplar sedang dipinjam. Hubungi petugas untuk reservasi.')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-3 px-8 rounded-xl transition-colors border border-amber-200 flex items-center gap-2">
-                            <i class="bi bi-clock"></i> Reservasi
+                        <button type="button" class="bg-amber-100 text-amber-800 font-bold py-3 px-8 rounded-xl border border-amber-200 flex items-center gap-2 cursor-not-allowed">
+                            <i class="bi bi-clock"></i> Buku Habis Dipinjam
                         </button>
                     @endif
 

@@ -18,6 +18,7 @@ use App\Http\Controllers\OpacController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GuestBookController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\PageController;
 // ── Language Switcher ──────────────────────────────────────────────────────────
 Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {
@@ -31,6 +32,13 @@ Route::get('/', [OpacController::class, 'index'])->name('opac.index');
 Route::get('/katalog', [OpacController::class, 'katalog'])->name('opac.katalog');
 Route::get('/opac/agenda', [OpacController::class, 'agenda'])->name('opac.agenda');
 Route::get('/opac/buku/{book}', [OpacController::class, 'show'])->name('opac.show');
+Route::get('/opac/program-kerja', [OpacController::class, 'programKerja'])->name('opac.program-kerja');
+Route::get('/opac/sejarah', [OpacController::class, 'sejarah'])->name('opac.sejarah');
+Route::get('/opac/visi-misi', [OpacController::class, 'visiMisi'])->name('opac.visi-misi');
+Route::get('/opac/struktur-organisasi', [OpacController::class, 'strukturOrganisasi'])->name('opac.struktur-organisasi');
+Route::get('/opac/pustakawan', [OpacController::class, 'pustakawan'])->name('opac.pustakawan');
+Route::get('/opac/tata-tertib', [OpacController::class, 'tataTertib'])->name('opac.tata-tertib');
+Route::get('/opac/jam-layanan', [OpacController::class, 'jamLayanan'])->name('opac.jam-layanan');
 
 // ── Buku Tamu Mandiri (public) ────────────────────────────────────────────────
 Route::get('/isi-buku-tamu', [GuestBookController::class, 'visitorForm'])->name('guest-books.visitor');
@@ -61,12 +69,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
-    // ── Buku Tamu / Aktivitas Harian ───────────────────────────────────────────
+    // ── Guestbook & Agendas ──
     Route::get('/guest-books/scan', [GuestBookController::class, 'scanForm'])->name('guest-books.scan');
     Route::post('/guest-books/scan', [GuestBookController::class, 'scanSubmit'])->name('guest-books.scan.submit');
     Route::get('/guest-books/export', [GuestBookController::class, 'export'])->name('guest-books.export');
     Route::resource('guest-books', GuestBookController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('agendas', AgendaController::class);
+    Route::resource('pages', PageController::class);
 
     // ── Katalogisasi ────────────────────────────────────────────────────────
     Route::middleware(['can:view-books'])->group(function () {
@@ -107,6 +116,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/api/book-items/lookup', [BookItemController::class, 'ajaxLookup'])->name('book-items.ajax-lookup');
     });
 
+    // ── Reservasi ────────────────────────────────────────────────────────────
+    Route::middleware(['can:process-loans'])->group(function () {
+        Route::get('/reservations', [App\Http\Controllers\ReservationController::class, 'index'])->name('reservations.index');
+        Route::post('/reservations/{reservation}/approve', [App\Http\Controllers\ReservationController::class, 'approve'])->name('reservations.approve');
+        Route::post('/reservations/{reservation}/reject', [App\Http\Controllers\ReservationController::class, 'reject'])->name('reservations.reject');
+    });
+
     // ── Laporan ──────────────────────────────────────────────────────────────
     Route::middleware(['can:view-reports'])->group(function () {
         Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
@@ -142,6 +158,11 @@ Route::middleware(['auth'])->prefix('member')->name('member.')->group(function (
     
     // Loan History
     Route::get('/loans', \App\Http\Controllers\Member\LoanHistoryController::class)->name('loans')->middleware('can:view-history');
+    
+    // Reservations
+    Route::get('/reservations', [\App\Http\Controllers\ReservationController::class, 'memberIndex'])->name('reservations.index')->middleware('can:view-history');
+    Route::post('/reservations/{book}', [\App\Http\Controllers\ReservationController::class, 'store'])->name('reservations.store')->middleware('can:view-history');
+    Route::delete('/reservations/{reservation}', [\App\Http\Controllers\ReservationController::class, 'destroy'])->name('reservations.destroy')->middleware('can:view-history');
     
     // Fines
     Route::get('/fines', \App\Http\Controllers\Member\FineController::class)->name('fines')->middleware('can:view-history');

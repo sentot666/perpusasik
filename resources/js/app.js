@@ -84,7 +84,10 @@ window.autoRefreshWidget = function () {
                     const doc = new DOMParser().parseFromString(html, 'text/html');
                     const cur = document.querySelector('.content-area');
                     const next = doc.querySelector('.content-area');
-                    if (cur && next) cur.innerHTML = next.innerHTML;
+                    if (cur && next) {
+                        cur.innerHTML = next.innerHTML;
+                        document.dispatchEvent(new CustomEvent('content-refreshed'));
+                    }
                 })
                 .catch(e => console.error('[AutoRefresh]', e))
                 .finally(() => this.startTimer());

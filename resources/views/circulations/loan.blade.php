@@ -391,16 +391,8 @@ function lookupBarcode() {
 }
 
 document.getElementById('lookupBarcode').addEventListener('click', lookupBarcode);
-let barcodeTimer;
-barcodeInput.addEventListener('input', function() {
-    clearTimeout(barcodeTimer);
-    const barcode = this.value.trim();
-    if (barcode.length < 3) return;
-    barcodeTimer = setTimeout(() => {
-        lookupBarcode();
-    }, 400);
-});
-
+// Auto lookup on input removed to allow manual typing
+// Scanners will trigger the 'Enter' keydown event below
 barcodeInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); lookupBarcode(); } });
 
 // Close dropdown on outside click

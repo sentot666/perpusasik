@@ -9,7 +9,7 @@ return [
     'hero_title' => 'Selamat Datang di Perpustakaan Sekolah Katolik Santo Paulus',
     'hero_subtitle' => 'Eksplorasi ribuan koleksi buku, jurnal, dan referensi digital perpustakaan kami.',
     
-    'quick_services' => 'Layanan Cepat',
+    'quick_services' => 'Layanan Perpustakaan',
     'quick_services_desc' => 'Pilih menu layanan di bawah ini untuk akses lebih cepat',
     
     'catalog' => 'Katalog',

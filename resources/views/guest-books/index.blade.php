@@ -45,7 +45,7 @@
             <a href="{{ route('guest-books.scan') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors gap-1.5 py-2 px-4 shadow-sm">
                 <i class="fas fa-barcode"></i> {{ __('Mode Scan Barcode') }}
             </a>
-            <button type="button" @click="showAddModal = true" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-1.5 py-2 px-4">
+            <button type="button" @click="showAddModal = true; const now = new Date(); document.getElementById('visit_time').value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0'); document.getElementById('visit_date').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-1.5 py-2 px-4">
                 <i class="bi bi-journal-plus"></i>{{ __('Catat Kunjungan Baru') }}
             </button>
         </div>

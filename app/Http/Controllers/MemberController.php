@@ -39,7 +39,6 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'member_code'    => 'required|unique:members,member_code',
             'name'           => 'required|string|max:200',
             'email'          => 'nullable|email|max:200',
             'phone'          => 'nullable|string|max:30',
@@ -57,7 +56,8 @@ class MemberController extends Controller
             'notes'          => 'nullable|string',
         ]);
 
-        // Auto-set barcode (murni angka mengikuti member_code)
+        // Auto-generate member_code based on member_type
+        $validated['member_code'] = Member::generateCode($validated['member_type']);
         $validated['barcode'] = $validated['member_code'];
 
         // Auto-set expired_date if not provided
@@ -70,10 +70,28 @@ class MemberController extends Controller
             $validated['photo'] = $request->file('photo')->store('members', 'public');
         }
 
-        Member::create($validated);
+        $member = Member::create($validated);
+
+        // Set password: Tanggal Lahir (YYYYMMDD). Jika kosong, fallback ke member_code.
+        $passwordPlain = !empty($validated['birth_date']) 
+            ? \Carbon\Carbon::parse($validated['birth_date'])->format('Ymd') 
+            : $member->member_code;
+
+        // Auto-create User account for OPAC
+        $user = \App\Models\User::firstOrCreate(
+            ['username' => $member->member_code],
+            [
+                'name'      => $member->name,
+                'email'     => $member->email ?? ($member->member_code . '@makarya.local'),
+                'password'  => bcrypt($passwordPlain),
+                'is_active' => $member->is_active ?? true,
+                'member_id' => $member->id,
+            ]
+        );
+        $user->assignRole('anggota');
 
         return redirect()->route('members.index')
-            ->with('success', 'Anggota berhasil didaftarkan.');
+            ->with('success', 'Anggota berhasil didaftarkan beserta akun loginnya (Username: ' . $member->member_code . ', Password: ' . $passwordPlain . ').');
     }
 
     public function show(Member $member)
