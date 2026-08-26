@@ -37,8 +37,8 @@
                     <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors {{ request('tab') == 'digital' ? 'text-indigo-600' : 'text-slate-600' }} no-underline" href="{{ route('opac.katalog', ['tab' => 'digital']) }}">Buku Digital</a></li>
                 @else
                     <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
-                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
-                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.nav_services') }}</a></li>
+                    <li><a class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.nav_stats') }}</a></li>
                     <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                         <button class="text-sm font-bold uppercase tracking-wider hover:text-indigo-600 transition-colors text-slate-600 no-underline flex items-center gap-1 focus:outline-none">
                             Tentang Kami <i class="bi bi-chevron-down text-xs"></i>
@@ -106,8 +106,8 @@
                 <li><a class="block font-bold {{ request('tab') == 'digital' ? 'text-indigo-600' : 'text-slate-600' }} hover:text-indigo-600 no-underline" href="{{ route('opac.katalog', ['tab' => 'digital']) }}">Buku Digital</a></li>
             @else
                 <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#beranda">{{ __('landing.nav_home') }}</a></li>
-                <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.quick_services') }}</a></li>
-                <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.stats_title') }}</a></li>
+                <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#layanan">{{ __('landing.nav_services') }}</a></li>
+                <li><a class="block font-bold text-slate-600 hover:text-indigo-600 no-underline" href="{{ route('opac.index') }}#informasi">{{ __('landing.nav_stats') }}</a></li>
                 <li x-data="{ open: false }" class="flex flex-col items-center w-full">
                     <button @click="open = !open" class="font-bold text-slate-600 hover:text-indigo-600 focus:outline-none flex items-center gap-1 justify-center">
                         Tentang <i class="bi bi-chevron-down text-sm transition-transform duration-200" :class="{ 'rotate-180': open }"></i>

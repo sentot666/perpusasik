@@ -39,6 +39,7 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'member_code'    => 'required|unique:members,member_code',
             'name'           => 'required|string|max:200',
             'email'          => 'nullable|email|max:200',
             'phone'          => 'nullable|string|max:30',
@@ -56,8 +57,7 @@ class MemberController extends Controller
             'notes'          => 'nullable|string',
         ]);
 
-        // Auto-generate member_code based on member_type
-        $validated['member_code'] = Member::generateCode($validated['member_type']);
+        // Auto-set barcode (murni angka mengikuti member_code)
         $validated['barcode'] = $validated['member_code'];
 
         // Auto-set expired_date if not provided

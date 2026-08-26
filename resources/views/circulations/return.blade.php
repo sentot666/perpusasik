@@ -11,7 +11,7 @@
 </div>
 
 <div class="justify-center flex flex-wrap -mx-3">
-    <div class="w-full lg:w-1/2 px-4">
+    <div class="w-full px-4">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-box-arrow-in-left text-emerald-600 mr-2"></i>{{ __('Form Pengembalian') }}</div>
             <div class="p-8">
@@ -31,20 +31,44 @@
                     @csrf
 
                     <div class="mb-6">
-                        <label for="returnBarcode" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Barcode Buku') }} <span class="text-red-600">*</span></label>
-                        <div class="flex w-full input-group-lg">
-                            <span class="flex items-center px-3 py-2 bg-slate-100 border border-slate-300 text-slate-600"><i class="bi bi-upc-scan"></i></span>
-                            <input
-                                type="text"
-                                name="barcode"
-                                id="returnBarcode"
-                                class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4"
-                                placeholder="{{ __('Scan barcode eksemplar buku...') }}"
-                                autofocus
-                                autocomplete="off"
-                            >
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Barcode Buku') }} <span class="text-red-600">*</span></label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Left: Scanner -->
+                            <div>
+                                <div class="flex w-full input-group-lg relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                                        <i class="bi bi-upc-scan"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        id="returnBarcodeScan"
+                                        class="w-full pl-10 rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4"
+                                        placeholder="{{ __('Scan barcode...') }}"
+                                        autofocus
+                                        autocomplete="off"
+                                    >
+                                </div>
+                                <div class="form-text mt-1 text-xs text-slate-500">{{ __('Otomatis diproses (Scanner)') }}</div>
+                            </div>
+                            
+                            <!-- Right: Manual -->
+                            <div>
+                                <div class="flex w-full input-group-lg relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                                        <i class="bi bi-keyboard"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        id="returnBarcodeManual"
+                                        class="w-full pl-10 rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4"
+                                        placeholder="{{ __('Ketik manual...') }}"
+                                        autocomplete="off"
+                                    >
+                                </div>
+                                <div class="form-text mt-1 text-xs text-slate-500">{{ __('Tunggu 1 detik atau tekan Enter') }}</div>
+                            </div>
                         </div>
-                        <div class="form-text">{{ __('Arahkan scanner ke barcode pada buku, atau ketik manual lalu Enter') }}</div>
+                        <input type="hidden" name="barcode" id="actualReturnBarcode">
                     </div>
 
                     <button type="submit" class="w-full inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-green transition-colors text-white font-semibold gap-2 py-2 px-6" id="returnSubmitBtn">
@@ -60,7 +84,7 @@
     </div>
 
     {{-- Recent returns today --}}
-    <div class="col-lg-10 mt-6">
+    <div class="w-full px-4 mt-6">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-clock-history mr-2"></i>{{ __('Pengembalian Hari Ini') }}</div>
             <div class="p-0">
@@ -124,26 +148,50 @@
 
 @push('scripts')
 <script>
-// Auto-submit on Enter after barcode scan
-let returnBarcode = document.getElementById('returnBarcode');
+let returnBarcodeScan = document.getElementById('returnBarcodeScan');
+let returnBarcodeManual = document.getElementById('returnBarcodeManual');
+let actualReturnBarcode = document.getElementById('actualReturnBarcode');
 let returnSubmitBtn = document.getElementById('returnSubmitBtn');
 let returnForm = document.getElementById('returnForm');
 
-function submitReturn() {
+function submitReturn(barcode) {
+    actualReturnBarcode.value = barcode;
     returnSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm mr-2"></span>{{ __('Memproses...') }}';
     returnSubmitBtn.disabled = true;
     returnForm.submit();
 }
 
-returnBarcode.addEventListener('keydown', function(e) {
+// Scanner Input
+let scanTimeout;
+returnBarcodeScan.addEventListener('input', function(e) {
+    clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(() => {
+        if(this.value.trim().length > 0) submitReturn(this.value.trim());
+    }, 50);
+});
+returnBarcodeScan.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
-        submitReturn();
+        clearTimeout(scanTimeout);
+        if(this.value.trim().length > 0) submitReturn(this.value.trim());
     }
 });
 
-// Auto submit on input removed to allow manual typing
-// Scanners will trigger the 'Enter' keydown event above
+// Manual Input
+let manualTimeout;
+returnBarcodeManual.addEventListener('input', function(e) {
+    clearTimeout(manualTimeout);
+    manualTimeout = setTimeout(() => {
+        if(this.value.trim().length > 0) submitReturn(this.value.trim());
+    }, 1000);
+});
+returnBarcodeManual.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(manualTimeout);
+        if(this.value.trim().length > 0) submitReturn(this.value.trim());
+    }
+});
 </script>
 @endpush
 

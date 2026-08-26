@@ -93,16 +93,16 @@
                 {{-- Right Column --}}
                 <div class="w-full md:w-1/2 px-4">
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Pengarang') }} <span class="text-slate-500">({{ __('Pilih beberapa jika ada') }})</span></label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Pengarang') }}</label>
                         @php
                         $selectedAuthors = $book->authors->pluck('id')->toArray();
                         @endphp
-                        <select name="authors[]" class="@error('authors') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" multiple style="height:115px">
+                        <select name="authors[]" class="@error('authors') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4">
+                            <option value="">{{ __('Pilih Pengarang...') }}</option>
                             @foreach($authors as $author)
                             <option value="{{ $author->id }}" {{ in_array($author->id, old('authors', $selectedAuthors)) ? 'selected' : '' }}>{{ $author->name }} ({{ $author->type }})</option>
                             @endforeach
                         </select>
-                        <div class="form-text">{{ __('Tahan Ctrl untuk memilih lebih dari satu pengarang') }}</div>
                     </div>
 
                     <div class="flex flex-wrap -mx-2 mb-6">
@@ -137,7 +137,8 @@
                         @php
                         $selectedSubjects = $book->subjects->pluck('id')->toArray();
                         @endphp
-                        <select name="subjects[]" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" multiple style="height:78px">
+                        <select name="subjects[]" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4">
+                            <option value="">{{ __('Pilih Subyek...') }}</option>
                             @foreach($subjects as $sub)
                             <option value="{{ $sub->id }}" {{ in_array($sub->id, old('subjects', $selectedSubjects)) ? 'selected' : '' }}>{{ $sub->name }} @if($sub->ddc) ({{ $sub->ddc }}) @endif</option>
                             @endforeach

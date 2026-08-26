@@ -74,15 +74,25 @@
 
                     {{-- Barcode Input --}}
                     <div>
-                        <label for="barcodeInput" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Barcode Buku') }} <span class="text-red-500">*</span></label>
-                        <div class="flex relative rounded-lg shadow-sm">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
-                                <i class="bi bi-upc-scan"></i>
-                            </span>
-                            <input type="text" id="barcodeInput" class="flex-1 min-w-0 block w-full pl-10 bg-slate-50 border border-slate-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" placeholder="{{ __('Scan atau ketik barcode eksemplar...') }}" autocomplete="off">
-                            <button type="button" class="inline-flex items-center border border-slate-200 border-l-0 rounded-r-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition py-2 px-6" id="lookupBarcode">
-                                <i class="bi bi-search"></i>
-                            </button>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Barcode Buku') }} <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Left: Scanner -->
+                            <div class="relative rounded-lg shadow-sm">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                                    <i class="bi bi-upc-scan"></i>
+                                </span>
+                                <input type="text" id="barcodeScanInput" class="block w-full pl-10 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" placeholder="{{ __('Scan barcode...') }}" autocomplete="off">
+                            </div>
+                            <!-- Right: Manual -->
+                            <div class="flex relative rounded-lg shadow-sm">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                                    <i class="bi bi-keyboard"></i>
+                                </span>
+                                <input type="text" id="barcodeManualInput" class="flex-1 min-w-0 block w-full pl-10 bg-slate-50 border border-slate-200 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" placeholder="{{ __('Ketik manual...') }}" autocomplete="off">
+                                <button type="button" class="inline-flex items-center border border-slate-200 border-l-0 rounded-r-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition py-2 px-6" id="lookupBarcodeBtn">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
                         </div>
                         <!-- Hidden inputs for book item IDs will be injected dynamically by JS -->
                         <div id="hiddenBookInputs"></div>
@@ -149,7 +159,8 @@ const memberSearch  = document.getElementById('memberSearch');
 const memberDropdown= document.getElementById('memberDropdown');
 const memberCard    = document.getElementById('memberCard');
 const memberIdInput = document.getElementById('memberId');
-const barcodeInput  = document.getElementById('barcodeInput');
+const barcodeScanInput = document.getElementById('barcodeScanInput');
+const barcodeManualInput = document.getElementById('barcodeManualInput');
 const hiddenBookInputs = document.getElementById('hiddenBookInputs');
 const bookListContainer = document.getElementById('bookListContainer');
 const submitBtn     = document.getElementById('submitLoan');
@@ -289,7 +300,7 @@ function selectMember(m) {
     document.getElementById('memberCardInfo').textContent = `${m.member_type} • ${m.status}`;
     memberCard.classList.remove('hidden');
     checkSubmit();
-    setTimeout(() => barcodeInput.focus(), 100);
+    setTimeout(() => barcodeScanInput.focus(), 100);
 }
 
 document.getElementById('clearMember').addEventListener('click', () => {
@@ -300,13 +311,13 @@ document.getElementById('clearMember').addEventListener('click', () => {
 });
 
 // Barcode lookup
-function lookupBarcode() {
-    const barcode = barcodeInput.value.trim();
+function lookupBarcode(sourceInput) {
+    const barcode = sourceInput.value.trim();
     if (!barcode) return;
     
     // Check if already in cart
     if (selectedBooks.find(b => b.barcode === barcode || b.id == barcode)) {
-        barcodeInput.value = '';
+        sourceInput.value = '';
         if(window.Swal) {
             Swal.fire({
                 icon: 'info',
@@ -319,8 +330,8 @@ function lookupBarcode() {
     }
     
     // Disable input while searching
-    barcodeInput.disabled = true;
-    document.getElementById('lookupBarcode').disabled = true;
+    sourceInput.disabled = true;
+    document.getElementById('lookupBarcodeBtn').disabled = true;
     
     fetch('{{ route("book-items.ajax-lookup") }}?barcode=' + encodeURIComponent(barcode))
         .then(r => r.json())
@@ -380,20 +391,53 @@ function lookupBarcode() {
             }
             
             selectedBooks.push(data);
-            barcodeInput.value = '';
+            sourceInput.value = '';
             renderBookList();
         })
         .finally(() => {
-            barcodeInput.disabled = false;
-            document.getElementById('lookupBarcode').disabled = false;
-            barcodeInput.focus();
+            sourceInput.disabled = false;
+            document.getElementById('lookupBarcodeBtn').disabled = false;
+            sourceInput.focus();
         });
 }
 
-document.getElementById('lookupBarcode').addEventListener('click', lookupBarcode);
-// Auto lookup on input removed to allow manual typing
-// Scanners will trigger the 'Enter' keydown event below
-barcodeInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); lookupBarcode(); } });
+document.getElementById('lookupBarcodeBtn').addEventListener('click', () => lookupBarcode(barcodeManualInput));
+
+// Scanner Input - Fast debounce
+let scanTimeout;
+barcodeScanInput.addEventListener('input', function(e) {
+    clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(() => {
+        if(barcodeScanInput.value.trim().length > 0) {
+            lookupBarcode(barcodeScanInput);
+        }
+    }, 50);
+});
+barcodeScanInput.addEventListener('keydown', e => { 
+    if (e.key === 'Enter') { 
+        e.preventDefault(); 
+        clearTimeout(scanTimeout); 
+        if(barcodeScanInput.value.trim().length > 0) lookupBarcode(barcodeScanInput);
+    } 
+});
+
+// Manual Input - Slower debounce
+let manualTimeout;
+barcodeManualInput.addEventListener('input', function(e) {
+    clearTimeout(manualTimeout);
+    manualTimeout = setTimeout(() => {
+        if(barcodeManualInput.value.trim().length > 0) {
+            lookupBarcode(barcodeManualInput);
+        }
+    }, 1000);
+});
+barcodeManualInput.addEventListener('keydown', e => { 
+    if (e.key === 'Enter') { 
+        e.preventDefault(); 
+        clearTimeout(manualTimeout); 
+        if(barcodeManualInput.value.trim().length > 0) lookupBarcode(barcodeManualInput);
+    } 
+});
 
 // Close dropdown on outside click
 document.addEventListener('click', e => {

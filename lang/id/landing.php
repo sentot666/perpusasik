@@ -5,6 +5,8 @@ return [
     'nav_catalog' => 'Katalog',
     'nav_guestbook' => 'Buku Tamu',
     'nav_login' => 'Login',
+    'nav_services' => 'Layanan',
+    'nav_stats' => 'Statistik',
 
     'hero_title' => 'Selamat Datang di Perpustakaan Sekolah Katolik Santo Paulus',
     'hero_subtitle' => 'Eksplorasi ribuan koleksi buku, jurnal, dan referensi digital perpustakaan kami.',

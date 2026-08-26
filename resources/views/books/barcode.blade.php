@@ -165,10 +165,6 @@
             line-height: 1.15;
             font-weight: 600;
             margin-bottom: 2px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
             word-wrap: break-word;
         }
 

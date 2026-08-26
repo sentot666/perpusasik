@@ -5,6 +5,8 @@ return [
     'nav_catalog' => 'Catalog',
     'nav_guestbook' => 'Guestbook',
     'nav_login' => 'Login',
+    'nav_services' => 'Services',
+    'nav_stats' => 'Statistics',
 
     'hero_title' => 'Welcome to Saint Paul School Library',
     'hero_subtitle' => 'Explore thousands of books, journals, and digital references in our library.',
