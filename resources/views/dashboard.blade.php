@@ -153,6 +153,29 @@
                         </thead>
                         <tbody>
                             @forelse($recentLoans as $loan)
+                            @if($loan instanceof \App\Models\ClassLoan)
+                            <tr class="bg-indigo-50/30">
+                                <td>
+                                    <div class="font-medium flex items-center gap-1.5">
+                                        <span class="bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded text-[10px] font-bold">KELAS</span>
+                                        {{ $loan->borrower_name }}
+                                    </div>
+                                    <div class="text-slate-500 text-xs">{{ $loan->origin }}</div>
+                                </td>
+                                <td class="truncate max-w-[160px]" title="{{ $loan->book_type }}">
+                                    {{ $loan->book_type }} <span class="text-slate-400 text-xs">({{ $loan->quantity }} eks)</span>
+                                </td>
+                                <td>{{ $loan->loan_date->format('d/m/Y') }}</td>
+                                <td><span class="text-slate-400">-</span></td>
+                                <td>
+                                    @if($loan->status === 'Dikembalikan')
+                                        <span class="inline-flex py-1 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ __('Dikembalikan') }}</span>
+                                    @else
+                                        <span class="inline-flex py-1 text-xs font-medium rounded-md bg-amber-100 text-amber-800 px-2">{{ __('Dipinjam') }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @else
                             <tr>
                                 <td>
                                     <div class="font-medium">{{ $loan->member->name }}</div>
@@ -177,6 +200,7 @@
                                     @endif
                                 </td>
                             </tr>
+                            @endif
                             @empty
                             <tr><td colspan="5" class="text-center text-slate-500 py-6">{{ __('Belum ada transaksi') }}</td></tr>
                             @endforelse

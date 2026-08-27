@@ -83,6 +83,43 @@
         </div>
     </div>
 
+    {{-- Form Pengembalian Kelas --}}
+    <div class="w-full px-4 mt-6">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4">
+                <i class="bi bi-people-fill text-indigo-600 mr-2"></i>{{ __('Form Pengembalian Kelas / Kelompok') }}
+            </div>
+            <div class="p-8">
+                @if(isset($activeClassLoans) && $activeClassLoans->count() > 0)
+                <form method="POST" action="{{ route('circulations.process-class-return-form') }}">
+                    @csrf
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Pilih Peminjaman Kelas yang Akan Dikembalikan') }} <span class="text-red-600">*</span></label>
+                        <select name="class_loan_id" class="w-full rounded-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" required>
+                            <option value="">-- Pilih Peminjaman Kelas --</option>
+                            @foreach($activeClassLoans as $cl)
+                                <option value="{{ $cl->id }}">
+                                    {{ $cl->borrower_name }} ({{ $cl->origin }}) - {{ $cl->book_type }} ({{ $cl->quantity }} eks) - Pinjam: {{ $cl->loan_date->format('d/m/Y') }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="form-text mt-1 text-xs text-slate-500">{{ __('Daftar ini hanya menampilkan kelas yang bukunya belum dikembalikan.') }}</div>
+                    </div>
+
+                    <button type="submit" class="w-full inline-flex items-center justify-center text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold gap-2 py-2 px-6">
+                        <i class="bi bi-check2-circle mr-2"></i>{{ __('Proses Pengembalian Kelas') }}
+                    </button>
+                </form>
+                @else
+                <div class="text-center text-slate-500 py-4">
+                    <i class="bi bi-info-circle text-2xl block mb-2 text-slate-400"></i>
+                    {{ __('Tidak ada peminjaman kelas yang sedang aktif saat ini.') }}
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
     {{-- Recent returns today --}}
     <div class="w-full px-4 mt-6">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -143,6 +180,7 @@
             </div>
         </div>
     </div>
+
 </div>
 @endsection
 

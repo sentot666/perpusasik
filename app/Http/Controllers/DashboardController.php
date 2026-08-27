@@ -22,18 +22,24 @@ class DashboardController extends Controller
         $stats = [
             'total_books'     => Book::count(),
             'total_members'   => Member::where('is_active', true)->count(),
-            'active_loans'    => Circulation::where('status', 'Dipinjam')->count(),
+            'active_loans'    => Circulation::where('status', 'Dipinjam')->count() + \App\Models\ClassLoan::where('status', 'Dipinjam')->count(),
             'overdue_loans'   => Circulation::overdue()->count(),
             'total_items'     => BookItem::count(),
             'available_items' => BookItem::where('status', 'Tersedia')->count(),
-            'loans_today'     => Circulation::whereDate('loan_date', today())->count(),
-            'returns_today'   => Circulation::whereDate('return_date', today())->count(),
+            'loans_today'     => Circulation::whereDate('loan_date', today())->count() + \App\Models\ClassLoan::whereDate('loan_date', today())->count(),
+            'returns_today'   => Circulation::whereDate('return_date', today())->count() + \App\Models\ClassLoan::whereDate('return_date', today())->count(),
         ];
 
-        $recentLoans = Circulation::with(['member', 'bookItem.book'])
+        $recentRegular = Circulation::with(['member', 'bookItem.book'])
             ->latest()
             ->limit(8)
             ->get();
+            
+        $recentClass = \App\Models\ClassLoan::latest()
+            ->limit(8)
+            ->get();
+            
+        $recentLoans = $recentRegular->concat($recentClass)->sortByDesc('created_at')->take(8);
 
         $overdueLoans = Circulation::with(['member', 'bookItem.book'])
             ->overdue()

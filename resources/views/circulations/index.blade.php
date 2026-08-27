@@ -157,21 +157,65 @@
                         </td>
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="10" class="text-center py-8 text-slate-500">
-                            <i class="bi bi-arrow-left-right text-3xl block mb-2 text-slate-300"></i>
-                            {{ __('Tidak ada data transaksi sirkulasi') }}
+                        @if($classLoans->isEmpty())
+                        <tr>
+                            <td colspan="10" class="text-center py-8 text-slate-500">
+                                <i class="bi bi-arrow-left-right text-3xl block mb-2 text-slate-300"></i>
+                                {{ __('Tidak ada data transaksi sirkulasi') }}
+                            </td>
+                        </tr>
+                        @endif
+                    @endforelse
+
+                    {{-- Class Loans Rows --}}
+                    @foreach($classLoans as $cl)
+                    <tr class="bg-indigo-50/30">
+                        <td class="text-slate-500">-</td>
+                        <td><span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-xs font-semibold">{{ __('KELAS') }}</span></td>
+                        <td>
+                            <div class="font-medium text-slate-800">{{ $cl->borrower_name }}</div>
+                            <div class="text-slate-500 text-xs">{{ $cl->origin }}</div>
+                        </td>
+                        <td>
+                            <div class="font-medium text-slate-800 truncate max-w-[200px]" title="{{ $cl->book_type }}">
+                                {{ $cl->book_type }}
+                            </div>
+                            <div class="text-slate-500 text-xs">{{ $cl->quantity }} {{ __('eksemplar') }}</div>
+                        </td>
+                        <td>{{ $cl->loan_date->format('d/m/Y') }}</td>
+                        <td><span class="text-slate-400">-</span></td>
+                        <td>{{ $cl->return_date ? $cl->return_date->format('d/m/Y') : '-' }}</td>
+                        <td><span class="text-slate-400">-</span></td>
+                        <td class="text-center">
+                            @if($cl->status === 'Dikembalikan')
+                            <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ __('Dikembalikan') }}</span>
+                            @else
+                            <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-amber-100 text-amber-800 px-2">{{ __('Dipinjam') }}</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <span class="text-xs text-slate-400 italic">{{ __('Peminjaman Kelas') }}</span>
                         </td>
                     </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
-        @if($circulations->hasPages())
-        <div class="p-4 border-t border-slate-200">
-            {{ $circulations->links() }}
+        <div class="p-4 border-t border-slate-200 space-y-3">
+            @if($circulations->hasPages())
+                <div>
+                    <div class="text-xs text-slate-500 mb-1">{{ __('Halaman Peminjaman Reguler') }}:</div>
+                    {{ $circulations->links() }}
+                </div>
+            @endif
+            @if($classLoans->hasPages())
+                <div>
+                    <div class="text-xs text-slate-500 mb-1">{{ __('Halaman Peminjaman Kelas') }}:</div>
+                    {{ $classLoans->links() }}
+                </div>
+            @endif
         </div>
-        @endif
     </div>
 </div>
+
 @endsection

@@ -105,8 +105,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sirkulasi', [CirculationController::class, 'index'])->name('circulations.index');
         Route::get('/sirkulasi/pinjam', [CirculationController::class, 'loanForm'])->name('circulations.loan');
         Route::post('/sirkulasi/pinjam', [CirculationController::class, 'storeLoan'])->name('circulations.store-loan');
+        Route::post('/sirkulasi/pinjam-kelas', [CirculationController::class, 'storeClassLoan'])->name('circulations.store-class-loan');
         Route::get('/sirkulasi/kembali', [CirculationController::class, 'returnForm'])->name('circulations.return');
         Route::post('/sirkulasi/kembali', [CirculationController::class, 'processReturn'])->name('circulations.process-return');
+        Route::post('/sirkulasi/kembali-kelas/{classLoan}', [CirculationController::class, 'returnClassLoan'])->name('circulations.return-class-loan');
+        Route::post('/sirkulasi/kembali-kelas-form', [CirculationController::class, 'processClassReturnForm'])->name('circulations.process-class-return-form');
         Route::get('/sirkulasi/{circulation}', [CirculationController::class, 'show'])->name('circulations.show');
         Route::post('/sirkulasi/{circulation}/perpanjang', [CirculationController::class, 'renew'])->name('circulations.renew');
         Route::post('/sirkulasi/{circulation}/bayar-denda', [CirculationController::class, 'payFine'])->name('circulations.pay-fine');

@@ -114,6 +114,41 @@
                 </form>
             </div>
         </div>
+
+        {{-- Form Peminjaman Kelas --}}
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-6">
+            <div class="px-8 border-b border-slate-200 font-semibold text-slate-700 bg-slate-50/50 flex items-center py-6">
+                <i class="bi bi-people-fill text-indigo-500 text-lg mr-2"></i> {{ __('Form Peminjaman Kelas / Kelompok') }}
+            </div>
+            <div class="p-8">
+                <form method="POST" action="{{ route('circulations.store-class-loan') }}" class="space-y-5">
+                    @csrf
+                    <div>
+                        <label for="borrower_name" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Peminjam') }} <span class="text-red-500">*</span></label>
+                        <input type="text" name="borrower_name" id="borrower_name" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" required>
+                    </div>
+                    <div>
+                        <label for="origin" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Asal (Kelas/Instansi)') }} <span class="text-red-500">*</span></label>
+                        <input type="text" name="origin" id="origin" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" required>
+                    </div>
+                    <div>
+                        <label for="book_type" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Jenis Buku') }} <span class="text-red-500">*</span></label>
+                        <input type="text" name="book_type" id="book_type" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" required>
+                    </div>
+                    <div>
+                        <label for="quantity" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Jumlah Pinjam') }} <span class="text-red-500">*</span></label>
+                        <input type="number" name="quantity" id="quantity" min="1" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" required>
+                    </div>
+                    <div>
+                        <label for="notes" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Catatan') }}</label>
+                        <textarea name="notes" id="notes" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition resize-none py-2 px-4" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="w-full flex items-center justify-center py-2.5 rounded-lg shadow-sm text-sm font-semibold focus:outline-none transition text-white gap-2 px-6" style="background: linear-gradient(to right, #3B82F6, #2563EB)">
+                        <i class="bi bi-box-arrow-right"></i> {{ __('Proses Peminjaman Kelas') }}
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
     {{-- Info Panel --}}

@@ -49,13 +49,15 @@ class CirculationController extends Controller
 
         $circulations = $query->paginate(20)->withQueryString();
 
+        $classLoans = \App\Models\ClassLoan::latest()->paginate(10, ['*'], 'class_page')->withQueryString();
+
         $stats = [
             'active'   => Circulation::where('status', 'Dipinjam')->count(),
             'overdue'  => Circulation::overdue()->count(),
             'returned' => Circulation::whereDate('return_date', today())->count(),
         ];
 
-        return view('circulations.index', compact('circulations', 'stats'));
+        return view('circulations.index', compact('circulations', 'classLoans', 'stats'));
     }
 
     /**
@@ -104,7 +106,8 @@ class CirculationController extends Controller
      */
     public function returnForm()
     {
-        return view('circulations.return');
+        $activeClassLoans = \App\Models\ClassLoan::where('status', 'Dipinjam')->latest()->get();
+        return view('circulations.return', compact('activeClassLoans'));
     }
 
     /**
@@ -169,5 +172,66 @@ class CirculationController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Store a newly created class loan.
+     */
+    public function storeClassLoan(Request $request)
+    {
+        $validated = $request->validate([
+            'borrower_name' => 'required|string|max:255',
+            'origin'        => 'required|string|max:255',
+            'book_type'     => 'required|string|max:255',
+            'quantity'      => 'required|integer|min:1',
+            'notes'         => 'nullable|string',
+        ]);
+
+        $validated['loan_date'] = today();
+        $validated['status'] = 'Dipinjam';
+        $validated['user_id'] = auth()->id();
+
+        \App\Models\ClassLoan::create($validated);
+
+        return redirect()->route('circulations.loan')->with('success', 'Peminjaman kelas berhasil disimpan.');
+    }
+
+    /**
+     * Process return for class loan.
+     */
+    public function returnClassLoan(Request $request, \App\Models\ClassLoan $classLoan)
+    {
+        if ($classLoan->status === 'Dikembalikan') {
+            return back()->with('error', 'Peminjaman ini sudah dikembalikan.');
+        }
+
+        $classLoan->update([
+            'status' => 'Dikembalikan',
+            'return_date' => today(),
+        ]);
+
+        return redirect()->route('circulations.return')->with('success', 'Pengembalian peminjaman kelas berhasil diproses.');
+    }
+    /**
+     * Process return for class loan via form dropdown.
+     */
+    public function processClassReturnForm(Request $request)
+    {
+        $request->validate([
+            'class_loan_id' => 'required|exists:class_loans,id',
+        ]);
+
+        $classLoan = \App\Models\ClassLoan::findOrFail($request->class_loan_id);
+
+        if ($classLoan->status === 'Dikembalikan') {
+            return back()->with('error', 'Peminjaman ini sudah dikembalikan.');
+        }
+
+        $classLoan->update([
+            'status' => 'Dikembalikan',
+            'return_date' => today(),
+        ]);
+
+        return redirect()->route('circulations.return')->with('success', 'Pengembalian peminjaman kelas berhasil diproses.');
     }
 }

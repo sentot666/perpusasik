@@ -124,14 +124,14 @@
         /* Label Grid */
         .label-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(7.5cm, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(9cm, 1fr));
             gap: 16px;
         }
 
         /* Single Barcode Sticker Label */
         .barcode-label {
-            width: 7.5cm;
-            height: 3.8cm;
+            width: 9cm;
+            height: 3.4cm;
             border: 1px solid #000000;
             display: flex;
             background: #ffffff;
@@ -187,8 +187,8 @@
             width: 100%;
             background-color: #d1d5db; /* Gray background */
             padding: 4px 2px;
-            font-size: 8pt;
-            font-weight: 700;
+            font-size: 10pt;
+            font-weight: 800;
             line-height: 1.1;
             margin-bottom: 5px;
             -webkit-print-color-adjust: exact;
@@ -286,9 +286,33 @@
                     } catch (\Throwable $e) {
                         $barcodeBase64 = null;
                     }
+
+                    // Logika Warna DDC
+                    $ddcNumber = $book->ddc;
+                    if (!$ddcNumber) {
+                        preg_match('/^\d{3}/', $book->call_number ?? '', $matches);
+                        $ddcNumber = $matches[0] ?? '000';
+                    }
+                    
+                    $ddcPrefix = substr(trim($ddcNumber), 0, 1);
+                    
+                    $ddcColors = [
+                        '0' => '#000000', // 000 - Karya Umum (Hitam)
+                        '1' => '#8B4513', // 100 - Filsafat (Coklat)
+                        '2' => '#FF0000', // 200 - Agama (Merah)
+                        '3' => '#FFA500', // 300 - Ilmu Sosial (Oranye)
+                        '4' => '#FFD700', // 400 - Bahasa (Kuning)
+                        '5' => '#ADD8E6', // 500 - Ilmu Murni (Biru Muda)
+                        '6' => '#0000FF', // 600 - Ilmu Terapan (Biru Tua)
+                        '7' => '#800080', // 700 - Kesenian & Olahraga (Ungu)
+                        '8' => '#808080', // 800 - Kesusastraan (Abu-abu)
+                        '9' => '#008000', // 900 - Sejarah & Geografi (Hijau)
+                    ];
+                    
+                    $rackColor = $ddcColors[$ddcPrefix] ?? '#FFFFFF';
                 @endphp
 
-                <div class="barcode-label">
+                <div class="barcode-label" style="border-bottom: 6px solid {{ $rackColor }};">
                     <!-- Bagian Kiri (Sisi Cover Buku) -->
                     <div class="label-left">
                         <div class="book-title">{{ $book->title ?? '-' }}</div>
