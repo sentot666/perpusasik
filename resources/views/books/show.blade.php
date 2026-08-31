@@ -161,15 +161,22 @@
 <div class="mt-6 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <div class="justify-between items-center px-6 py-4 border-b border-slate-200 bg-slate-50 font-semibold text-slate-700 text-sm flex flex-col sm:flex-row gap-3">
         <span class="flex items-center gap-2"><i class="bi bi-upc-scan text-indigo-600"></i>{{ __('Daftar Eksemplar Fisik') }}</span>
-        <a href="{{ route('books.items.create', $book) }}" class="inline-flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-lg btn-gradient-blue transition-colors text-white px-4 w-full sm:w-auto">
-            <i class="bi bi-plus-circle"></i>{{ __('Tambah Eksemplar') }}
-        </a>
+        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+            <button type="button" onclick="printSelected()" class="inline-flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-lg bg-emerald-500 hover:bg-emerald-600 transition-colors text-white px-4">
+                <i class="bi bi-printer"></i>{{ __('Cetak Terpilih') }}
+            </button>
+            <a href="{{ route('books.items.create', $book) }}" class="inline-flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-lg btn-gradient-blue transition-colors text-white px-4">
+                <i class="bi bi-plus-circle"></i>{{ __('Tambah Eksemplar') }}
+            </a>
+        </div>
     </div>
-    <div class="p-0">
-        <div class="overflow-x-auto w-full">
+    <form id="printSelectedForm" action="{{ route('books.barcode', $book) }}" method="GET" target="_blank">
+        <div class="p-0">
+            <div class="overflow-x-auto w-full">
             <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap [&>thead>tr>th]:px-4 [&>thead>tr>th]:py-3 [&>thead>tr>th]:bg-slate-50 [&>thead>tr>th]:font-semibold [&>thead>tr>th]:text-slate-700 [&>thead>tr>th]:border-b [&>thead>tr>th]:border-slate-200 [&>tbody>tr>td]:px-4 [&>tbody>tr>td]:py-3 [&>tbody>tr]:border-b [&>tbody>tr]:border-slate-100 [&>tbody>tr:last-child]:border-0 [&>tbody>tr:hover]:bg-slate-50">
                 <thead>
                     <tr>
+                        <th class="w-10 text-center"><input type="checkbox" id="selectAll" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"></th>
                         <th>{{ __('Barcode / RFID') }}</th>
                         <th>{{ __('Kopi') }}</th>
                         <th>{{ __('Nomor Induk') }}</th>
@@ -183,6 +190,7 @@
                 <tbody>
                     @forelse($book->items as $item)
                     <tr>
+                        <td class="text-center"><input type="checkbox" name="items[]" value="{{ $item->id }}" class="item-checkbox rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"></td>
                         <td><code class="font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded text-xs">{{ $item->barcode }}</code></td>
                         <td>
                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
@@ -246,5 +254,23 @@
             </table>
         </div>
     </div>
+    </form>
 </div>
+
+<script>
+    document.getElementById('selectAll').addEventListener('change', function(e) {
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            cb.checked = e.target.checked;
+        });
+    });
+
+    function printSelected() {
+        const checked = document.querySelectorAll('.item-checkbox:checked');
+        if (checked.length === 0) {
+            alert('Pilih setidaknya satu eksemplar untuk dicetak.');
+            return;
+        }
+        document.getElementById('printSelectedForm').submit();
+    }
+</script>
 @endsection

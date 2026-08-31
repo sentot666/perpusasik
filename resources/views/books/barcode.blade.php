@@ -238,7 +238,10 @@
             }
 
             .barcode-label {
-                border: 1px solid #000000 !important;
+                /* Let inline border-bottom stay */
+                border-top: 1px solid #000000 !important;
+                border-left: 1px solid #000000 !important;
+                border-right: 1px solid #000000 !important;
             }
             .label-left {
                 border-right: 1px solid #000000 !important;
@@ -297,22 +300,22 @@
                     $ddcPrefix = substr(trim($ddcNumber), 0, 1);
                     
                     $ddcColors = [
-                        '0' => '#000000', // 000 - Karya Umum (Hitam)
-                        '1' => '#8B4513', // 100 - Filsafat (Coklat)
-                        '2' => '#FF0000', // 200 - Agama (Merah)
-                        '3' => '#FFA500', // 300 - Ilmu Sosial (Oranye)
-                        '4' => '#FFD700', // 400 - Bahasa (Kuning)
-                        '5' => '#ADD8E6', // 500 - Ilmu Murni (Biru Muda)
-                        '6' => '#0000FF', // 600 - Ilmu Terapan (Biru Tua)
-                        '7' => '#800080', // 700 - Kesenian & Olahraga (Ungu)
-                        '8' => '#808080', // 800 - Kesusastraan (Abu-abu)
-                        '9' => '#008000', // 900 - Sejarah & Geografi (Hijau)
+                        '0' => '#2563EB', // 000 - Karya Umum (Biru)
+                        '1' => '#FDE047', // 100 - Filsafat (Kuning)
+                        '2' => '#16A34A', // 200 - Agama (Hijau)
+                        '3' => '#9333EA', // 300 - Ilmu Sosial (Ungu)
+                        '4' => '#DB2777', // 400 - Bahasa (Pink Gelap)
+                        '5' => '#7DD3FC', // 500 - Ilmu Murni (Biru Muda)
+                        '6' => '#F97316', // 600 - Ilmu Terapan (Orange)
+                        '7' => '#FBCFE8', // 700 - Kesenian (Pink Muda)
+                        '8' => '#CA8A04', // 800 - Kesusastraan (Kuning Gelap/Mustard)
+                        '9' => '#DC2626', // 900 - Sejarah & Geografi (Merah)
                     ];
                     
                     $rackColor = $ddcColors[$ddcPrefix] ?? '#FFFFFF';
                 @endphp
 
-                <div class="barcode-label" style="border-bottom: 6px solid {{ $rackColor }};">
+                <div class="barcode-label" style="border-bottom: 12px solid {{ $rackColor }};">
                     <!-- Bagian Kiri (Sisi Cover Buku) -->
                     <div class="label-left">
                         <div class="book-title">{{ $book->title ?? '-' }}</div>

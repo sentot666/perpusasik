@@ -162,9 +162,13 @@ class BookController extends Controller
             ->with('success', 'Buku berhasil dihapus.');
     }
 
-    public function printBarcode(Book $book)
+    public function printBarcode(Request $request, Book $book)
     {
-        $items = $book->items()->with('location')->get();
+        $query = $book->items()->with('location');
+        if ($request->has('items') && is_array($request->items)) {
+            $query->whereIn('id', $request->items);
+        }
+        $items = $query->get();
         return view('books.barcode', compact('book', 'items'));
     }
 }
