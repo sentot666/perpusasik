@@ -166,6 +166,20 @@
         </a>
         @endcan
 
+        {{-- Pintasan Halaman Depan --}}
+        <p class="{{ $menuLabel }}">{{ __('Pintasan (Front-End)') }}</p>
+        <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
+        <a href="{{ route('opac.katalog') }}" target="_blank" class="{{ request()->routeIs('opac.katalog') ? $navLinkActive : $navLink }}" title="{{ __('Cari Buku (OPAC)') }}">
+            <i class="bi bi-search text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
+            <span class="sidebar-text truncate">{{ __('Cari Buku (OPAC)') }}</span>
+            <span class="sidebar-tooltip">{{ __('Cari Buku (OPAC)') }}</span>
+        </a>
+        <a href="{{ route('guest-books.visitor') }}" target="_blank" class="{{ request()->routeIs('guest-books.visitor') ? $navLinkActive : $navLink }}" title="{{ __('Isi Buku Tamu') }}">
+            <i class="bi bi-journal-text text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
+            <span class="sidebar-text truncate">{{ __('Isi Buku Tamu') }}</span>
+            <span class="sidebar-tooltip">{{ __('Isi Buku Tamu') }}</span>
+        </a>
+
         {{-- Sirkulasi Buku --}}
         @can('process-loans')
         <p class="{{ $menuLabel }}">{{ __('Sirkulasi Buku') }}</p>
@@ -247,10 +261,10 @@
             <span class="sidebar-text truncate">{{ __('Manajemen Halaman') }}</span>
             <span class="sidebar-tooltip">{{ __('Manajemen Halaman') }}</span>
         </a>
-        <a href="{{ route('guest-books.index') }}" class="{{ request()->routeIs('guest-books.index') ? $navLinkActive : $navLink }}" title="{{ __('Buku Tamu') }}">
+        <a href="{{ route('guest-books.index') }}" class="{{ request()->routeIs('guest-books.index') ? $navLinkActive : $navLink }}" title="{{ __('Data Buku Tamu') }}">
             <i class="bi bi-journal-check text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Buku Tamu') }}</span>
-            <span class="sidebar-tooltip">{{ __('Buku Tamu') }}</span>
+            <span class="sidebar-text truncate">{{ __('Data Buku Tamu') }}</span>
+            <span class="sidebar-tooltip">{{ __('Data Buku Tamu') }}</span>
         </a>
         @can('view-reports')
         <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? $navLinkActive : $navLink }}" title="{{ __('Laporan') }}">

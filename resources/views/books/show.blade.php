@@ -15,10 +15,13 @@
         <p class="text-slate-500 text-xs sm:text-sm">{{ __('Detail bibliografi dan eksemplar fisik buku') }}</p>
     </div>
     <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+        <a href="{{ route('books.index') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition-colors gap-1.5 py-2 px-4 shadow-sm">
+            <i class="bi bi-arrow-left"></i>{{ __('Kembali') }}
+        </a>
         <a href="{{ route('books.barcode', $book) }}" target="_blank" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 transition-colors text-white gap-1.5 py-2 px-4 shadow-sm">
             <i class="bi bi-upc-scan"></i>{{ __('Cetak Barcode') }}
         </a>
-        <a href="{{ route('books.edit', $book) }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg text-slate-700 border border-slate-300 hover:bg-slate-50 transition-colors gap-1.5 py-2 px-4">
+        <a href="{{ route('books.edit', $book) }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg text-slate-700 border border-slate-300 hover:bg-slate-50 transition-colors gap-1.5 py-2 px-4 bg-white shadow-sm">
             <i class="bi bi-pencil"></i>{{ __('Edit') }}
         </a>
     </div>
@@ -170,9 +173,8 @@
             </a>
         </div>
     </div>
-    <form id="printSelectedForm" action="{{ route('books.barcode', $book) }}" method="GET" target="_blank">
-        <div class="p-0">
-            <div class="overflow-x-auto w-full">
+    <div class="p-0">
+        <div class="overflow-x-auto w-full">
             <table class="w-full text-left text-sm text-slate-600 whitespace-nowrap [&>thead>tr>th]:px-4 [&>thead>tr>th]:py-3 [&>thead>tr>th]:bg-slate-50 [&>thead>tr>th]:font-semibold [&>thead>tr>th]:text-slate-700 [&>thead>tr>th]:border-b [&>thead>tr>th]:border-slate-200 [&>tbody>tr>td]:px-4 [&>tbody>tr>td]:py-3 [&>tbody>tr]:border-b [&>tbody>tr]:border-slate-100 [&>tbody>tr:last-child]:border-0 [&>tbody>tr:hover]:bg-slate-50">
                 <thead>
                     <tr>
@@ -254,7 +256,6 @@
             </table>
         </div>
     </div>
-    </form>
 </div>
 
 <script>
@@ -270,7 +271,12 @@
             alert('Pilih setidaknya satu eksemplar untuk dicetak.');
             return;
         }
-        document.getElementById('printSelectedForm').submit();
+        
+        let url = '{{ route("books.barcode", $book) }}?';
+        const ids = Array.from(checked).map(cb => 'items[]=' + encodeURIComponent(cb.value)).join('&');
+        url += ids;
+        
+        window.open(url, '_blank');
     }
 </script>
 @endsection

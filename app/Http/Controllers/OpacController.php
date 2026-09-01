@@ -42,7 +42,7 @@ class OpacController extends Controller
             // Newest books (limit 10)
             $newestBooks = (clone $query)->latest()->limit(10)->get();
             // Popular books (using items_count as a proxy for popular)
-            $popularBooks = (clone $query)->orderByDesc('items_count')->limit(10)->get();
+            $popularBooks = (clone $query)->orderByDesc('items_count')->limit(5)->get();
 
             return view('opac.katalog', compact('tab', 'newestBooks', 'popularBooks', 'collectionTypes', 'years', 'locations'));
         }
@@ -79,6 +79,58 @@ class OpacController extends Controller
         return view('opac.katalog', compact('tab', 'books', 'collectionTypes', 'years', 'locations'));
     }
 
+    public function autocomplete(Request $request)
+    {
+        $q = $request->get('q');
+        if (empty($q) || strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $results = [];
+
+        // Books
+        $books = \App\Models\Book::where('title', 'LIKE', "%{$q}%")
+            ->where('is_active', true)
+            ->limit(5)
+            ->get(['title']);
+        
+        foreach ($books as $book) {
+            $results[] = [
+                'text' => $book->title,
+                'type' => 'Judul Buku',
+                'icon' => 'bi-book'
+            ];
+        }
+
+        // Authors
+        $authors = \App\Models\Author::where('name', 'LIKE', "%{$q}%")
+            ->limit(3)
+            ->get(['name']);
+            
+        foreach ($authors as $author) {
+            $results[] = [
+                'text' => $author->name,
+                'type' => 'Penulis',
+                'icon' => 'bi-person'
+            ];
+        }
+
+        // Subjects
+        $subjects = \App\Models\Subject::where('name', 'LIKE', "%{$q}%")
+            ->limit(3)
+            ->get(['name']);
+            
+        foreach ($subjects as $subject) {
+            $results[] = [
+                'text' => $subject->name,
+                'type' => 'Topik',
+                'icon' => 'bi-tags'
+            ];
+        }
+
+        return response()->json($results);
+    }
+
     public function show(Book $book)
     {
         $book->load(['authors', 'publisher', 'subjects', 'items.location']);
@@ -89,7 +141,10 @@ class OpacController extends Controller
             ->limit(6)
             ->get();
 
-        return view('opac.show', compact('book', 'relatedBooks'));
+        $totalCount = $book->items->count();
+        $availableCount = $book->items->where('status', 'available')->count();
+
+        return view('opac.show', compact('book', 'relatedBooks', 'totalCount', 'availableCount'));
     }
 
     public function agenda(Request $request)

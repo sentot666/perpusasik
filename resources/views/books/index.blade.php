@@ -21,13 +21,28 @@
 </div>
 
 {{-- Filters --}}
-<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-visible mb-6">
     <div class="p-4 sm:p-6">
         <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center" id="filterForm">
             <div class="lg:col-span-6">
-                <div class="flex w-full text-sm">
+                <div class="flex w-full text-sm relative" x-data="autocompleteSearch('{{ addslashes(request('search')) }}')" @click.away="isOpen = false">
                     <span class="flex items-center px-3 py-2 bg-slate-100 border border-slate-300 text-slate-600 rounded-l-lg"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="w-full rounded-r-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-3" placeholder="{{ __('Cari judul, pengarang, ISBN, no. panggil...') }}" value="{{ request('search') }}">
+                    <input type="text" name="search" class="w-full rounded-r-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-3" placeholder="{{ __('Cari judul, pengarang, ISBN, no. panggil...') }}" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                    
+                    <!-- Autocomplete Dropdown -->
+                    <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-[100]" style="display: none;">
+                        <template x-for="item in suggestions" :key="item.text + item.type">
+                            <button type="button" @click="selectSuggestion(item.text)" class="w-full text-left px-4 py-2 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                        <i :class="'bi ' + item.icon"></i>
+                                    </div>
+                                    <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                </div>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                            </button>
+                        </template>
+                    </div>
                 </div>
             </div>
             <div class="lg:col-span-3">
@@ -137,4 +152,42 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function autocompleteSearch(initialQuery = '') {
+        return {
+            query: initialQuery,
+            suggestions: [],
+            isOpen: false,
+            fetchSuggestions() {
+                if (this.query.length < 2) {
+                    this.suggestions = [];
+                    this.isOpen = false;
+                    return;
+                }
+                
+                fetch(`/books/autocomplete?q=${encodeURIComponent(this.query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.suggestions = data;
+                        this.isOpen = data.length > 0;
+                    })
+                    .catch(err => {
+                        console.error('Error fetching autocomplete:', err);
+                    });
+            },
+            selectSuggestion(text) {
+                this.query = text;
+                this.isOpen = false;
+                
+                this.$nextTick(() => {
+                    document.getElementById('filterForm').submit();
+                });
+            }
+        }
+    }
+</script>
+@endpush
+
 @endsection

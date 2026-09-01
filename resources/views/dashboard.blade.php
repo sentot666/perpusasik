@@ -122,7 +122,7 @@
         </div>
     </div>
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-6">
-        <h3 class="text-base font-bold text-slate-800 mb-4"><i class="bi bi-pie-chart-fill text-indigo-500 mr-2"></i>Kategori Buku Terfavorit</h3>
+        <h3 class="text-base font-bold text-slate-800 mb-4"><i class="bi bi-pie-chart-fill text-indigo-500 mr-2"></i>Buku Favorit</h3>
         <div class="relative h-64">
             <canvas id="categoryChart" data-labels="{{ json_encode($categoryLabels) }}" data-values="{{ json_encode($categoryCounts) }}"></canvas>
         </div>

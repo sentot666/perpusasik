@@ -30,6 +30,7 @@ Route::get('/lang/{locale}', function ($locale) {
 // ── OPAC (public) ─────────────────────────────────────────────────────────────
 Route::get('/', [OpacController::class, 'index'])->name('opac.index');
 Route::get('/katalog', [OpacController::class, 'katalog'])->name('opac.katalog');
+Route::get('/opac/autocomplete', [OpacController::class, 'autocomplete'])->name('opac.autocomplete');
 Route::get('/opac/agenda', [OpacController::class, 'agenda'])->name('opac.agenda');
 Route::get('/opac/buku/{book}', [OpacController::class, 'show'])->name('opac.show');
 Route::get('/opac/program-kerja', [OpacController::class, 'programKerja'])->name('opac.program-kerja');
@@ -79,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
 
     // ── Katalogisasi ────────────────────────────────────────────────────────
     Route::middleware(['can:view-books'])->group(function () {
+        Route::get('/books/autocomplete', [BookController::class, 'autocomplete'])->name('books.autocomplete');
         Route::resource('books', BookController::class);
         Route::get('/books/{book}/print-barcode', [BookController::class, 'printBarcode'])->name('books.barcode');
         Route::resource('authors', AuthorController::class);

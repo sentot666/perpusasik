@@ -5,10 +5,12 @@
 @section('content')
 @if($tab == 'home')
     {{-- Hero Section --}}
-    <div class="bg-gradient-to-br from-[#0a0f2e] to-[#091850] rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-6 mb-12 p-8 md:p-12 lg:p-16 relative overflow-hidden shadow-2xl">
+    <div class="bg-gradient-to-br from-[#0a0f2e] to-[#091850] rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-6 mb-12 p-8 md:p-12 lg:p-16 relative shadow-2xl">
         <!-- Decorative background elements -->
-        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-blue-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-purple-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+        <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+            <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-blue-500 rounded-full blur-[100px] opacity-20"></div>
+            <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-purple-500 rounded-full blur-[100px] opacity-20"></div>
+        </div>
         
         <div class="relative z-10 max-w-3xl">
             <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
@@ -20,19 +22,34 @@
             </p>
 
             {{-- Search Bar --}}
-            <form action="{{ route('opac.katalog') }}" method="GET" class="mb-6">
+            <form action="{{ route('opac.katalog') }}" method="GET" class="mb-6 relative z-50" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
                 <input type="hidden" name="tab" value="{{ $tab }}">
-                <div class="flex flex-col sm:flex-row items-stretch bg-white/10 border border-blue-400/30 rounded-xl overflow-hidden backdrop-blur-md focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-400/20 transition-all shadow-lg">
-                    <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-500/50 py-4 px-5 text-sm font-semibold text-blue-100 outline-none cursor-pointer appearance-none">
+                <div class="flex flex-col sm:flex-row items-stretch bg-white/10 border border-blue-400/30 rounded-xl overflow-visible backdrop-blur-md focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-400/20 transition-all shadow-lg relative">
+                    <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-500/50 py-4 px-5 text-sm font-semibold text-blue-100 outline-none cursor-pointer appearance-none rounded-l-xl">
                         <option value="title" class="text-slate-800">Judul</option>
                         <option value="author" class="text-slate-800">Penulis</option>
                         <option value="subject" class="text-slate-800">Topik</option>
                     </select>
-                    <div class="flex-1 flex items-center bg-transparent">
+                    <div class="flex-1 flex items-center bg-transparent relative">
                         <span class="pl-5 text-slate-300 hidden sm:block"><i class="bi bi-search"></i></span>
-                        <input type="text" name="q" placeholder="Cari buku, penulis, atau topik..." class="w-full bg-transparent border-none py-4 px-3 text-white outline-none text-sm placeholder:text-slate-300/70" value="{{ request('q') }}">
+                        <input type="text" name="q" placeholder="Cari buku, penulis, atau topik..." class="w-full bg-transparent border-none py-4 px-3 text-white outline-none text-sm placeholder:text-slate-300/70" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                        
+                        <!-- Autocomplete Dropdown -->
+                        <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
+                            <template x-for="item in suggestions" :key="item.text + item.type">
+                                <button type="button" @click="selectSuggestion(item.text)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                            <i :class="'bi ' + item.icon"></i>
+                                        </div>
+                                        <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                    </div>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                                </button>
+                            </template>
+                        </div>
                     </div>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 transition-colors whitespace-nowrap">
+                    <button type="submit" x-ref="submitBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 transition-colors whitespace-nowrap rounded-r-xl">
                         <i class="bi bi-search sm:hidden mr-2"></i>Cari
                     </button>
                 </div>
@@ -53,11 +70,27 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-6 mt-8 mb-4">
         {{-- Search Bar --}}
         <div class="mb-4 flex flex-col md:flex-row gap-4 items-center">
-            <form action="{{ route('opac.katalog') }}" method="GET" class="w-full flex-1 shadow-sm rounded-xl overflow-hidden flex bg-white border border-slate-200 p-1">
+            <form action="{{ route('opac.katalog') }}" method="GET" class="w-full flex-1 shadow-sm rounded-xl overflow-visible flex bg-white border border-slate-200 p-1 relative" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
                 <input type="hidden" name="tab" value="{{ $tab }}">
                 <span class="flex items-center px-4 bg-white text-slate-400"><i class="bi bi-search text-xl"></i></span>
-                <input type="text" name="q" class="w-full border-0 focus:ring-0 text-slate-700 py-3 px-2 text-base outline-none" placeholder="{{ __('Ketik kata kunci judul, pengarang, penerbit, atau ISBN...') }}" value="{{ request('q') }}">
-                <button type="submit" class="btn-gradient-blue text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap">{{ __('Cari') }}</button>
+                <input type="text" name="q" class="w-full border-0 focus:ring-0 text-slate-700 py-3 px-2 text-base outline-none" placeholder="{{ __('Ketik kata kunci judul, pengarang, penerbit, atau ISBN...') }}" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                
+                <!-- Autocomplete Dropdown -->
+                <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-[100]" style="display: none;">
+                    <template x-for="item in suggestions" :key="item.text + item.type">
+                        <button type="button" @click="selectSuggestion(item.text)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                    <i :class="'bi ' + item.icon"></i>
+                                </div>
+                                <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                            </div>
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                        </button>
+                    </template>
+                </div>
+
+                <button type="submit" x-ref="submitBtn" class="btn-gradient-blue text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap">{{ __('Cari') }}</button>
             </form>
         </div>
     </div>
@@ -216,4 +249,40 @@
     overflow: hidden;
 }
 </style>
+@push('scripts')
+<script>
+    function autocompleteSearch(initialQuery = '') {
+        return {
+            query: initialQuery,
+            suggestions: [],
+            isOpen: false,
+            fetchSuggestions() {
+                if (this.query.length < 2) {
+                    this.suggestions = [];
+                    this.isOpen = false;
+                    return;
+                }
+                
+                fetch(`/opac/autocomplete?q=${encodeURIComponent(this.query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.suggestions = data;
+                        this.isOpen = data.length > 0;
+                    })
+                    .catch(err => {
+                        console.error('Error fetching autocomplete:', err);
+                    });
+            },
+            selectSuggestion(text) {
+                this.query = text;
+                this.isOpen = false;
+                
+                this.$nextTick(() => {
+                    this.$refs.submitBtn.click();
+                });
+            }
+        }
+    }
+</script>
+@endpush
 @endsection

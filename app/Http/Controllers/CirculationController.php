@@ -94,6 +94,23 @@ class CirculationController extends Controller
             $loanDays = (int) Setting::get('loan_duration', 14);
             $count = count($request->book_item_ids);
 
+            // Record to GuestBook
+            $member = \App\Models\Member::find($request->member_id);
+            if ($member) {
+                \App\Models\GuestBook::firstOrCreate(
+                    [
+                        'visit_date' => today(),
+                        'name' => $member->name,
+                        'purpose' => 'Pinjam Buku'
+                    ],
+                    [
+                        'institution' => $member->type ?? '-',
+                        'visit_time' => now()->format('H:i'),
+                        'participants_count' => 1,
+                    ]
+                );
+            }
+
             return redirect()->route('circulations.loan')
                 ->with('success', "Peminjaman {$count} buku berhasil diproses. Jatuh tempo: " . today()->addDays($loanDays)->format('d/m/Y'));
         } catch (\Exception $e) {
@@ -129,6 +146,22 @@ class CirculationController extends Controller
             $msg = "Pengembalian berhasil diproses.";
             if ($circulation->fine_amount > 0) {
                 $msg .= " Denda: Rp " . number_format($circulation->fine_amount, 0, ',', '.');
+            }
+
+            // Record to GuestBook
+            if ($circulation->member) {
+                \App\Models\GuestBook::firstOrCreate(
+                    [
+                        'visit_date' => today(),
+                        'name' => $circulation->member->name,
+                        'purpose' => 'Kembali Buku'
+                    ],
+                    [
+                        'institution' => $circulation->member->type ?? '-',
+                        'visit_time' => now()->format('H:i'),
+                        'participants_count' => 1,
+                    ]
+                );
             }
 
             return redirect()->route('circulations.return')
@@ -193,6 +226,20 @@ class CirculationController extends Controller
 
         \App\Models\ClassLoan::create($validated);
 
+        // Record to GuestBook
+        \App\Models\GuestBook::firstOrCreate(
+            [
+                'visit_date' => today(),
+                'name' => $validated['borrower_name'],
+                'purpose' => 'Pinjam Buku Kelas'
+            ],
+            [
+                'institution' => $validated['origin'] ?? 'Kelas',
+                'visit_time' => now()->format('H:i'),
+                'participants_count' => 1,
+            ]
+        );
+
         return redirect()->route('circulations.loan')->with('success', 'Peminjaman kelas berhasil disimpan.');
     }
 
@@ -209,6 +256,20 @@ class CirculationController extends Controller
             'status' => 'Dikembalikan',
             'return_date' => today(),
         ]);
+
+        // Record to GuestBook
+        \App\Models\GuestBook::firstOrCreate(
+            [
+                'visit_date' => today(),
+                'name' => $classLoan->borrower_name,
+                'purpose' => 'Kembali Buku Kelas'
+            ],
+            [
+                'institution' => $classLoan->origin ?? 'Kelas',
+                'visit_time' => now()->format('H:i'),
+                'participants_count' => 1,
+            ]
+        );
 
         return redirect()->route('circulations.return')->with('success', 'Pengembalian peminjaman kelas berhasil diproses.');
     }
@@ -231,6 +292,20 @@ class CirculationController extends Controller
             'status' => 'Dikembalikan',
             'return_date' => today(),
         ]);
+
+        // Record to GuestBook
+        \App\Models\GuestBook::firstOrCreate(
+            [
+                'visit_date' => today(),
+                'name' => $classLoan->borrower_name,
+                'purpose' => 'Kembali Buku Kelas'
+            ],
+            [
+                'institution' => $classLoan->origin ?? 'Kelas',
+                'visit_time' => now()->format('H:i'),
+                'participants_count' => 1,
+            ]
+        );
 
         return redirect()->route('circulations.return')->with('success', 'Pengembalian peminjaman kelas berhasil diproses.');
     }

@@ -68,7 +68,7 @@
             @csrf
             
             {{-- Real-time Visit Clock --}}
-            <div class="mb-5" x-data="{ time: '', date: '' }" x-init="
+            <div class="mb-5 hidden" x-data="{ time: '', date: '' }" x-init="
                 setInterval(() => {
                     const now = new Date();
                     time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });

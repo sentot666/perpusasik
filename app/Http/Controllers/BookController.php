@@ -13,6 +13,57 @@ use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
+    public function autocomplete(Request $request)
+    {
+        $q = $request->get('q');
+        if (empty($q) || strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $results = [];
+
+        // Books (do not filter by is_active so admins can find everything)
+        $books = \App\Models\Book::where('title', 'LIKE', "%{$q}%")
+            ->limit(5)
+            ->get(['title']);
+        
+        foreach ($books as $book) {
+            $results[] = [
+                'text' => $book->title,
+                'type' => 'Judul Buku',
+                'icon' => 'bi-book'
+            ];
+        }
+
+        // Authors
+        $authors = \App\Models\Author::where('name', 'LIKE', "%{$q}%")
+            ->limit(3)
+            ->get(['name']);
+            
+        foreach ($authors as $author) {
+            $results[] = [
+                'text' => $author->name,
+                'type' => 'Penulis',
+                'icon' => 'bi-person'
+            ];
+        }
+
+        // Subjects
+        $subjects = \App\Models\Subject::where('name', 'LIKE', "%{$q}%")
+            ->limit(3)
+            ->get(['name']);
+            
+        foreach ($subjects as $subject) {
+            $results[] = [
+                'text' => $subject->name,
+                'type' => 'Topik',
+                'icon' => 'bi-tags'
+            ];
+        }
+
+        return response()->json($results);
+    }
+
     public function index(Request $request)
     {
         $query = Book::with(['authors', 'publisher'])
@@ -165,9 +216,12 @@ class BookController extends Controller
     public function printBarcode(Request $request, Book $book)
     {
         $query = $book->items()->with('location');
-        if ($request->has('items') && is_array($request->items)) {
-            $query->whereIn('id', $request->items);
+        
+        $itemsInput = $request->get('items');
+        if (!empty($itemsInput) && is_array($itemsInput)) {
+            $query->whereIn('id', $itemsInput);
         }
+        
         $items = $query->get();
         return view('books.barcode', compact('book', 'items'));
     }
