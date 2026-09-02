@@ -24,17 +24,6 @@
     </div>
 </div>
 
-{{-- Success Flash Alert --}}
-@if(session('success'))
-<div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-2">
-        <i class="bi bi-check-circle-fill text-lg text-emerald-600"></i>
-        <span>{{ session('success') }}</span>
-    </div>
-    <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700"><i class="bi bi-x-lg"></i></button>
-</div>
-@endif
-
 {{-- Stat Cards Grid --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-sm flex items-center gap-3 justify-between">

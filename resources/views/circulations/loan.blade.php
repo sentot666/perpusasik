@@ -20,16 +20,7 @@
             </div>
             <div class="p-8">
 
-                @if(session('success'))
-                <div class="bg-emerald-50 border border-slate-200 border-emerald-200 text-emerald-800 rounded-lg text-sm flex items-center mb-6 py-4 px-6">
-                    <i class="bi bi-check-circle-fill text-emerald-500 mr-2 text-lg"></i> {{ session('success') }}
-                </div>
-                @endif
-                @if(session('error'))
-                <div class="bg-red-50 border border-slate-200 border-red-200 text-red-800 rounded-lg text-sm flex items-center mb-6 py-4 px-6">
-                    <i class="bi bi-exclamation-triangle-fill text-red-500 mr-2 text-lg"></i> {{ session('error') }}
-                </div>
-                @endif
+
                 @if($errors->any())
                 <div class="bg-red-50 border border-slate-200 border-red-200 text-red-800 rounded-lg text-sm mb-6 py-4 px-6">
                     <ul class="list-disc pl-5 m-0 space-y-1">

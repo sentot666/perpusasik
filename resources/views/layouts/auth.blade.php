@@ -12,6 +12,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center bg-blue-50 py-12 px-4 sm:px-6 lg:px-8" style="font-family: 'Inter', sans-serif;">
     @yield('content')
+    <x-toast />
     @stack('scripts')
 </body>
 </html>

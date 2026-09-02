@@ -13,12 +13,7 @@
 
     <h1 class="text-2xl font-bold text-slate-800">Edit Profil</h1>
 
-    @if(session('success'))
-    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl flex items-center gap-3">
-        <i class="bi bi-check-circle-fill text-emerald-500"></i>
-        {{ session('success') }}
-    </div>
-    @endif
+
 
     @if($errors->any())
     <div class="bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl">

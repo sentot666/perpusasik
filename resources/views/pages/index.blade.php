@@ -14,11 +14,7 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="bg-emerald-50 text-emerald-700 p-4 rounded-lg mb-6 border border-emerald-200">
-            {{ session('success') }}
-        </div>
-    @endif
+
 
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">

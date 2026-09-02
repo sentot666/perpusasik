@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Models\BookItem;
 use App\Models\GuestBook;
 use App\Models\Location;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 
 class OpacController extends Controller
@@ -33,10 +34,6 @@ class OpacController extends Controller
             ->withCount(['items', 'availableItems'])
             ->where('is_active', true);
 
-        // Fetch filter data for all tabs
-        $collectionTypes = Book::distinct()->pluck('collection_type')->sort();
-        $years = Book::distinct()->orderByDesc('publication_year')->pluck('publication_year')->filter();
-        $locations = Location::orderBy('code')->get();
 
         if ($tab == 'home') {
             // Newest books (limit 10)
@@ -44,7 +41,7 @@ class OpacController extends Controller
             // Popular books (using items_count as a proxy for popular)
             $popularBooks = (clone $query)->orderByDesc('items_count')->limit(5)->get();
 
-            return view('opac.katalog', compact('tab', 'newestBooks', 'popularBooks', 'collectionTypes', 'years', 'locations'));
+            return view('opac.katalog', compact('tab', 'newestBooks', 'popularBooks'));
         }
 
         if ($tab == 'digital') {
@@ -59,24 +56,27 @@ class OpacController extends Controller
         if ($search = $request->q) {
             $query->search($search);
         }
-        if ($request->filled('collection_type') && $tab != 'digital') {
-            $query->where('collection_type', $request->collection_type);
-        }
-        if ($year = $request->year) {
-            $query->where('publication_year', $year);
-        }
-        if ($lang = $request->language) {
-            $query->where('language', $lang);
-        }
-        if ($locId = $request->location_id) {
-            $query->whereHas('items', function ($q) use ($locId) {
-                $q->where('location_id', $locId);
+        
+        if ($subjectId = $request->subject_id) {
+            $query->whereHas('subjects', function ($q) use ($subjectId) {
+                $q->where('subjects.id', $subjectId);
             });
         }
+        
+        // Remove old filters like collection_type, year, language, location_id
 
         $books = $query->latest()->paginate(12)->withQueryString();
 
-        return view('opac.katalog', compact('tab', 'books', 'collectionTypes', 'years', 'locations'));
+        // Fetch all categories (Subjects) that have at least one active book
+        $categories = Subject::whereHas('books', function ($q) {
+            $q->where('is_active', true);
+        })->orderBy('name')->get();
+        $activeCategory = null;
+        if ($request->subject_id) {
+            $activeCategory = Subject::find($request->subject_id);
+        }
+
+        return view('opac.katalog', compact('tab', 'books', 'categories', 'activeCategory'));
     }
 
     public function autocomplete(Request $request)

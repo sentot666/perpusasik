@@ -23,7 +23,7 @@
 
             {{-- Search Bar --}}
             <form action="{{ route('opac.katalog') }}" method="GET" class="mb-6 relative z-50" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
-                <input type="hidden" name="tab" value="{{ $tab }}">
+                <input type="hidden" name="tab" value="koleksi">
                 <div class="flex flex-col sm:flex-row items-stretch bg-white/10 border border-blue-400/30 rounded-xl overflow-visible backdrop-blur-md focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-400/20 transition-all shadow-lg relative">
                     <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-500/50 py-4 px-5 text-sm font-semibold text-blue-100 outline-none cursor-pointer appearance-none rounded-l-xl">
                         <option value="title" class="text-slate-800">Judul</option>
@@ -67,36 +67,10 @@
         </div>
     </div>
 @else
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-6 mt-8 mb-4">
-        {{-- Search Bar --}}
-        <div class="mb-4 flex flex-col md:flex-row gap-4 items-center">
-            <form action="{{ route('opac.katalog') }}" method="GET" class="w-full flex-1 shadow-sm rounded-xl overflow-visible flex bg-white border border-slate-200 p-1 relative" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
-                <input type="hidden" name="tab" value="{{ $tab }}">
-                <span class="flex items-center px-4 bg-white text-slate-400"><i class="bi bi-search text-xl"></i></span>
-                <input type="text" name="q" class="w-full border-0 focus:ring-0 text-slate-700 py-3 px-2 text-base outline-none" placeholder="{{ __('Ketik kata kunci judul, pengarang, penerbit, atau ISBN...') }}" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
-                
-                <!-- Autocomplete Dropdown -->
-                <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-[100]" style="display: none;">
-                    <template x-for="item in suggestions" :key="item.text + item.type">
-                        <button type="button" @click="selectSuggestion(item.text)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
-                                    <i :class="'bi ' + item.icon"></i>
-                                </div>
-                                <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
-                            </div>
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
-                        </button>
-                    </template>
-                </div>
-
-                <button type="submit" x-ref="submitBtn" class="btn-gradient-blue text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap">{{ __('Cari') }}</button>
-            </form>
-        </div>
-    </div>
+    {{-- Search bar moved inside the main content area below --}}
 @endif
 
-<div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-6 mb-16">
+<div class="w-full mx-auto sm:px-6 lg:px-8 px-6 mb-16">
 
     @if($tab == 'home')
         {{-- HOME TAB: Buku Populer & Buku Terbaru --}}
@@ -139,80 +113,86 @@
 
     @else
         {{-- KOLEKSI & DIGITAL TAB: Filter & Grid --}}
-        <div class="flex flex-wrap -mx-4">
-            {{-- Left side: Filters --}}
-            <div class="w-full lg:w-1/4 px-4">
-                <div class="shadow-sm border-0 bg-white rounded-xl border border-slate-200 overflow-hidden mb-6" style="border-radius:12px">
-                    <div class="bg-white px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 font-bold py-4"><i class="bi bi-funnel mr-2"></i>{{ __('Filter Pencarian') }}</div>
-                    <div class="p-8">
-                        <form action="{{ route('opac.katalog') }}" method="GET" id="opacFilterForm">
-                            <input type="hidden" name="tab" value="{{ $tab }}">
-                            
-                            @if(request('q'))
-                            <input type="hidden" name="q" value="{{ request('q') }}">
-                            @endif
-
-                            @if($tab != 'digital')
-                            <div class="mb-6">
-                                <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Jenis Koleksi') }}</label>
-                                <select name="collection_type" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                                    <option value="">{{ __('Semua Jenis') }}</option>
-                                    @foreach($collectionTypes as $type)
-                                    <option value="{{ $type }}" {{ request('collection_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endif
-
-                            <div class="mb-6">
-                                <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Tahun Terbit') }}</label>
-                                <select name="year" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                                    <option value="">{{ __('Semua Tahun') }}</option>
-                                    @foreach($years as $yr)
-                                    <option value="{{ $yr }}" {{ request('year') == $yr ? 'selected' : '' }}>{{ $yr }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Bahasa') }}</label>
-                                <select name="language" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                                    <option value="">{{ __('Semua Bahasa') }}</option>
-                                    <option value="id" {{ request('language') == 'id' ? 'selected' : '' }}>{{ __('Indonesia') }}</option>
-                                    <option value="en" {{ request('language') == 'en' ? 'selected' : '' }}>{{ __('Inggris') }}</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="text-slate-500 block text-sm font-medium text-slate-700 mb-1" style="font-size:0.75rem;font-weight:600;text-transform:uppercase">{{ __('Lokasi Rak') }}</label>
-                                <select name="location_id" class="w-full rounded-lg border border-slate-200 border-slate-300 py-1.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white px-4" onchange="this.form.submit()">
-                                    <option value="">{{ __('Semua Rak') }}</option>
-                                    @foreach($locations as $loc)
-                                    <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->code }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <a href="{{ route('opac.katalog', ['tab' => $tab]) }}" class="w-full inline-flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors px-4"><i class="bi bi-x"></i> {{ __('Bersihkan Filter') }}</a>
-                        </form>
+        <div class="flex flex-wrap -mx-4 pt-8">
+            {{-- Left side: Kategori --}}
+            <div class="w-full lg:w-1/4 px-4 mb-6">
+                <div class="bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden" x-data="{ searchCategory: '' }">
+                    <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
+                        <i class="bi bi-funnel text-slate-500 text-lg"></i>
+                        <h3 class="font-bold text-slate-800 m-0 text-lg tracking-tight">Kategori</h3>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 bg-slate-50/50">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" x-model="searchCategory" placeholder="Cari Kategori..." class="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors shadow-sm">
+                        </div>
+                    </div>
+                    <div class="p-3 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                        <a href="{{ route('opac.katalog', ['tab' => $tab, 'q' => request('q')]) }}" 
+                           class="block px-4 py-3 rounded-xl text-base font-semibold transition-all mb-1 {{ !request('subject_id') ? 'bg-blue-600 text-white shadow-md shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-600' }}">
+                            Semua Buku
+                        </a>
+                        
+                        @foreach($categories as $category)
+                        <a href="{{ route('opac.katalog', ['tab' => $tab, 'subject_id' => $category->id, 'q' => request('q')]) }}" 
+                           x-show="searchCategory === '' || '{{ strtolower(addslashes($category->name)) }}'.includes(searchCategory.toLowerCase())"
+                           class="block px-4 py-3 rounded-xl text-base font-semibold transition-all mb-1 flex items-center gap-3 {{ request('subject_id') == $category->id ? 'bg-blue-600 text-white shadow-md shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-600' }}">
+                            <i class="bi bi-book text-base {{ request('subject_id') == $category->id ? 'text-white/80' : 'text-slate-400' }}"></i>
+                            <span class="truncate">{{ $category->name }}</span>
+                        </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
 
-            {{-- Right side: Book grid --}}
+            {{-- Right side: Content --}}
             <div class="w-full lg:w-3/4 px-4">
-                @if(request('q') || request('collection_type') || request('year') || request('language'))
-                    <div class="alert alert-light border border-slate-200 shadow-sm justify-between items-center flex mb-6 py-2 px-4" style="border-radius:10px;font-size:0.85rem">
-                        <div>
-                            {{ __('Menampilkan hasil pencarian untuk:') }}
-                            @if(request('q')) <strong>"{{ request('q') }}"</strong> @endif
-                            @if(request('collection_type')) <span class="ml-1 inline-flex py-1 text-xs font-medium rounded-md bg-indigo-100 text-indigo-700 px-2">{{ request('collection_type') }}</span> @endif
-                            @if(request('year')) <span class="ml-1 inline-flex py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-700 px-2">{{ request('year') }}</span> @endif
-                            @if(request('language')) <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-sky-500 text-white ml-1">{{ request('language') == 'id' ? __('Indonesia') : __('Inggris') }}</span> @endif
+                {{-- Search Bar --}}
+                <div class="mb-8">
+                    <form action="{{ route('opac.katalog') }}" method="GET" class="w-full flex shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] rounded-xl overflow-visible bg-white border border-slate-100 p-1.5 relative items-center" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
+                        <input type="hidden" name="tab" value="{{ $tab }}">
+                        @if(request('subject_id'))
+                        <input type="hidden" name="subject_id" value="{{ request('subject_id') }}">
+                        @endif
+
+                        <span class="pl-4 text-slate-400">
+                            <i class="bi bi-search text-lg"></i>
+                        </span>
+                        <input type="text" name="q" placeholder="Cari buku, penulis, ISBN..." class="w-full bg-transparent border-none py-3 px-3 text-slate-700 outline-none text-base placeholder:text-slate-400" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                        
+                        <!-- Autocomplete Dropdown -->
+                        <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
+                            <template x-for="item in suggestions" :key="item.text + item.type">
+                                <button type="button" @click="selectSuggestion(item.text)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                            <i :class="'bi ' + item.icon"></i>
+                                        </div>
+                                        <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                    </div>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                                </button>
+                            </template>
                         </div>
-                        <span class="text-slate-500">{{ $books->total() }} {{ __('judul ditemukan') }}</span>
-                    </div>
-                @endif
+
+                        <select name="search_by" class="bg-transparent border-0 border-l border-slate-200 py-3 px-4 text-sm font-medium text-slate-600 outline-none cursor-pointer appearance-none hidden sm:block">
+                            <option value="title">Judul</option>
+                            <option value="author">Penulis</option>
+                            <option value="subject">Topik</option>
+                        </select>
+                        <button type="submit" x-ref="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap ml-2 shadow-sm">{{ __('Cari') }}</button>
+                    </form>
+                </div>
+
+                {{-- Hasil Dari Title --}}
+                <div class="mb-6 flex items-center justify-between">
+                    <h2 class="text-slate-500 text-base font-medium m-0">Hasil dari <span class="font-bold text-slate-800">"{{ $activeCategory ? $activeCategory->name : 'Semua Buku' }}"</span></h2>
+                    @if(request('q'))
+                    <span class="text-slate-500 text-sm bg-slate-100 px-3 py-1 rounded-full font-medium">{{ $books->total() }} {{ __('judul ditemukan') }}</span>
+                    @endif
+                </div>
 
                 <div class="flex flex-wrap -mx-3">
                     @forelse($books as $book)

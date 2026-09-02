@@ -10,17 +10,7 @@
     </div>
 </div>
 
-@if(session('success'))
-<div class="bg-emerald-100 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
-    <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
-</div>
-@endif
 
-@if(session('info'))
-<div class="bg-blue-100 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
-    <i class="bi bi-info-circle-fill"></i> {{ session('info') }}
-</div>
-@endif
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <div class="overflow-x-auto">

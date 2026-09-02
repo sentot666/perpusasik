@@ -10,12 +10,7 @@
         <p class="text-sm text-slate-500 mt-1">Daftar buku yang sedang Anda pinjam saat ini.</p>
     </div>
 
-    @if(session('success'))
-    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl flex items-center gap-3">
-        <i class="bi bi-check-circle-fill text-emerald-500"></i>
-        {{ session('success') }}
-    </div>
-    @endif
+
 
     @if($activeLoans->isEmpty())
     <div class="bg-white rounded-2xl border border-slate-200 border-dashed py-20 text-center">

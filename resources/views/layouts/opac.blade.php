@@ -15,7 +15,7 @@
 
 {{-- OPAC Navbar --}}
 <nav x-data="{ mobileMenuOpen: false }" class="bg-white shadow-sm py-4 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto flex flex-row items-center justify-between px-6 relative">
+    <div class="w-full mx-auto flex flex-row items-center justify-between px-6 relative">
         
         <!-- Left: Logo -->
         <a class="flex flex-row items-center gap-4 text-slate-800 no-underline group" href="{{ route('opac.index') }}">
@@ -145,7 +145,7 @@
 </main>
 
 <footer id="tentang" class="bg-[#1e3a5f] text-white/70 pt-16 pb-8 mt-16 scroll-mt-28">
-    <div class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+    <div class="w-full mx-auto px-6 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
             <!-- Tentang -->
             <div class="lg:col-span-2">

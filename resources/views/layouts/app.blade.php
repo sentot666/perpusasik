@@ -503,22 +503,7 @@
 
 
         {{-- Flash messages --}}
-        @if(session('success'))
-        <div x-data="{ show: true }" x-show="show" x-transition
-            class="flex items-center bg-emerald-50 border border-slate-200 border-emerald-200 text-emerald-800 rounded-xl text-sm shadow-sm gap-6 mb-6 py-4 px-6">
-            <i class="bi bi-check-circle-fill text-emerald-500 flex-shrink-0"></i>
-            <span class="flex-1">{{ session('success') }}</span>
-            <button @click="show = false" class="text-emerald-400 hover:text-emerald-600 transition-colors"><i class="bi bi-x text-base"></i></button>
-        </div>
-        @endif
-        @if(session('error'))
-        <div x-data="{ show: true }" x-show="show" x-transition
-            class="flex items-center bg-red-50 border border-slate-200 border-red-200 text-red-800 rounded-xl text-sm shadow-sm gap-6 mb-6 py-4 px-6">
-            <i class="bi bi-exclamation-triangle-fill text-red-500 flex-shrink-0"></i>
-            <span class="flex-1">{{ session('error') }}</span>
-            <button @click="show = false" class="text-red-400 hover:text-red-600 transition-colors"><i class="bi bi-x text-base"></i></button>
-        </div>
-        @endif
+
 
         @yield('content')
     </main>

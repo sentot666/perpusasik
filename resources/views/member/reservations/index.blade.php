@@ -11,16 +11,7 @@
             <p class="text-slate-500 mt-2">Daftar buku yang sedang Anda pesan atau pinjam secara online.</p>
         </div>
 
-        @if(session('success'))
-            <div class="bg-emerald-100 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 font-medium">
-                <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 font-medium">
-                <i class="bi bi-exclamation-triangle-fill"></i> {{ session('error') }}
-            </div>
-        @endif
+
 
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             @if($reservations->count() > 0)

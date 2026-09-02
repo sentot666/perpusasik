@@ -16,16 +16,7 @@
             <div class="px-8 border-b border-slate-200 bg-slate-50 font-medium text-slate-700 py-4"><i class="bi bi-box-arrow-in-left text-emerald-600 mr-2"></i>{{ __('Form Pengembalian') }}</div>
             <div class="p-8">
 
-                @if(session('success'))
-                <div class="alert alert-success border-0 mb-6 py-2" style="border-radius:8px">
-                    <i class="bi bi-check-circle-fill mr-1"></i>{{ session('success') }}
-                </div>
-                @endif
-                @if(session('error'))
-                <div class="alert alert-danger border-0 mb-6 py-2" style="border-radius:8px">
-                    <i class="bi bi-exclamation-triangle-fill mr-1"></i>{{ session('error') }}
-                </div>
-                @endif
+
 
                 <form method="POST" action="{{ route('circulations.process-return') }}" id="returnForm">
                     @csrf
