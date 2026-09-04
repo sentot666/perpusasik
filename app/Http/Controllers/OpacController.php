@@ -88,17 +88,17 @@ class OpacController extends Controller
 
         $results = [];
 
-        // Books
         $books = \App\Models\Book::where('title', 'LIKE', "%{$q}%")
             ->where('is_active', true)
             ->limit(5)
-            ->get(['title']);
+            ->get(['id', 'title']);
         
         foreach ($books as $book) {
             $results[] = [
                 'text' => $book->title,
                 'type' => 'Judul Buku',
-                'icon' => 'bi-book'
+                'icon' => 'bi-book',
+                'url'  => route('opac.show', $book->id)
             ];
         }
 

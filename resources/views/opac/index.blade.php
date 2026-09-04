@@ -74,56 +74,13 @@
         color: #60a5fa;
     }
 
-    .hero-search-wrap {
-        display: flex;
-        align-items: center;
-        background: rgba(255,255,255,0.06);
-        border: 1.5px solid rgba(96,165,250,0.3);
-        border-radius: 12px;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        transition: border-color 0.2s, box-shadow 0.2s;
-        margin-bottom: 1rem;
-    }
-    .hero-search-wrap:focus-within {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-    }
-    .hero-search-wrap input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        outline: none;
-        padding: 14px 16px;
-        font-size: 0.9rem;
-        color: #e2e8f0;
-    }
-    .hero-search-wrap input::placeholder { color: #94a3b8; }
-    .hero-search-wrap .search-icon {
-        padding: 0 14px;
-        color: #64748b;
-        font-size: 1rem;
-    }
-    .hero-search-btn {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        color: #fff;
-        border: none;
-        padding: 12px 22px;
-        font-weight: 600;
-        font-size: 0.88rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: opacity 0.2s, transform 0.1s;
-        white-space: nowrap;
-    }
-    .hero-search-btn:hover { opacity: 0.9; transform: scale(1.01); }
+    /* Old search bar CSS removed */
 
     .hero-tags {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: center;
         gap: 8px;
         font-size: 0.82rem;
     }
@@ -190,51 +147,68 @@
     </div>
 
     <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div class="max-w-4xl mx-auto flex flex-col items-center text-center">
 
-            {{-- Left: Text Content --}}
-            <div>
-                <div class="hero-badge">
+            {{-- Text Content --}}
+            <div class="w-full">
+                <div class="hero-badge mx-auto">
                     <span class="dot"></span>
                     <i class="bi bi-stars"></i>
                     Katalog Online OPAC & E-Book Terintegrasi
                 </div>
 
-                <h1 class="hero-headline">
+                <h1 class="hero-headline mx-auto">
                     Jelajahi Dunia <span class="highlight">Pengetahuan</span><br>Tanpa Batas
                 </h1>
 
-                <p class="text-slate-400 text-sm md:text-base mb-8 leading-relaxed max-w-lg">
+                <p class="text-slate-400 text-sm md:text-base mb-8 leading-relaxed max-w-2xl mx-auto">
                     Temukan koleksi buku cetak, e-book interaktif, dan referensi akademik terbaik di
                     <strong class="text-slate-200">{{ \App\Models\Setting::get('library_name', 'Perpustakaan Sekolah Katolik Santo Paulus') }}</strong>.
                 </p>
 
                 {{-- Search Bar --}}
-                <form action="{{ route('opac.katalog') }}" method="GET">
-                    <div class="hero-search-wrap">
-                        <span class="search-icon"><i class="bi bi-search"></i></span>
-                        <input type="text" name="search" placeholder="Ketik judul buku, pengarang, penerbit, atau kata kunci...">
-                        <button type="submit" class="hero-search-btn">
-                            <i class="bi bi-search"></i> Cari
+                <form action="{{ route('opac.katalog') }}" method="GET" class="mb-6 relative z-50 w-full" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
+                    <input type="hidden" name="tab" value="koleksi">
+                    <div class="flex flex-col sm:flex-row items-stretch bg-white/10 border border-blue-400/30 rounded-xl overflow-visible backdrop-blur-md focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-400/20 transition-all shadow-lg relative">
+                        <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-500/50 py-4 px-5 text-sm font-semibold text-blue-100 outline-none cursor-pointer appearance-none rounded-l-xl">
+                            <option value="title" class="text-slate-800">Judul</option>
+                            <option value="author" class="text-slate-800">Penulis</option>
+                            <option value="subject" class="text-slate-800">Topik</option>
+                        </select>
+                        <div class="flex-1 flex items-center bg-transparent relative">
+                            <span class="pl-5 text-slate-300 hidden sm:block"><i class="bi bi-search"></i></span>
+                            <input type="text" name="q" placeholder="Cari buku, penulis, atau topik..." class="w-full bg-transparent border-none py-4 px-3 text-white outline-none text-sm placeholder:text-slate-300/70" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                            
+                            <!-- Autocomplete Dropdown -->
+                            <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
+                                <template x-for="item in suggestions" :key="item.text + item.type">
+                                    <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                                <i :class="'bi ' + item.icon"></i>
+                                            </div>
+                                            <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                        </div>
+                                        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                        <button type="submit" x-ref="submitBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 transition-colors whitespace-nowrap rounded-r-xl">
+                            <i class="bi bi-search sm:hidden mr-2"></i>Cari
                         </button>
                     </div>
                 </form>
 
                 {{-- Popular Tags --}}
-                <div class="hero-tags">
+                <div class="hero-tags mt-4">
                     <span class="label">Pencarian Populer:</span>
-                    <a href="{{ route('opac.katalog', ['search' => 'Novel']) }}" class="hero-tag">Novel</a>
-                    <a href="{{ route('opac.katalog', ['search' => 'Pendidikan']) }}" class="hero-tag">Pendidikan</a>
-                    <a href="{{ route('opac.katalog', ['search' => 'Sains']) }}" class="hero-tag">Sains</a>
-                    <a href="{{ route('opac.katalog', ['search' => 'Sejarah']) }}" class="hero-tag">Sejarah</a>
-                    <a href="{{ route('opac.katalog', ['search' => 'Agama']) }}" class="hero-tag">Agama</a>
+                    <a href="{{ route('opac.katalog', ['q' => 'Novel', 'tab' => 'koleksi']) }}" class="hero-tag">Novel</a>
+                    <a href="{{ route('opac.katalog', ['q' => 'Pendidikan', 'tab' => 'koleksi']) }}" class="hero-tag">Pendidikan</a>
+                    <a href="{{ route('opac.katalog', ['q' => 'Sains', 'tab' => 'koleksi']) }}" class="hero-tag">Sains</a>
+                    <a href="{{ route('opac.katalog', ['q' => 'Sejarah', 'tab' => 'koleksi']) }}" class="hero-tag">Sejarah</a>
+                    <a href="{{ route('opac.katalog', ['q' => 'Agama', 'tab' => 'koleksi']) }}" class="hero-tag">Agama</a>
                 </div>
-            </div>
-
-            {{-- Right: Illustration --}}
-            <div class="hero-illustration hidden md:flex">
-                <div class="hero-glow-ring"></div>
-                <img src="{{ asset('images/hero-library.png') }}" alt="Perpustakaan Digital Ilustrasi">
             </div>
         </div>
     </div>
@@ -367,4 +341,44 @@
 
 @endsection
 
-
+@push('scripts')
+<script>
+    function autocompleteSearch(initialQuery = '') {
+        return {
+            query: initialQuery,
+            suggestions: [],
+            isOpen: false,
+            fetchSuggestions() {
+                if (this.query.length < 2) {
+                    this.suggestions = [];
+                    this.isOpen = false;
+                    return;
+                }
+                
+                fetch(`/opac/autocomplete?q=${encodeURIComponent(this.query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.suggestions = data;
+                        this.isOpen = data.length > 0;
+                    })
+                    .catch(err => {
+                        console.error('Error fetching autocomplete:', err);
+                    });
+            },
+            selectSuggestion(item) {
+                if (item.url) {
+                    window.location.href = item.url;
+                    return;
+                }
+                
+                this.query = item.text;
+                this.isOpen = false;
+                
+                this.$nextTick(() => {
+                    this.$refs.submitBtn.click();
+                });
+            }
+        }
+    }
+</script>
+@endpush

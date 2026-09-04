@@ -69,10 +69,11 @@
                             <i class="bi bi-person-circle text-lg"></i> {{ Auth::user()->name }} <i class="bi bi-chevron-down text-xs ml-1"></i>
                         </button>
                         <div x-show="userMenu" style="display: none;" class="absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-xl shadow-xl py-2 z-50">
-                            @if(Auth::user()->can('view-dashboard'))
-                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline"><i class="bi bi-speedometer2 mr-2"></i>Dashboard Admin</a>
-                            @endif
+                            @if(Auth::user()->member_id)
                             <a href="{{ route('member.reservations.index') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline"><i class="bi bi-journal-bookmark mr-2"></i>Buku Saya (Reservasi)</a>
+                            @else
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 no-underline"><i class="bi bi-speedometer2 mr-2"></i>Dashboard</a>
+                            @endif
                             <hr class="my-2 border-slate-100">
                             <form method="POST" action="{{ route('logout') }}" class="m-0">
                                 @csrf

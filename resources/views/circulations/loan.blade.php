@@ -114,9 +114,10 @@
             <div class="p-8">
                 <form method="POST" action="{{ route('circulations.store-class-loan') }}" class="space-y-5">
                     @csrf
-                    <div>
+                    <div class="relative">
                         <label for="borrower_name" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Peminjam') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="borrower_name" id="borrower_name" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" required>
+                        <input type="text" name="borrower_name" id="borrower_name" class="w-full bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition py-2 px-4" autocomplete="off" required>
+                        <div id="borrowerDropdown" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden mt-1"></div>
                     </div>
                     <div>
                         <label for="origin" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Asal (Kelas/Instansi)') }} <span class="text-red-500">*</span></label>
@@ -468,7 +469,59 @@ barcodeManualInput.addEventListener('keydown', e => {
 // Close dropdown on outside click
 document.addEventListener('click', e => {
     if (!memberSearch.contains(e.target)) memberDropdown.classList.add('hidden');
+    if (typeof borrowerNameInput !== 'undefined' && !borrowerNameInput.contains(e.target)) {
+        borrowerDropdown.classList.add('hidden');
+    }
 });
+
+// Class Loan Borrower Search
+const borrowerNameInput = document.getElementById('borrower_name');
+const borrowerDropdown = document.getElementById('borrowerDropdown');
+const originInput = document.getElementById('origin');
+
+if (borrowerNameInput && borrowerDropdown) {
+    let borrowerTimer;
+    borrowerNameInput.addEventListener('input', function() {
+        clearTimeout(borrowerTimer);
+        const q = this.value.trim();
+        if (q.length < 2) { 
+            borrowerDropdown.classList.add('hidden'); 
+            return; 
+        }
+        borrowerTimer = setTimeout(() => {
+            fetch('{{ route("members.ajax-search") }}?q=' + encodeURIComponent(q))
+                .then(r => r.json())
+                .then(data => {
+                    borrowerDropdown.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(m => {
+                            const item = document.createElement('button');
+                            item.type = 'button';
+                            item.className = 'w-full text-left px-4 py-2 hover:bg-slate-50 focus:bg-slate-50 focus:outline-none transition-colors border-b border-slate-50 last:border-0';
+                            item.innerHTML = `
+                                <div class="flex items-baseline justify-between mb-0.5">
+                                    <span class="text-sm font-semibold text-slate-800">${m.name}</span>
+                                    <span class="text-xs text-slate-400 font-mono">${m.member_code}</span>
+                                </div>
+                                <div class="text-xs text-slate-500">${m.member_type} &bull; ${m.status}</div>
+                            `;
+                            item.addEventListener('click', () => {
+                                borrowerNameInput.value = m.name;
+                                if(originInput && !originInput.value) {
+                                    originInput.value = m.member_type;
+                                }
+                                borrowerDropdown.classList.add('hidden');
+                            });
+                            borrowerDropdown.appendChild(item);
+                        });
+                        borrowerDropdown.classList.remove('hidden');
+                    } else {
+                        borrowerDropdown.classList.add('hidden');
+                    }
+                });
+        }, 300);
+    });
+}
 </script>
 @endpush
 

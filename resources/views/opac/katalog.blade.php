@@ -12,17 +12,17 @@
             <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-purple-500 rounded-full blur-[100px] opacity-20"></div>
         </div>
         
-        <div class="relative z-10 max-w-3xl">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+        <div class="relative z-10 max-w-3xl mx-auto flex flex-col items-center text-center">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight mx-auto">
                 Jelajahi Dunia <span class="text-blue-400">Pengetahuan</span><br>Tanpa Batas
             </h1>
             
-            <p class="text-slate-300 text-sm md:text-base mb-8 leading-relaxed max-w-xl">
+            <p class="text-slate-300 text-sm md:text-base mb-8 leading-relaxed max-w-xl mx-auto">
                 Akses berbagai koleksi buku dan sumber informasi kapan saja dan di mana saja. Mudah, cepat, dan praktis.
             </p>
 
             {{-- Search Bar --}}
-            <form action="{{ route('opac.katalog') }}" method="GET" class="mb-6 relative z-50" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
+            <form action="{{ route('opac.katalog') }}" method="GET" class="mb-6 relative z-50 w-full" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
                 <input type="hidden" name="tab" value="koleksi">
                 <div class="flex flex-col sm:flex-row items-stretch bg-white/10 border border-blue-400/30 rounded-xl overflow-visible backdrop-blur-md focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-400/20 transition-all shadow-lg relative">
                     <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-500/50 py-4 px-5 text-sm font-semibold text-blue-100 outline-none cursor-pointer appearance-none rounded-l-xl">
@@ -37,7 +37,7 @@
                         <!-- Autocomplete Dropdown -->
                         <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
                             <template x-for="item in suggestions" :key="item.text + item.type">
-                                <button type="button" @click="selectSuggestion(item.text)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
                                             <i :class="'bi ' + item.icon"></i>
@@ -56,7 +56,7 @@
             </form>
 
             {{-- Action Buttons --}}
-            <div class="flex flex-wrap items-center gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-4 w-full">
                 <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] transition-colors text-sm flex items-center gap-2 no-underline">
                     Lihat Koleksi <i class="bi bi-arrow-right"></i>
                 </a>
@@ -165,7 +165,7 @@
                         <!-- Autocomplete Dropdown -->
                         <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
                             <template x-for="item in suggestions" :key="item.text + item.type">
-                                <button type="button" @click="selectSuggestion(item.text)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
                                             <i :class="'bi ' + item.icon"></i>
@@ -253,8 +253,13 @@
                         console.error('Error fetching autocomplete:', err);
                     });
             },
-            selectSuggestion(text) {
-                this.query = text;
+            selectSuggestion(item) {
+                if (item.url) {
+                    window.location.href = item.url;
+                    return;
+                }
+                
+                this.query = item.text;
                 this.isOpen = false;
                 
                 this.$nextTick(() => {
