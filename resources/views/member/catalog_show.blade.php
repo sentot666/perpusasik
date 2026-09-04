@@ -20,7 +20,7 @@
             {{-- Left: Cover --}}
             <div class="lg:w-64 xl:w-80 flex-shrink-0 p-8 flex items-center justify-center bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-100">
                 <div class="w-full max-w-[220px]">
-                    @if($book->cover_image)
+                    @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
                         <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full rounded-xl shadow-xl object-cover">
                     @else
                         @php

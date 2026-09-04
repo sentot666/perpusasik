@@ -147,7 +147,7 @@
 
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Cover Sampul Buku') }}</label>
-                        @if($book->cover_image)
+                        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
                         <div class="mb-2">
                             <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:60px;aspect-ratio:3/4;object-fit:cover;border-radius:4px">
                         </div>

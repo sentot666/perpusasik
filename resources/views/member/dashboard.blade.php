@@ -104,7 +104,7 @@
                                 <tr class="hover:bg-slate-50/50 transition-colors">
                                     <!-- Cover Buku -->
                                     <td class="px-6 py-4">
-                                        @if($book->cover_image)
+                                        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
                                             <img src="{{ Storage::url($book->cover_image) }}" alt="Cover" class="w-12 h-16 object-cover rounded shadow-sm border border-slate-200">
                                         @else
                                             <div class="w-12 h-16 bg-slate-100 rounded flex items-center justify-center text-slate-400 border border-slate-200">

@@ -1,7 +1,7 @@
 <div class="shadow-sm border-0 hover-card bg-white rounded-xl border border-slate-200 h-full overflow-hidden" style="border-radius:12px;overflow:hidden;transition:transform 0.2s">
     <div style="aspect-ratio:3/4;background:#f8fafc;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;border-bottom:1px solid #e9edf4">
         <a href="{{ route('opac.show', $book) }}" class="absolute inset-0 z-20" title="{{ $book->title }}"></a>
-        @if($book->cover_image)
+        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
             <img src="{{ asset('storage/' . $book->cover_image) }}" style="width:100%;height:100%;object-fit:cover">
         @else
             @php

@@ -29,7 +29,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden group flex flex-col">
             {{-- Cover --}}
             <a href="{{ route('member.catalog.show', $book) }}" class="block aspect-[16/7] overflow-hidden bg-slate-100 relative">
-                @if($book->cover_image)
+                @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
                     <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 @else
                     @php

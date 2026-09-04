@@ -78,7 +78,7 @@
                     
                     <!-- Cover -->
                     <div class="aspect-[3/4] bg-slate-100 relative overflow-hidden flex items-center justify-center border-b border-slate-100">
-                        @if($book->cover_image)
+                        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
                             <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             @php

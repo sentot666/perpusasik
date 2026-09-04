@@ -34,7 +34,7 @@
             <div class="w-full lg:w-1/3 xl:w-1/4 relative">
                 <div class="sticky top-28 flex flex-col gap-4">
                     <div class="w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] bg-white">
-                        @if($book->cover_image)
+                        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
                             <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full h-full object-cover" alt="Cover {{ $book->title }}">
                         @else
                             @php
