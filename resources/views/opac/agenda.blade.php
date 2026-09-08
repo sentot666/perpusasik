@@ -45,6 +45,47 @@
         </div>
     </div>
 
+    {{-- Program Kunjungan Kelas --}}
+    <div class="mb-12">
+        <div class="mb-6 flex items-center justify-between border-b border-slate-200 pb-4">
+            <div>
+                <h2 class="text-lg sm:text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="bi bi-diagram-3 text-indigo-600"></i> {{ __('Program Kunjungan Perpustakaan') }}
+                </h2>
+                <p class="text-xs text-slate-500">{{ __('Jadwal rutin kunjungan wajib perpustakaan untuk setiap jenjang kelas') }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- SD Grid -->
+            <a href="{{ route('opac.jadwal-kunjungan', 'sd') }}" class="group bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col items-center justify-center hover:shadow-xl hover:-translate-y-1 hover:border-indigo-300 transition-all duration-300 no-underline">
+                <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all shadow-sm">
+                    <i class="bi bi-backpack"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Sekolah Dasar (SD)</h3>
+                <p class="text-xs text-slate-500 text-center">Lihat Jadwal Kunjungan Kelas SD</p>
+            </a>
+
+            <!-- SMP Grid -->
+            <a href="{{ route('opac.jadwal-kunjungan', 'smp') }}" class="group bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col items-center justify-center hover:shadow-xl hover:-translate-y-1 hover:border-indigo-300 transition-all duration-300 no-underline">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                    <i class="bi bi-book-half"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Menengah Pertama (SMP)</h3>
+                <p class="text-xs text-slate-500 text-center">Lihat Jadwal Kunjungan Kelas SMP</p>
+            </a>
+
+            <!-- SMA Grid -->
+            <a href="{{ route('opac.jadwal-kunjungan', 'sma') }}" class="group bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col items-center justify-center hover:shadow-xl hover:-translate-y-1 hover:border-indigo-300 transition-all duration-300 no-underline">
+                <div class="w-16 h-16 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-slate-600 group-hover:text-white transition-all shadow-sm">
+                    <i class="bi bi-mortarboard"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Menengah Atas (SMA)</h3>
+                <p class="text-xs text-slate-500 text-center">Lihat Jadwal Kunjungan Kelas SMA</p>
+            </a>
+        </div>
+    </div>
+
     {{-- Section Title & Filter Summary --}}
     <div class="mb-6 flex items-center justify-between border-b border-slate-200 pb-4">
         <div>
@@ -90,6 +131,12 @@
                     <h3 class="text-lg font-bold text-slate-800 mb-2 line-clamp-2 leading-snug">
                         {{ $agenda->title }}
                     </h3>
+
+                    @if($agenda->poster_image)
+                    <div class="mb-4 rounded-xl overflow-hidden shadow-sm border border-slate-100 bg-slate-50 aspect-video relative group-hover:shadow-md transition-shadow">
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($agenda->poster_image) }}" alt="Poster {{ $agenda->title }}" class="w-full h-full object-cover">
+                    </div>
+                    @endif
 
                     @if($agenda->description)
                     <p class="text-slate-600 text-xs sm:text-sm line-clamp-3 mb-4 leading-relaxed">

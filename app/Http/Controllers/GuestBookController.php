@@ -184,6 +184,22 @@ class GuestBookController extends Controller
     }
 
     /**
+     * Show the form for creating a new guest book entry.
+     */
+    public function create()
+    {
+        return view('guest-books.create');
+    }
+
+    /**
+     * Show the form for editing the specified guest book entry.
+     */
+    public function edit(GuestBook $guestBook)
+    {
+        return view('guest-books.edit', compact('guestBook'));
+    }
+
+    /**
      * Store a newly created guest book entry in storage.
      */
     public function store(Request $request)

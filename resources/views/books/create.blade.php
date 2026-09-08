@@ -219,6 +219,24 @@ function renderSubjects(q) {
 subjectSearch.addEventListener('input',  () => renderSubjects(subjectSearch.value));
 subjectSearch.addEventListener('focus',  () => renderSubjects(subjectSearch.value));
 subjectSearch.addEventListener('blur',   () => setTimeout(() => subjectDrop.classList.add('hidden'), 150));
+
+const colTypeSelect = document.getElementById('collectionTypeSelect');
+const digitalFileContainer = document.getElementById('digitalFileContainer');
+
+function toggleDigitalFile() {
+    if (colTypeSelect && digitalFileContainer) {
+        if (colTypeSelect.value === 'E-book') {
+            digitalFileContainer.style.display = 'block';
+        } else {
+            digitalFileContainer.style.display = 'none';
+        }
+    }
+}
+
+if (colTypeSelect) {
+    colTypeSelect.addEventListener('change', toggleDigitalFile);
+    toggleDigitalFile();
+}
 </script>
 @endpush
 @section('content')
@@ -291,11 +309,12 @@ subjectSearch.addEventListener('blur',   () => setTimeout(() => subjectDrop.clas
                         </div>
                         <div class="w-full md:w-1/3 px-4">
                             <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Jenis Koleksi') }} <span class="text-red-600">*</span></label>
-                            <select name="collection_type" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
+                            <select name="collection_type" id="collectionTypeSelect" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
                                 <option value="Buku Teks" {{ old('collection_type') == 'Buku Teks' ? 'selected' : '' }}>{{ __('Buku Teks') }}</option>
                                 <option value="Referensi" {{ old('collection_type') == 'Referensi' ? 'selected' : '' }}>{{ __('Referensi') }}</option>
                                 <option value="Majalah" {{ old('collection_type') == 'Majalah' ? 'selected' : '' }}>{{ __('Majalah') }}</option>
                                 <option value="Kamus" {{ old('collection_type') == 'Kamus' ? 'selected' : '' }}>{{ __('Kamus') }}</option>
+                                <option value="E-book" {{ old('collection_type') == 'E-book' ? 'selected' : '' }}>{{ __('E-book / Digital') }}</option>
                             </select>
                         </div>
                     </div>
@@ -357,6 +376,13 @@ subjectSearch.addEventListener('blur',   () => setTimeout(() => subjectDrop.clas
                         <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Cover Sampul Buku') }}</label>
                         <input type="file" name="cover_image" class="@error('cover_image') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" accept="image/*">
                         @error('cover_image')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="mb-6" id="digitalFileContainer" style="display: none;">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('File E-book (PDF/EPUB)') }}</label>
+                        <input type="file" name="digital_file" class="@error('digital_file') border-red-500 @enderror w-full rounded-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" accept=".pdf,.epub">
+                        <div class="text-xs text-slate-500 mt-1">{{ __('Maksimal ukuran file: 50MB.') }}</div>
+                        @error('digital_file')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                     </div>
                 </div>
 

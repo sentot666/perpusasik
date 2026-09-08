@@ -46,6 +46,13 @@ class AgendaController extends Controller
             'statuses'
         ));
     }
+    public function create()
+    {
+        $categories = ['Workshop', 'Bedah Buku', 'Lomba', 'Pameran', 'Klub Baca', 'Lainnya'];
+        $statuses   = ['Akan Datang', 'Berlangsung', 'Selesai', 'Dibatalkan'];
+
+        return view('agendas.create', compact('categories', 'statuses'));
+    }
 
     public function store(Request $request)
     {
@@ -77,6 +84,13 @@ class AgendaController extends Controller
 
         return redirect()->route('agendas.index')
             ->with('success', 'Agenda kegiatan baru berhasil ditambahkan.');
+    }
+    public function edit(Agenda $agenda)
+    {
+        $categories = ['Workshop', 'Bedah Buku', 'Lomba', 'Pameran', 'Klub Baca', 'Lainnya'];
+        $statuses   = ['Akan Datang', 'Berlangsung', 'Selesai', 'Dibatalkan'];
+
+        return view('agendas.edit', compact('agenda', 'categories', 'statuses'));
     }
 
     public function update(Request $request, Agenda $agenda)

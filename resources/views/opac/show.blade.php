@@ -49,24 +49,32 @@
                     </div>
                     
                     {{-- Action Buttons --}}
-                    @auth
-                        <form action="{{ route('member.reservations.store', $book->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="w-full bg-[#e50914] hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors shadow-sm text-center no-underline flex items-center justify-center gap-2" {{ $availableCount <= 0 ? 'disabled' : '' }} onclick="return confirm('Apakah Anda yakin ingin memesan/mereservasi buku ini?')">
-                                @if($availableCount > 0)
-                                    <i class="bi bi-book"></i> Pinjam / Pesan Buku
-                                @elseif($totalCount == 0)
-                                    <i class="bi bi-x-circle"></i> Stok Kosong
-                                @else
-                                    <i class="bi bi-clock-history"></i> Buku Habis Dipinjam
-                                @endif
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="w-full bg-[#e50914] hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors shadow-sm text-center no-underline">
-                            Login untuk meminjam buku
+                    @if($book->digital_file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->digital_file_path))
+                        <a href="{{ route('opac.read', $book) }}" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-colors shadow-sm text-center no-underline flex items-center justify-center gap-2 mb-3">
+                            <i class="bi bi-book-half"></i> Baca E-book / PDF
                         </a>
-                    @endauth
+                    @endif
+
+                    @if($book->collection_type !== 'E-book / Digital')
+                        @auth
+                            <form action="{{ route('member.reservations.store', $book->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full bg-[#e50914] hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors shadow-sm text-center no-underline flex items-center justify-center gap-2" {{ $availableCount <= 0 ? 'disabled' : '' }} onclick="return confirm('Apakah Anda yakin ingin memesan/mereservasi buku ini?')">
+                                    @if($availableCount > 0)
+                                        <i class="bi bi-book"></i> Pinjam / Pesan Buku
+                                    @elseif($totalCount == 0)
+                                        <i class="bi bi-x-circle"></i> Stok Kosong
+                                    @else
+                                        <i class="bi bi-clock-history"></i> Buku Habis Dipinjam
+                                    @endif
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="w-full bg-[#e50914] hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors shadow-sm text-center no-underline">
+                                Login untuk meminjam buku
+                            </a>
+                        @endauth
+                    @endif
 
                     <div class="flex gap-3">
                         <button class="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-2.5 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2">
@@ -94,23 +102,22 @@
                         </span>
                     @endif
 
-                    @php
-                        $availableCount = $book->items->where('status', 'Tersedia')->count();
-                        $totalCount = $book->items->count();
-                    @endphp
+
                     
-                    @if($availableCount > 0)
-                        <span class="bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold px-3 py-1.5 rounded-full">
-                            {{ $availableCount }} Tersedia
-                        </span>
-                    @elseif($totalCount == 0)
-                        <span class="bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold px-3 py-1.5 rounded-full">
-                            Stok Kosong
-                        </span>
-                    @else
-                        <span class="bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3 py-1.5 rounded-full">
-                            Dipinjam
-                        </span>
+                    @if($book->collection_type !== 'E-book / Digital')
+                        @if($availableCount > 0)
+                            <span class="bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold px-3 py-1.5 rounded-full">
+                                {{ $availableCount }} Tersedia
+                            </span>
+                        @elseif($totalCount == 0)
+                            <span class="bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold px-3 py-1.5 rounded-full">
+                                Stok Kosong
+                            </span>
+                        @else
+                            <span class="bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3 py-1.5 rounded-full">
+                                Dipinjam
+                            </span>
+                        @endif
                     @endif
                 </div>
 
@@ -157,11 +164,19 @@
                         <span class="text-lg font-black text-slate-800">{{ $book->publication_year ?? '-' }}</span>
                     </div>
                     <!-- Card 3 -->
+                    @if($book->collection_type === 'E-book / Digital')
+                    <div class="bg-white rounded-2xl border border-slate-100/50 p-4 text-center shadow-sm flex flex-col items-center justify-center h-[120px] hover:shadow-md transition-shadow">
+                        <i class="bi bi-cloud-check text-[#0066cc] text-[22px] mb-2 opacity-80"></i>
+                        <span class="text-[10px] text-slate-400 font-bold tracking-widest uppercase mb-1">Akses</span>
+                        <span class="text-lg font-black text-slate-800">Online</span>
+                    </div>
+                    @else
                     <div class="bg-white rounded-2xl border border-slate-100/50 p-4 text-center shadow-sm flex flex-col items-center justify-center h-[120px] hover:shadow-md transition-shadow">
                         <i class="bi bi-arrow-repeat text-[#0066cc] text-[22px] mb-2 opacity-80"></i>
                         <span class="text-[10px] text-slate-400 font-bold tracking-widest uppercase mb-1">Stok Tersedia</span>
                         <span class="text-lg font-black text-slate-800">{{ $availableCount }} / {{ $totalCount }}</span>
                     </div>
+                    @endif
                     <!-- Card 4 -->
                     <div class="bg-white rounded-2xl border border-slate-100/50 p-4 text-center shadow-sm flex flex-col items-center justify-center h-[120px] hover:shadow-md transition-shadow">
                         <i class="bi bi-star-fill text-[#0066cc] text-[22px] mb-2 opacity-80"></i>
@@ -241,7 +256,7 @@
                     $distinctLocations = $book->items->pluck('location')->filter()->unique('id');
                 @endphp
                 
-                @if($distinctLocations->count() > 0)
+                @if($distinctLocations->count() > 0 && $book->collection_type !== 'E-book / Digital')
                 <div class="bg-gradient-to-br from-[#0066cc] to-indigo-700 rounded-2xl shadow-md p-6 text-white text-center relative overflow-hidden flex flex-col justify-center min-h-[160px] max-w-2xl">
                     <i class="bi bi-map absolute -right-4 -bottom-4 text-[120px] text-white/10 rotate-[-15deg]"></i>
                     <div class="relative z-10">

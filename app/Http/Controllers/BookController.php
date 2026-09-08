@@ -115,6 +115,7 @@ class BookController extends Controller
             'authors.*'          => 'exists:authors,id',
             'subjects'           => 'nullable|array',
             'subjects.*'         => 'exists:subjects,id',
+            'digital_file'       => 'nullable|file|mimes:pdf,epub|max:51200',
         ]);
 
         DB::transaction(function () use ($validated, $request) {
@@ -122,20 +123,29 @@ class BookController extends Controller
 
             if ($request->authors) {
                 $authorData = [];
-                foreach ($request->authors as $order => $authorId) {
-                    $authorData[$authorId] = ['role' => 'author', 'order' => $order + 1];
+                $validAuthors = array_filter($request->authors, function($val) { return !empty($val); });
+                $order = 1;
+                foreach ($validAuthors as $authorId) {
+                    $authorData[$authorId] = ['role' => 'author', 'order' => $order++];
                 }
                 $book->authors()->sync($authorData);
             }
 
             if ($request->subjects) {
-                $book->subjects()->sync($request->subjects);
+                $validSubjects = array_filter($request->subjects, function($val) { return !empty($val); });
+                $book->subjects()->sync($validSubjects);
             }
 
             // Handle cover image
             if ($request->hasFile('cover_image')) {
                 $path = $request->file('cover_image')->store('covers', 'public');
                 $book->update(['cover_image' => $path]);
+            }
+
+            // Handle digital file
+            if ($request->hasFile('digital_file')) {
+                $path = $request->file('digital_file')->store('digital_books', 'public');
+                $book->update(['digital_file_path' => $path]);
             }
         });
 
@@ -178,6 +188,7 @@ class BookController extends Controller
             'publisher_id'       => 'nullable|exists:publishers,id',
             'authors'            => 'nullable|array',
             'subjects'           => 'nullable|array',
+            'digital_file'       => 'nullable|file|mimes:pdf,epub|max:51200',
         ]);
 
         DB::transaction(function () use ($validated, $request, $book) {
@@ -186,19 +197,30 @@ class BookController extends Controller
 
             if ($request->authors) {
                 $authorData = [];
-                foreach ($request->authors as $order => $authorId) {
-                    $authorData[$authorId] = ['role' => 'author', 'order' => $order + 1];
+                $validAuthors = array_filter($request->authors, function($val) { return !empty($val); });
+                $order = 1;
+                foreach ($validAuthors as $authorId) {
+                    $authorData[$authorId] = ['role' => 'author', 'order' => $order++];
                 }
                 $book->authors()->sync($authorData);
             }
 
             if ($request->has('subjects')) {
-                $book->subjects()->sync($request->subjects ?? []);
+                $validSubjects = array_filter($request->subjects ?? [], function($val) { return !empty($val); });
+                $book->subjects()->sync($validSubjects);
             }
 
             if ($request->hasFile('cover_image')) {
                 $path = $request->file('cover_image')->store('covers', 'public');
                 $book->update(['cover_image' => $path]);
+            }
+
+            if ($request->hasFile('digital_file')) {
+                if ($book->digital_file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->digital_file_path)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($book->digital_file_path);
+                }
+                $path = $request->file('digital_file')->store('digital_books', 'public');
+                $book->update(['digital_file_path' => $path]);
             }
         });
 

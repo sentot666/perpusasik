@@ -17,7 +17,7 @@ class Book extends Model
         'title', 'subtitle', 'isbn', 'isbn13', 'call_number', 'ddc',
         'edition', 'language', 'publication_year', 'place_of_publication',
         'pages', 'dimensions', 'series_title', 'series_number',
-        'abstract', 'notes', 'cover_image', 'collection_type',
+        'abstract', 'notes', 'cover_image', 'digital_file_path', 'collection_type',
         'is_active', 'publisher_id',
     ];
 

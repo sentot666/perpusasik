@@ -5,7 +5,6 @@
     #beranda {
         background: linear-gradient(135deg, #0a0f2e 0%, #0d1b4b 30%, #0e2260 55%, #091850 80%, #07122a 100%);
         position: relative;
-        overflow: hidden;
     }
     #beranda::before {
         content: '';

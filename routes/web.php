@@ -18,6 +18,7 @@ use App\Http\Controllers\OpacController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GuestBookController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ClassVisitController;
 use App\Http\Controllers\PageController;
 // ── Language Switcher ──────────────────────────────────────────────────────────
 Route::get('/lang/{locale}', function ($locale) {
@@ -33,6 +34,7 @@ Route::get('/katalog', [OpacController::class, 'katalog'])->name('opac.katalog')
 Route::get('/opac/autocomplete', [OpacController::class, 'autocomplete'])->name('opac.autocomplete');
 Route::get('/opac/agenda', [OpacController::class, 'agenda'])->name('opac.agenda');
 Route::get('/opac/buku/{book}', [OpacController::class, 'show'])->name('opac.show');
+Route::get('/opac/buku/{book}/read', [OpacController::class, 'read'])->name('opac.read');
 Route::get('/opac/program-kerja', [OpacController::class, 'programKerja'])->name('opac.program-kerja');
 Route::get('/opac/sejarah', [OpacController::class, 'sejarah'])->name('opac.sejarah');
 Route::get('/opac/visi-misi', [OpacController::class, 'visiMisi'])->name('opac.visi-misi');
@@ -40,6 +42,7 @@ Route::get('/opac/struktur-organisasi', [OpacController::class, 'strukturOrganis
 Route::get('/opac/pustakawan', [OpacController::class, 'pustakawan'])->name('opac.pustakawan');
 Route::get('/opac/tata-tertib', [OpacController::class, 'tataTertib'])->name('opac.tata-tertib');
 Route::get('/opac/jam-layanan', [OpacController::class, 'jamLayanan'])->name('opac.jam-layanan');
+Route::get('/opac/jadwal-kunjungan/{level}', [OpacController::class, 'jadwalKunjungan'])->name('opac.jadwal-kunjungan');
 
 // ── Buku Tamu Mandiri (public) ────────────────────────────────────────────────
 Route::get('/isi-buku-tamu', [GuestBookController::class, 'visitorForm'])->name('guest-books.visitor');
@@ -74,8 +77,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/guest-books/scan', [GuestBookController::class, 'scanForm'])->name('guest-books.scan');
     Route::post('/guest-books/scan', [GuestBookController::class, 'scanSubmit'])->name('guest-books.scan.submit');
     Route::get('/guest-books/export', [GuestBookController::class, 'export'])->name('guest-books.export');
-    Route::resource('guest-books', GuestBookController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('guest-books', GuestBookController::class)->except(['show']);
     Route::resource('agendas', AgendaController::class);
+    Route::resource('class-visits', ClassVisitController::class);
     Route::resource('pages', PageController::class);
 
     // ── Katalogisasi ────────────────────────────────────────────────────────

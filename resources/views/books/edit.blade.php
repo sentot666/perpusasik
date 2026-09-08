@@ -80,11 +80,12 @@
                         </div>
                         <div class="w-full md:w-1/3 px-4">
                             <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Jenis Koleksi') }} <span class="text-red-600">*</span></label>
-                            <select name="collection_type" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
+                            <select name="collection_type" id="collectionTypeSelect" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
                                 <option value="Buku Teks" {{ old('collection_type', $book->collection_type) == 'Buku Teks' ? 'selected' : '' }}>{{ __('Buku Teks') }}</option>
                                 <option value="Referensi" {{ old('collection_type', $book->collection_type) == 'Referensi' ? 'selected' : '' }}>{{ __('Referensi') }}</option>
                                 <option value="Majalah" {{ old('collection_type', $book->collection_type) == 'Majalah' ? 'selected' : '' }}>{{ __('Majalah') }}</option>
                                 <option value="Kamus" {{ old('collection_type', $book->collection_type) == 'Kamus' ? 'selected' : '' }}>{{ __('Kamus') }}</option>
+                                <option value="E-book" {{ old('collection_type', $book->collection_type) == 'E-book' ? 'selected' : '' }}>{{ __('E-book / Digital') }}</option>
                             </select>
                         </div>
                     </div>
@@ -155,6 +156,20 @@
                         <input type="file" name="cover_image" class="@error('cover_image') @enderror w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border-red-500 focus:border-red-500 focus:ring-red-500 py-2 px-4" accept="image/*">
                         @error('cover_image')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
                     </div>
+
+                    <div class="mb-6" id="digitalFileContainer" style="display: none;">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('File E-book (PDF/EPUB)') }}</label>
+                        @if($book->digital_file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->digital_file_path))
+                        <div class="mb-2">
+                            <a href="{{ asset('storage/' . $book->digital_file_path) }}" target="_blank" class="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100 transition-colors">
+                                <i class="bi bi-file-earmark-pdf mr-2"></i>{{ __('Lihat File Digital Saat Ini') }}
+                            </a>
+                        </div>
+                        @endif
+                        <input type="file" name="digital_file" class="@error('digital_file') border-red-500 @enderror w-full rounded-lg border border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" accept=".pdf,.epub">
+                        <div class="text-xs text-slate-500 mt-1">{{ __('Kosongkan jika tidak ingin mengubah file digital. Maksimal ukuran file: 50MB.') }}</div>
+                        @error('digital_file')<div class="text-xs text-red-500 mt-1">{{ $message }}</div>@enderror
+                    </div>
                 </div>
 
                 {{-- Full width --}}
@@ -178,6 +193,28 @@
 
     </div>
 </div>
+
+@push('scripts')
+<script>
+const colTypeSelect = document.getElementById('collectionTypeSelect');
+const digitalFileContainer = document.getElementById('digitalFileContainer');
+
+function toggleDigitalFile() {
+    if (colTypeSelect && digitalFileContainer) {
+        if (colTypeSelect.value === 'E-book') {
+            digitalFileContainer.style.display = 'block';
+        } else {
+            digitalFileContainer.style.display = 'none';
+        }
+    }
+}
+
+if (colTypeSelect) {
+    colTypeSelect.addEventListener('change', toggleDigitalFile);
+    toggleDigitalFile();
+}
+</script>
+@endpush
 @endsection
 
 

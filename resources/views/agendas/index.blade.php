@@ -17,10 +17,13 @@
         </h1>
         <p class="text-slate-500 text-xs sm:text-sm">{{ __('Jadwal acara, bedah buku, workshop, dan kegiatan literasi perpustakaan') }}</p>
     </div>
-    <div>
-        <button onclick="openModal('createAgendaModal')" class="inline-flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg btn-gradient-blue shadow-md shadow-indigo-500/20 text-white gap-2 py-2.5 px-5 transition-all transform hover:-translate-y-0.5">
+    <div class="flex flex-wrap gap-2">
+        <a href="{{ route('class-visits.index') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 shadow-sm gap-2 py-2.5 px-4 transition-all">
+            <i class="bi bi-diagram-3"></i> {{ __('Kelola Jadwal Kunjungan') }}
+        </a>
+        <a href="{{ route('agendas.create') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg btn-gradient-blue shadow-md shadow-indigo-500/20 text-white gap-2 py-2.5 px-5 transition-all transform hover:-translate-y-0.5">
             <i class="bi bi-plus-lg text-base"></i> {{ __('Tambah Agenda Baru') }}
-        </button>
+        </a>
     </div>
 </div>
 
@@ -197,9 +200,9 @@
             </span>
 
             <div class="flex items-center gap-1">
-                <button onclick="editAgenda({{ json_encode($agenda) }})" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit Agenda') }}">
+                <a href="{{ route('agendas.edit', $agenda) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit Agenda') }}">
                     <i class="bi bi-pencil"></i>
-                </button>
+                </a>
                 <form method="POST" action="{{ route('agendas.destroy', $agenda) }}" onsubmit="return confirm('{{ __('Apakah Anda yakin ingin menghapus agenda kegiatan ini?') }}')" class="inline-block">
                     @csrf @method('DELETE')
                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus Agenda') }}">
@@ -214,9 +217,9 @@
         <i class="bi bi-calendar-x text-5xl text-slate-300 block mb-3"></i>
         <h4 class="text-base font-bold text-slate-700 mb-1">{{ __('Belum Ada Agenda Kegiatan') }}</h4>
         <p class="text-xs text-slate-400 mb-4">{{ __('Silakan tambah agenda kegiatan baru untuk membagikan acara perpustakaan.') }}</p>
-        <button onclick="openModal('createAgendaModal')" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg btn-gradient-blue text-white shadow-sm transition-all">
+        <a href="{{ route('agendas.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg btn-gradient-blue text-white shadow-sm transition-all">
             <i class="bi bi-plus-lg"></i> {{ __('Tambah Agenda Pertama') }}
-        </button>
+        </a>
     </div>
     @endforelse
 </div>
@@ -226,210 +229,4 @@
     {{ $agendas->links() }}
 </div>
 
-{{-- ═══ MODAL TAMBAH AGENDA ═══════════════════════════════════════════════════ --}}
-<div id="createAgendaModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm overflow-y-auto flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl overflow-hidden transform transition-all my-8">
-        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <i class="bi bi-calendar-plus text-indigo-600"></i> {{ __('Tambah Agenda Kegiatan') }}
-            </h3>
-            <button onclick="closeModal('createAgendaModal')" class="text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
-        </div>
-
-        <form method="POST" action="{{ route('agendas.store') }}" enctype="multipart/form-data" class="p-6 space-y-4">
-            @csrf
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Judul Acara / Kegiatan') }} <span class="text-red-500">*</span></label>
-                <input type="text" name="title" required placeholder="{{ __('Contoh: Bedah Buku & Literasi Digital') }}" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Kategori') }} <span class="text-red-500">*</span></label>
-                    <select name="category" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white">
-                        @foreach($categories as $cat)
-                        <option value="{{ $cat }}">{{ $cat }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Status') }} <span class="text-red-500">*</span></label>
-                    <select name="status" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white">
-                        @foreach($statuses as $st)
-                        <option value="{{ $st }}">{{ $st }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Tanggal Acara') }} <span class="text-red-500">*</span></label>
-                    <input type="date" name="event_date" required value="{{ date('Y-m-d') }}" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Jam Mulai') }} <span class="text-red-500">*</span></label>
-                    <input type="time" name="start_time" required value="09:00" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Jam Selesai') }}</label>
-                    <input type="time" name="end_time" value="12:00" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Lokasi / Ruangan') }} <span class="text-red-500">*</span></label>
-                    <input type="text" name="location" required placeholder="{{ __('Ruang Baca Lt. 2 / Zoom') }}" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Narasumber / Pembicara') }}</label>
-                    <input type="text" name="speaker" placeholder="{{ __('Nama narasumber (opsional)') }}" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Target Peserta') }}</label>
-                    <input type="text" name="target_audience" placeholder="{{ __('Siswa / Guru / Umum') }}" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Kuota Peserta') }}</label>
-                    <input type="number" name="quota" placeholder="{{ __('Jumlah kuota (opsional)') }}" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Deskripsi Ringkas Kegiatan') }}</label>
-                <textarea name="description" rows="3" placeholder="{{ __('Jelaskan detail singkat acara kegiatan perpustakaan...') }}" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"></textarea>
-            </div>
-
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
-                <button type="button" onclick="closeModal('createAgendaModal')" class="px-5 py-2.5 text-xs font-semibold rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors">{{ __('Batal') }}</button>
-                <button type="submit" class="px-5 py-2.5 text-xs font-semibold rounded-lg btn-gradient-green text-white shadow-md transition-all">{{ __('Simpan Agenda') }}</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-{{-- ═══ MODAL EDIT AGENDA ════════════════════════════════════════════════════ --}}
-<div id="editAgendaModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm overflow-y-auto flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl overflow-hidden transform transition-all my-8">
-        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <i class="bi bi-pencil-square text-indigo-600"></i> {{ __('Edit Agenda Kegiatan') }}
-            </h3>
-            <button onclick="closeModal('editAgendaModal')" class="text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
-        </div>
-
-        <form id="editAgendaForm" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
-            @csrf @method('PUT')
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Judul Acara / Kegiatan') }} <span class="text-red-500">*</span></label>
-                <input type="text" id="edit_title" name="title" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Kategori') }} <span class="text-red-500">*</span></label>
-                    <select id="edit_category" name="category" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white">
-                        @foreach($categories as $cat)
-                        <option value="{{ $cat }}">{{ $cat }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Status') }} <span class="text-red-500">*</span></label>
-                    <select id="edit_status" name="status" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white">
-                        @foreach($statuses as $st)
-                        <option value="{{ $st }}">{{ $st }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Tanggal Acara') }} <span class="text-red-500">*</span></label>
-                    <input type="date" id="edit_event_date" name="event_date" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Jam Mulai') }} <span class="text-red-500">*</span></label>
-                    <input type="time" id="edit_start_time" name="start_time" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Jam Selesai') }}</label>
-                    <input type="time" id="edit_end_time" name="end_time" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Lokasi / Ruangan') }} <span class="text-red-500">*</span></label>
-                    <input type="text" id="edit_location" name="location" required class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Narasumber / Pembicara') }}</label>
-                    <input type="text" id="edit_speaker" name="speaker" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Target Peserta') }}</label>
-                    <input type="text" id="edit_target_audience" name="target_audience" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Kuota Peserta') }}</label>
-                    <input type="number" id="edit_quota" name="quota" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">{{ __('Deskripsi Ringkas Kegiatan') }}</label>
-                <textarea id="edit_description" name="description" rows="3" class="w-full py-2 px-3 text-sm rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"></textarea>
-            </div>
-
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
-                <button type="button" onclick="closeModal('editAgendaModal')" class="px-5 py-2.5 text-xs font-semibold rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors">{{ __('Batal') }}</button>
-                <button type="submit" class="px-5 py-2.5 text-xs font-semibold rounded-lg btn-gradient-green text-white shadow-md transition-all">{{ __('Simpan Perubahan') }}</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
-    }
-
-    function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
-
-    function editAgenda(agenda) {
-        document.getElementById('editAgendaForm').action = '/agendas/' + agenda.id;
-        document.getElementById('edit_title').value = agenda.title || '';
-        document.getElementById('edit_category').value = agenda.category || '';
-        document.getElementById('edit_status').value = agenda.status || '';
-        
-        if (agenda.event_date) {
-            let date = new Date(agenda.event_date);
-            let formattedDate = date.toISOString().split('T')[0];
-            document.getElementById('edit_event_date').value = formattedDate;
-        }
-
-        document.getElementById('edit_start_time').value = agenda.start_time ? agenda.start_time.substring(0, 5) : '';
-        document.getElementById('edit_end_time').value = agenda.end_time ? agenda.end_time.substring(0, 5) : '';
-        document.getElementById('edit_location').value = agenda.location || '';
-        document.getElementById('edit_speaker').value = agenda.speaker || '';
-        document.getElementById('edit_target_audience').value = agenda.target_audience || '';
-        document.getElementById('edit_quota').value = agenda.quota || '';
-        document.getElementById('edit_description').value = agenda.description || '';
-
-        openModal('editAgendaModal');
-    }
-</script>
 @endsection

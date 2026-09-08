@@ -21,7 +21,7 @@
 @endpush
 
 @section('content')
-<div x-data="{ showAddModal: false, showEditModal: false, editUrl: '', editData: {}, selected: [], selectAll: false }">
+<div x-data="{ selected: [], selectAll: false }">
     <div class="page-header print:hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Buku Tamu & Aktivitas Harian') }}</h1>
@@ -45,9 +45,9 @@
             <a href="{{ route('guest-books.scan') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors gap-1.5 py-2 px-4 shadow-sm">
                 <i class="fas fa-barcode"></i> {{ __('Mode Scan Barcode') }}
             </a>
-            <button type="button" @click="showAddModal = true; const now = new Date(); document.getElementById('visit_time').value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0'); document.getElementById('visit_date').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-1.5 py-2 px-4">
+            <a href="{{ route('guest-books.create') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-1.5 py-2 px-4 shadow-sm">
                 <i class="bi bi-journal-plus"></i>{{ __('Catat Kunjungan Baru') }}
-            </button>
+            </a>
         </div>
     </div>
 
@@ -139,20 +139,9 @@
                             <td>{{ $activity->visit_time ? date('H:i', strtotime($activity->visit_time)) : '-' }} WIB</td>
                             <td class="text-center font-bold text-indigo-600">{{ $activity->participants_count }} {{ __('Orang') }}</td>
                             <td class="text-center print:hidden">
-                                @php
-                                    $editPayload = [
-                                        'visit_date' => $activity->visit_date ? $activity->visit_date->format('Y-m-d') : '',
-                                        'visit_time' => $activity->visit_time ? \Carbon\Carbon::parse($activity->visit_time)->format('H:i') : '',
-                                        'name' => $activity->name,
-                                        'institution' => $activity->institution,
-                                        'purpose' => $activity->purpose,
-                                        'participants_count' => $activity->participants_count,
-                                        'notes' => $activity->notes,
-                                    ];
-                                @endphp
-                                <button type="button" @click="showEditModal = true; editUrl = '{{ route('guest-books.update', $activity) }}'; editData = {{ json_encode($editPayload) }};" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
+                                <a href="{{ route('guest-books.edit', $activity) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
-                                </button>
+                                </a>
                                 <form action="{{ route('guest-books.destroy', $activity) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus catatan kunjungan ini?')">
                                     @csrf
                                     @method('DELETE')
@@ -178,109 +167,6 @@
                 {{ $activities->links() }}
             </div>
             @endif
-        </div>
-    </div>
-
-    {{-- Add Visit Modal --}}
-    <div x-show="showAddModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-        <div @click.outside="showAddModal = false" class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all my-8">
-            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="bi bi-journal-plus text-indigo-600"></i> {{ __('Catat Kunjungan Baru') }}
-                </h3>
-                <button type="button" @click="showAddModal = false" class="text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
-            </div>
-            <form action="{{ route('guest-books.store') }}" method="POST">
-                @csrf
-                <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="visit_date" class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Tanggal') }} <span class="text-red-500">*</span></label>
-                            <input type="date" name="visit_date" id="visit_date" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" value="{{ date('Y-m-d') }}" required>
-                        </div>
-                        <div>
-                            <label for="visit_time" class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Waktu') }} <span class="text-red-500">*</span></label>
-                            <input type="time" name="visit_time" id="visit_time" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" value="{{ date('H:i') }}" required>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="name" class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Nama Lengkap Tamu') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="name" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" placeholder="{{ __('Ketik nama lengkap...') }}" required>
-                    </div>
-                    <div>
-                        <label for="institution" class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Instansi / Asal') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="institution" id="institution" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" placeholder="{{ __('Ketik instansi asal atau kelas...') }}" required>
-                    </div>
-                    <div>
-                        <label for="purpose" class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Tujuan Kunjungan') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="purpose" id="purpose" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" placeholder="{{ __('Tujuan kunjungan...') }}" required>
-                    </div>
-                    <div>
-                        <label for="participants_count" class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Jumlah Peserta') }} <span class="text-red-500">*</span></label>
-                        <input type="number" name="participants_count" id="participants_count" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" min="1" value="1" required>
-                    </div>
-                    <div>
-                        <label for="notes" class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Catatan Tambahan') }}</label>
-                        <textarea name="notes" id="notes" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" rows="2" placeholder="{{ __('Opsional...') }}"></textarea>
-                    </div>
-                </div>
-                <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                    <button type="button" @click="showAddModal = false" class="inline-flex items-center justify-center text-xs font-medium rounded-lg text-slate-700 border border-slate-300 hover:bg-slate-50 transition-colors py-2 px-4">{{ __('Batal') }}</button>
-                    <button type="submit" class="inline-flex items-center justify-center text-xs font-semibold rounded-lg btn-gradient-blue transition-colors text-white py-2 px-5">{{ __('Simpan Catatan') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- Edit Visit Modal --}}
-    <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-        <div @click.outside="showEditModal = false" class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all my-8">
-            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="bi bi-pencil-square text-indigo-600"></i> {{ __('Edit Catatan Kunjungan') }}
-                </h3>
-                <button type="button" @click="showEditModal = false" class="text-slate-400 hover:text-slate-600"><i class="bi bi-x-lg"></i></button>
-            </div>
-            <form :action="editUrl" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Tanggal') }} <span class="text-red-500">*</span></label>
-                            <input type="date" name="visit_date" x-model="editData.visit_date" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" required>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Waktu') }} <span class="text-red-500">*</span></label>
-                            <input type="time" name="visit_time" x-model="editData.visit_time" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" required>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Nama Lengkap Tamu') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" x-model="editData.name" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Instansi / Asal') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="institution" x-model="editData.institution" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Tujuan Kunjungan') }} <span class="text-red-500">*</span></label>
-                        <input type="text" name="purpose" x-model="editData.purpose" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Jumlah Peserta') }} <span class="text-red-500">*</span></label>
-                        <input type="number" name="participants_count" x-model="editData.participants_count" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" min="1" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Catatan Tambahan') }}</label>
-                        <textarea name="notes" x-model="editData.notes" class="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-1 focus:ring-indigo-500 outline-none" rows="2"></textarea>
-                    </div>
-                </div>
-                <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                    <button type="button" @click="showEditModal = false" class="inline-flex items-center justify-center text-xs font-medium rounded-lg text-slate-700 border border-slate-300 hover:bg-slate-50 transition-colors py-2 px-4">{{ __('Batal') }}</button>
-                    <button type="submit" class="inline-flex items-center justify-center text-xs font-semibold rounded-lg btn-gradient-blue transition-colors text-white py-2 px-5">{{ __('Update Catatan') }}</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>

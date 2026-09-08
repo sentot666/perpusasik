@@ -76,10 +76,18 @@
         {{-- HOME TAB: Buku Populer & Buku Terbaru --}}
         
         {{-- Buku Populer --}}
-        <div class="mb-12">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-slate-800 m-0"><i class="bi bi-fire text-rose-500 mr-2"></i>Buku Populer</h2>
-                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-indigo-600 font-semibold text-sm hover:underline">Lihat Semua <i class="bi bi-arrow-right"></i></a>
+        <div class="mb-20">
+            <div class="flex items-start sm:items-center justify-between mb-8 flex-col sm:flex-row gap-4">
+                <div class="flex">
+                    <div class="w-[6px] rounded-full bg-[#0066cc] mr-4"></div>
+                    <div>
+                        <h2 class="text-[26px] md:text-[32px] font-extrabold text-[#1e293b] m-0 tracking-tight leading-none mb-1.5">
+                            Buku Populer
+                        </h2>
+                        <p class="text-[15px] md:text-base text-slate-500 m-0">Rekomendasi Wajib Baca Minggu Ini</p>
+                    </div>
+                </div>
+                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-[#0066cc] font-bold text-sm md:text-base hover:text-blue-800 transition-colors flex items-center no-underline self-start sm:self-auto">Lihat Semua <i class="bi bi-arrow-right ml-1.5"></i></a>
             </div>
             
             <div class="flex flex-wrap -mx-3">
@@ -94,10 +102,18 @@
         </div>
         
         {{-- Buku Terbaru --}}
-        <div>
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-slate-800 m-0"><i class="bi bi-stars text-amber-500 mr-2"></i>Buku Terbaru</h2>
-                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-indigo-600 font-semibold text-sm hover:underline">Lihat Semua <i class="bi bi-arrow-right"></i></a>
+        <div class="mt-8 mb-12">
+            <div class="flex items-start sm:items-center justify-between mb-8 mt-12 flex-col sm:flex-row gap-4">
+                <div class="flex">
+                    <div class="w-[6px] rounded-full bg-[#0066cc] mr-4"></div>
+                    <div>
+                        <h2 class="text-[26px] md:text-[32px] font-extrabold text-[#1e293b] m-0 tracking-tight leading-none mb-1.5">
+                            Buku Terbaru
+                        </h2>
+                        <p class="text-[15px] md:text-base text-slate-500 m-0">Koleksi Baru di Perpustakaan</p>
+                    </div>
+                </div>
+                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-[#0066cc] font-bold text-sm md:text-base hover:text-blue-800 transition-colors flex items-center no-underline self-start sm:self-auto">Lihat Semua <i class="bi bi-arrow-right ml-1.5"></i></a>
             </div>
             
             <div class="flex flex-wrap -mx-3">

@@ -38,8 +38,24 @@ class OpacController extends Controller
         if ($tab == 'home') {
             // Newest books (limit 10)
             $newestBooks = (clone $query)->latest()->limit(10)->get();
-            // Popular books (using items_count as a proxy for popular)
-            $popularBooks = (clone $query)->orderByDesc('items_count')->limit(5)->get();
+            // Popular books (using circulation count as true proxy for popular, just like dashboard)
+            $popularIds = \Illuminate\Support\Facades\DB::table('circulations')
+                ->join('book_items', 'circulations.book_item_id', '=', 'book_items.id')
+                ->join('books', 'book_items.book_id', '=', 'books.id')
+                ->where('books.is_active', true)
+                ->select('books.id', \Illuminate\Support\Facades\DB::raw('COUNT(circulations.id) as borrow_count'))
+                ->groupBy('books.id')
+                ->orderByDesc('borrow_count')
+                ->limit(5)
+                ->pluck('books.id');
+
+            if ($popularIds->isEmpty()) {
+                $popularBooks = (clone $query)->orderByDesc('items_count')->limit(5)->get();
+            } else {
+                $popularBooks = (clone $query)->whereIn('id', $popularIds)
+                    ->orderByRaw("FIELD(id, " . $popularIds->implode(',') . ")")
+                    ->get();
+            }
 
             return view('opac.katalog', compact('tab', 'newestBooks', 'popularBooks'));
         }
@@ -135,6 +151,7 @@ class OpacController extends Controller
     {
         $book->load(['authors', 'publisher', 'subjects', 'items.location']);
         $relatedBooks = Book::with('authors')
+            ->withCount(['items', 'availableItems'])
             ->whereHas('subjects', fn($q) => $q->whereIn('subjects.id', $book->subjects->pluck('id')))
             ->where('id', '!=', $book->id)
             ->where('is_active', true)
@@ -142,9 +159,23 @@ class OpacController extends Controller
             ->get();
 
         $totalCount = $book->items->count();
-        $availableCount = $book->items->where('status', 'available')->count();
+        $availableCount = $book->items->where('status', 'Tersedia')->count();
 
         return view('opac.show', compact('book', 'relatedBooks', 'totalCount', 'availableCount'));
+    }
+
+    public function read(Book $book)
+    {
+        if (!$book->digital_file_path || !\Illuminate\Support\Facades\Storage::disk('public')->exists($book->digital_file_path)) {
+            abort(404, 'File digital tidak ditemukan.');
+        }
+
+        $extension = pathinfo($book->digital_file_path, PATHINFO_EXTENSION);
+        if (strtolower($extension) !== 'pdf') {
+            return redirect(asset('storage/' . $book->digital_file_path));
+        }
+
+        return view('opac.read', compact('book'));
     }
 
     public function agenda(Request $request)
@@ -196,5 +227,23 @@ class OpacController extends Controller
     {
         $page = \App\Models\Page::where('slug', 'jam-layanan')->where('is_active', true)->first();
         return view('opac.jam-layanan', compact('page'));
+    }
+
+    public function jadwalKunjungan($level)
+    {
+        $levels = ['sd' => 'Sekolah Dasar (SD)', 'smp' => 'Menengah Pertama (SMP)', 'sma' => 'Menengah Atas (SMA)'];
+        
+        if (!array_key_exists($level, $levels)) {
+            abort(404);
+        }
+
+        $levelName = $levels[$level];
+
+        $schedules = \App\Models\ClassVisit::where('level', $level)
+            ->orderByRaw("FIELD(day, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
+            ->orderBy('time')
+            ->get();
+
+        return view('opac.jadwal-kunjungan', compact('level', 'levelName', 'schedules'));
     }
 }
