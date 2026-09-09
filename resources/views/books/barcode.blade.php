@@ -356,7 +356,7 @@
                                     }
                                 }
 
-                                $copyCode = 'c' . $loop->iteration;
+                                $copyCode = 'c' . ($copyNumbers[$item->id] ?? $loop->iteration);
                             @endphp
                             @foreach($cleanParts as $part)
                                 <span class="call-num-part">{{ $part }}</span>

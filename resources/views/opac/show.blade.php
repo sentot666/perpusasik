@@ -55,7 +55,7 @@
                         </a>
                     @endif
 
-                    @if($book->collection_type !== 'E-book / Digital')
+                    @if($book->collection_type !== 'E-book')
                         @auth
                             <form action="{{ route('member.reservations.store', $book->id) }}" method="POST">
                                 @csrf
@@ -104,7 +104,7 @@
 
 
                     
-                    @if($book->collection_type !== 'E-book / Digital')
+                    @if($book->collection_type !== 'E-book')
                         @if($availableCount > 0)
                             <span class="bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold px-3 py-1.5 rounded-full">
                                 {{ $availableCount }} Tersedia
@@ -164,7 +164,7 @@
                         <span class="text-lg font-black text-slate-800">{{ $book->publication_year ?? '-' }}</span>
                     </div>
                     <!-- Card 3 -->
-                    @if($book->collection_type === 'E-book / Digital')
+                    @if($book->collection_type === 'E-book')
                     <div class="bg-white rounded-2xl border border-slate-100/50 p-4 text-center shadow-sm flex flex-col items-center justify-center h-[120px] hover:shadow-md transition-shadow">
                         <i class="bi bi-cloud-check text-[#0066cc] text-[22px] mb-2 opacity-80"></i>
                         <span class="text-[10px] text-slate-400 font-bold tracking-widest uppercase mb-1">Akses</span>
@@ -256,7 +256,7 @@
                     $distinctLocations = $book->items->pluck('location')->filter()->unique('id');
                 @endphp
                 
-                @if($distinctLocations->count() > 0 && $book->collection_type !== 'E-book / Digital')
+                @if($distinctLocations->count() > 0 && $book->collection_type !== 'E-book')
                 <div class="bg-gradient-to-br from-[#0066cc] to-indigo-700 rounded-2xl shadow-md p-6 text-white text-center relative overflow-hidden flex flex-col justify-center min-h-[160px] max-w-2xl">
                     <i class="bi bi-map absolute -right-4 -bottom-4 text-[120px] text-white/10 rotate-[-15deg]"></i>
                     <div class="relative z-10">

@@ -61,10 +61,11 @@ class OpacController extends Controller
         }
 
         if ($tab == 'digital') {
+            $query->where('collection_type', 'E-book');
+        } else {
             $query->where(function($q) {
-                $q->where('collection_type', 'LIKE', '%digital%')
-                  ->orWhere('collection_type', 'LIKE', '%e-book%')
-                  ->orWhere('collection_type', 'LIKE', '%ebook%');
+                $q->where('collection_type', '!=', 'E-book')
+                  ->orWhereNull('collection_type');
             });
         }
 

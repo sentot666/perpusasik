@@ -19,7 +19,7 @@
         <span class="absolute top-0 right-0 m-2 inline-flex py-1 text-xs font-medium rounded-md bg-amber-100 text-amber-800 font-semibold px-2" style="font-size:0.68rem">{{ $book->collection_type }}</span>
     </div>
     <div class="flex-col p-8 flex p-6">
-        <h6 class="fw-700 text-truncate-2 text-slate-800 mb-1" style="height:38px;line-height:1.2">
+        <h6 class="font-medium text-slate-800 mb-1" style="height:38px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
             <a href="{{ route('opac.show', $book) }}" class="no-underline text-slate-800">{{ $book->title }}</a>
         </h6>
         <div class="truncate text-slate-500 mb-2" style="font-size:0.75rem">{{ $book->main_author ?? __('Pengarang tidak terdaftar') }}</div>
