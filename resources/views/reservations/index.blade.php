@@ -29,15 +29,20 @@
                 @forelse($reservations as $res)
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4">
-                        <div class="font-bold text-slate-800">{{ $res->member->name }}</div>
-                        <div class="text-xs text-slate-500">{{ $res->member->member_number }}</div>
+                        <div class="font-bold text-slate-800">
+                            {{ $res->member?->name ?? 'Anggota Dihapus' }}
+                            @if($res->member?->trashed())
+                                <span class="text-[10px] text-rose-500 font-normal">(Dihapus)</span>
+                            @endif
+                        </div>
+                        <div class="text-xs text-slate-500 font-mono">{{ $res->member?->member_code ?? $res->member?->member_number ?? '-' }}</div>
                     </td>
                     <td class="px-6 py-4">
-                        <div class="font-bold text-slate-800 text-sm max-w-xs truncate">{{ $res->book->title }}</div>
-                        <div class="text-xs text-slate-500">Stok: {{ $res->book->available_copies }}</div>
+                        <div class="font-bold text-slate-800 text-sm max-w-xs truncate">{{ $res->book?->title ?? 'Buku Dihapus' }}</div>
+                        <div class="text-xs text-slate-500">Stok: {{ $res->book?->available_copies ?? 0 }}</div>
                     </td>
-                    <td class="px-6 py-4 text-sm">{{ $res->reserve_date->format('d/m/Y') }}</td>
-                    <td class="px-6 py-4 text-sm {{ Carbon\Carbon::today()->gt($res->expired_date) ? 'text-red-500 font-bold' : '' }}">
+                    <td class="px-6 py-4 text-sm">{{ $res->reserve_date ? $res->reserve_date->format('d/m/Y') : '-' }}</td>
+                    <td class="px-6 py-4 text-sm {{ $res->expired_date && Carbon\Carbon::today()->gt($res->expired_date) ? 'text-red-500 font-bold' : '' }}">
                         {{ $res->expired_date ? $res->expired_date->format('d/m/Y') : '-' }}
                     </td>
                     <td class="px-6 py-4">
@@ -68,7 +73,7 @@
                                 </form>
                             </div>
                         @elseif($res->status == 'Siap')
-                            <a href="{{ route('circulations.loan', ['member' => $res->member->member_number]) }}" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold shadow-sm" title="Proses Peminjaman Fisik">
+                            <a href="{{ route('circulations.loan', ['member' => $res->member?->member_code ?? $res->member?->member_number ?? $res->member_id]) }}" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold shadow-sm" title="Proses Peminjaman Fisik">
                                 <i class="bi bi-arrow-left-right mr-1"></i> Proses Pinjam
                             </a>
                         @endif

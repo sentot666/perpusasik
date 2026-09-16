@@ -14,12 +14,14 @@ class OpacController extends Controller
 {
             public function index(Request $request)
     {
-        $stats = [
-            'total_books'     => Book::count(),
-            'total_items'     => BookItem::count(),
-            'total_members'   => Member::where('is_active', true)->count(),
-            'total_visitors'  => GuestBook::sum('participants_count'),
-        ];
+        $stats = \Illuminate\Support\Facades\Cache::remember('opac_stats', 1800, function () {
+            return [
+                'total_books'     => Book::count(),
+                'total_items'     => BookItem::count(),
+                'total_members'   => Member::where('is_active', true)->count(),
+                'total_visitors'  => GuestBook::sum('participants_count'),
+            ];
+        });
         
         $locations = Location::orderBy('code')->get();
 
@@ -30,14 +32,28 @@ class OpacController extends Controller
     {
         $tab = $request->get('tab', 'home');
 
-        $query = Book::with(['authors', 'publisher'])
+        $query = Book::with(['authors', 'publisher', 'subjects'])
             ->withCount(['items', 'availableItems'])
             ->where('is_active', true);
 
-
         if ($tab == 'home') {
+            $stats = [
+                'total_books'      => Book::where('is_active', true)->count(),
+                'total_items'      => BookItem::count(),
+                'total_digital'    => Book::where('is_active', true)->where('collection_type', 'E-book')->count(),
+                'total_categories' => Subject::whereHas('books', fn($q) => $q->where('is_active', true))->count(),
+            ];
+
+            // Popular categories for quick exploration
+            $popularCategories = Subject::whereHas('books', fn($q) => $q->where('is_active', true))
+                ->withCount(['books' => fn($q) => $q->where('is_active', true)])
+                ->orderByDesc('books_count')
+                ->limit(8)
+                ->get();
+
             // Newest books (limit 10)
             $newestBooks = (clone $query)->latest()->limit(10)->get();
+
             // Popular books (using circulation count as true proxy for popular, just like dashboard)
             $popularIds = \Illuminate\Support\Facades\DB::table('circulations')
                 ->join('book_items', 'circulations.book_item_id', '=', 'book_items.id')
@@ -46,18 +62,18 @@ class OpacController extends Controller
                 ->select('books.id', \Illuminate\Support\Facades\DB::raw('COUNT(circulations.id) as borrow_count'))
                 ->groupBy('books.id')
                 ->orderByDesc('borrow_count')
-                ->limit(5)
+                ->limit(10)
                 ->pluck('books.id');
 
             if ($popularIds->isEmpty()) {
-                $popularBooks = (clone $query)->orderByDesc('items_count')->limit(5)->get();
+                $popularBooks = (clone $query)->orderByDesc('items_count')->limit(10)->get();
             } else {
                 $popularBooks = (clone $query)->whereIn('id', $popularIds)
                     ->orderByRaw("FIELD(id, " . $popularIds->implode(',') . ")")
                     ->get();
             }
 
-            return view('opac.katalog', compact('tab', 'newestBooks', 'popularBooks'));
+            return view('opac.katalog', compact('tab', 'newestBooks', 'popularBooks', 'stats', 'popularCategories'));
         }
 
         if ($tab == 'digital') {
@@ -82,7 +98,7 @@ class OpacController extends Controller
         
         // Remove old filters like collection_type, year, language, location_id
 
-        $books = $query->latest()->paginate(12)->withQueryString();
+        $books = $query->latest()->get();
 
         // Fetch all categories (Subjects) that have at least one active book
         $categories = Subject::whereHas('books', function ($q) {
@@ -188,46 +204,20 @@ class OpacController extends Controller
         return view('opac.agenda', compact('agendas'));
     }
 
-    public function programKerja()
+    public function showPage($slug)
     {
-        $page = \App\Models\Page::where('slug', 'program-kerja')->where('is_active', true)->first();
-        return view('opac.program-kerja', compact('page'));
-    }
-
-    public function sejarah()
-    {
-        $page = \App\Models\Page::where('slug', 'sejarah')->where('is_active', true)->first();
-        return view('opac.sejarah', compact('page'));
-    }
-
-    public function visiMisi()
-    {
-        $page = \App\Models\Page::where('slug', 'visi-misi')->where('is_active', true)->first();
-        return view('opac.visi-misi', compact('page'));
-    }
-
-    public function strukturOrganisasi()
-    {
-        $page = \App\Models\Page::where('slug', 'struktur-organisasi')->where('is_active', true)->first();
-        return view('opac.struktur-organisasi', compact('page'));
-    }
-
-    public function pustakawan()
-    {
-        $page = \App\Models\Page::where('slug', 'pustakawan')->where('is_active', true)->first();
-        return view('opac.pustakawan', compact('page'));
-    }
-
-    public function tataTertib()
-    {
-        $page = \App\Models\Page::where('slug', 'tata-tertib')->where('is_active', true)->first();
-        return view('opac.tata-tertib', compact('page'));
-    }
-
-    public function jamLayanan()
-    {
-        $page = \App\Models\Page::where('slug', 'jam-layanan')->where('is_active', true)->first();
-        return view('opac.jam-layanan', compact('page'));
+        $page = \App\Models\Page::where('slug', $slug)->where('is_active', true)->first();
+        
+        // Use custom view if it exists, otherwise fallback to generic page template
+        if (view()->exists('opac.' . $slug)) {
+            return view('opac.' . $slug, compact('page'));
+        }
+        
+        if (!$page) {
+            abort(404);
+        }
+        
+        return view('opac.page', compact('page'));
     }
 
     public function jadwalKunjungan($level)

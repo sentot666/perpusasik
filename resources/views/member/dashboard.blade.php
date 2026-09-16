@@ -1,163 +1,215 @@
-@extends('layouts.app')
+@extends('layouts.member')
 
-@section('title', __('Dashboard Anggota'))
+@section('title', 'Beranda')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-800">Halo, {{ explode(' ', auth()->user()->name)[0] }} 👋</h1>
-            <p class="text-sm text-slate-500 mt-1">Selamat Datang di Perpustakaan Digital</p>
-        </div>
-        <div>
-            <a href="{{ route('opac.index') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue text-white px-5 py-2.5 transition-all shadow-sm">
-                <i class="bi bi-search mr-2"></i> Cari Buku
-            </a>
+<div class="space-y-6 pb-8">
+
+    {{-- 1. Clean Welcoming Search Banner --}}
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7">
+        <div class="max-w-2xl">
+            <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight mb-1">
+                Selamat Datang, {{ $member->name }}
+            </h1>
+            <p class="text-slate-500 text-xs sm:text-sm mb-5 leading-relaxed">
+                Cari buku cerita, ensiklopedia, atau buku pelajaran yang ingin kamu baca hari ini.
+            </p>
+
+            {{-- Clean Search Bar --}}
+            <form action="{{ route('member.catalog') }}" method="GET" class="flex gap-2">
+                <div class="relative flex-1">
+                    <span class="absolute inset-y-0 left-3.5 flex items-center text-slate-400">
+                        <i class="bi bi-search text-sm"></i>
+                    </span>
+                    <input type="text" 
+                           name="q" 
+                           placeholder="Ketik judul buku, pengarang, atau topik pelajaran..." 
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors">
+                </div>
+                <button type="submit" 
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-colors cursor-pointer flex-shrink-0">
+                    Cari Buku
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <!-- Sedang Dipinjam -->
-        <div class="btn-gradient-blue text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
-            <div class="items-center flex gap-4">
-                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
-                    <i class="bi bi-book-half"></i>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <div class="stat-value text-white font-bold text-2xl truncate">{{ number_format($activeLoans->count()) }}</div>
-                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Sedang Dipinjam') }}</div>
-                </div>
+    {{-- 2. Compact Clean Stats --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {{-- Stat 1: Pinjaman Aktif --}}
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-500 mb-1">Buku Dipinjam</p>
+                <p class="text-xl sm:text-2xl font-bold text-slate-800">{{ $activeLoans->count() }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg flex-shrink-0">
+                <i class="bi bi-book"></i>
             </div>
         </div>
 
-        <!-- Total Dipinjam -->
-        <div class="btn-gradient-green text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
-            <div class="items-center flex gap-4">
-                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
-                    <i class="bi bi-journal-check"></i>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <div class="stat-value text-white font-bold text-2xl truncate">{{ number_format($totalLoans) }}</div>
-                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Total Dipinjam') }}</div>
-                </div>
+        {{-- Stat 2: Terlambat / Status Waktu --}}
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-500 mb-1">Perlu Dikembalikan</p>
+                <p class="text-xl sm:text-2xl font-bold {{ $overdueLoans->count() > 0 ? 'text-rose-600' : 'text-slate-800' }}">
+                    {{ $overdueLoans->count() }}
+                </p>
+            </div>
+            <div class="w-10 h-10 rounded-xl {{ $overdueLoans->count() > 0 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600' }} flex items-center justify-center text-lg flex-shrink-0">
+                <i class="bi bi-clock"></i>
             </div>
         </div>
 
-        <!-- Jatuh Tempo -->
-        <div class="btn-gradient-red text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
-            <div class="items-center flex gap-4">
-                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
-                    <i class="bi bi-clock-history"></i>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <div class="stat-value text-white font-bold text-2xl truncate">{{ number_format($overdueLoans->count()) }}</div>
-                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Jatuh Tempo') }}</div>
-                </div>
+        {{-- Stat 3: Reservasi / Pesanan Aktif --}}
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-500 mb-1">Buku Dipesan</p>
+                <p class="text-xl sm:text-2xl font-bold text-slate-800">{{ $activeReservations->count() }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg flex-shrink-0">
+                <i class="bi bi-bookmark"></i>
             </div>
         </div>
 
-        <!-- Denda -->
-        <div class="btn-gradient-orange text-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 p-5">
-            <div class="items-center flex gap-4">
-                <div class="stat-icon bg-white/20 text-white rounded-xl flex items-center justify-center w-12 h-12 text-xl shadow-sm backdrop-blur-sm flex-shrink-0">
-                    <i class="bi bi-cash-stack"></i>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <div class="stat-value text-white font-bold text-2xl truncate">Rp{{ number_format($totalFines, 0, ',', '.') }}</div>
-                    <div class="stat-label text-white/90 text-xs font-medium truncate">{{ __('Total Denda') }}</div>
-                </div>
+        {{-- Stat 4: Wishlist / Favorit --}}
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-500 mb-1">Buku Favorit</p>
+                <p class="text-xl sm:text-2xl font-bold text-slate-800">{{ $wishlistCount }}</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg flex-shrink-0">
+                <i class="bi bi-heart"></i>
             </div>
         </div>
     </div>
 
-    <!-- Active Loans Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
-        <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
-            <h2 class="text-lg font-bold text-slate-800">Buku yang Sedang Dipinjam</h2>
-        </div>
-        <div class="p-0">
-            @if($activeLoans->isEmpty())
-                <div class="text-center py-12">
-                    <div class="text-4xl mx-auto mb-4 opacity-50">📚</div>
-                    <p class="text-slate-500 font-medium">Anda tidak sedang meminjam buku apapun.</p>
-                </div>
-            @else
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider border-y border-slate-200">
-                                <th class="px-6 py-4 font-medium w-16">Cover</th>
-                                <th class="px-6 py-4 font-medium">Judul Buku</th>
-                                <th class="px-6 py-4 font-medium">Tanggal Pinjam</th>
-                                <th class="px-6 py-4 font-medium">Jatuh Tempo</th>
-                                <th class="px-6 py-4 font-medium">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 text-sm">
-                            @foreach($activeLoans as $loan)
-                                @php
-                                    $book = $loan->bookItem->book;
-                                    $daysRemaining = now()->startOfDay()->diffInDays($loan->due_date->startOfDay(), false);
-                                @endphp
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <!-- Cover Buku -->
-                                    <td class="px-6 py-4">
-                                        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
-                                            <img src="{{ Storage::url($book->cover_image) }}" alt="Cover" class="w-12 h-16 object-cover rounded shadow-sm border border-slate-200">
-                                        @else
-                                            <div class="w-12 h-16 bg-slate-100 rounded flex items-center justify-center text-slate-400 border border-slate-200">
-                                                <i class="bi bi-book"></i>
-                                            </div>
-                                        @endif
-                                    </td>
-                                    
-                                    <!-- Judul Buku -->
-                                    <td class="px-6 py-4">
-                                        <div class="font-bold text-slate-800">{{ $book->title }}</div>
-                                        <div class="text-xs text-slate-500 mt-0.5">Kode Item: {{ $loan->bookItem->item_code }}</div>
-                                    </td>
-                                    
-                                    <!-- Tanggal Pinjam -->
-                                    <td class="px-6 py-4 text-slate-600">
-                                        {{ $loan->loan_date->format('d M Y') }}
-                                    </td>
-                                    
-                                    <!-- Jatuh Tempo & Badge Peringatan -->
-                                    <td class="px-6 py-4">
-                                        <div class="text-slate-800 font-medium">{{ $loan->due_date->format('d M Y') }}</div>
-                                        
-                                        @if($daysRemaining < 0)
-                                            <div class="mt-1 text-xs font-semibold text-red-600 flex items-center gap-1">
-                                                <i class="bi bi-exclamation-circle-fill"></i> Terlambat {{ abs($daysRemaining) }} hari
-                                            </div>
-                                        @elseif($daysRemaining <= 3)
-                                            <div class="mt-1 text-xs font-semibold text-orange-600 flex items-center gap-1">
-                                                ⚠️ Jatuh tempo {{ $daysRemaining == 0 ? 'hari ini' : $daysRemaining . ' hari lagi' }}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    
-                                    <!-- Status -->
-                                    <td class="px-6 py-4">
-                                        @if($daysRemaining < 0)
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-red-100 text-red-700 border border-red-200">
-                                                Terlambat
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200">
-                                                Dipinjam
-                                            </span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+    {{-- 3. Buku yang Sedang Dipinjam --}}
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+            <div>
+                <h2 class="font-bold text-slate-800 text-sm sm:text-base">
+                    Buku yang Sedang Dipinjam
+                </h2>
+                <p class="text-xs text-slate-500">Daftar buku yang perlu kamu jaga dan kembalikan tepat waktu.</p>
+            </div>
+
+            @if($activeLoans->isNotEmpty())
+                <a href="{{ route('member.my-books') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 no-underline flex items-center gap-1">
+                    <span>Lihat Semua</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
             @endif
         </div>
+
+        @if($activeLoans->isEmpty())
+            <div class="py-8 text-center">
+                <div class="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center text-xl mx-auto mb-2">
+                    <i class="bi bi-journal"></i>
+                </div>
+                <p class="text-xs font-semibold text-slate-600">Saat ini tidak ada buku yang sedang dipinjam.</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Yuk cari cerita menarik di katalog!</p>
+                <div class="mt-3">
+                    <a href="{{ route('member.catalog') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-xs font-semibold text-slate-700 transition-colors no-underline">
+                        <i class="bi bi-search"></i>
+                        <span>Buka Katalog Buku</span>
+                    </a>
+                </div>
+            </div>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($activeLoans as $loan)
+                    @php
+                        $book = $loan->bookItem?->book;
+                        $daysLeft = (int) now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->due_date)->startOfDay(), false);
+                        $isOverdue = $daysLeft < 0;
+                        $isUrgent = !$isOverdue && $daysLeft <= 2;
+                    @endphp
+                    <div class="p-3.5 rounded-xl border {{ $isOverdue ? 'border-rose-200 bg-rose-50/20' : ($isUrgent ? 'border-amber-200 bg-amber-50/20' : 'border-slate-200') }} flex gap-3.5 items-center">
+                        <div class="w-14 aspect-[3/4] rounded-lg overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                            @if($book && $book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
+                                <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold">
+                                    BK
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-bold text-xs text-slate-800 truncate leading-snug">
+                                {{ $book?->title ?? 'Judul Buku' }}
+                            </h3>
+                            <p class="text-[11px] text-slate-500 truncate mt-0.5">
+                                {{ $book?->main_author ?? '-' }}
+                            </p>
+                            
+                            <div class="mt-2 flex items-center gap-2">
+                                @if($isOverdue)
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">
+                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                        <span>Terlambat {{ abs($daysLeft) }} hari</span>
+                                    </span>
+                                @elseif($isUrgent)
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md">
+                                        <i class="bi bi-clock-fill"></i>
+                                        <span>Sisa {{ $daysLeft == 0 ? 'hari ini' : $daysLeft . ' hari' }}</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                                        <span>Sisa {{ $daysLeft }} hari</span>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
+
+    {{-- 4. Rekomendasi Buku Terkini --}}
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+            <div>
+                <h2 class="font-bold text-slate-800 text-sm sm:text-base">
+                    Buku Pilihan Terbaru
+                </h2>
+                <p class="text-xs text-slate-500">Koleksi baru yang siap dipinjam di perpustakaan.</p>
+            </div>
+            <a href="{{ route('member.catalog') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 no-underline flex items-center gap-1">
+                <span>Lihat Semua Buku</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
+            @foreach($recommendedBooks as $book)
+                <a href="{{ route('member.catalog.show', $book) }}" class="group block no-underline">
+                    <div class="aspect-[3/4] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 mb-2 relative group-hover:border-indigo-300 transition-colors">
+                        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
+                            <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400 text-xs font-bold p-2 text-center">
+                                {{ strtoupper(substr($book->title, 0, 2)) }}
+                            </div>
+                        @endif
+
+                        @if($book->isDigital())
+                            <span class="absolute top-1.5 left-1.5 bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                                E-Book
+                            </span>
+                        @endif
+                    </div>
+                    <h3 class="font-semibold text-xs text-slate-800 line-clamp-1 group-hover:text-indigo-600 transition-colors leading-tight">
+                        {{ $book->title }}
+                    </h3>
+                    <p class="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
+                        {{ $book->main_author ?? 'Penulis' }}
+                    </p>
+                </a>
+            @endforeach
+        </div>
+    </div>
+
 </div>
 @endsection

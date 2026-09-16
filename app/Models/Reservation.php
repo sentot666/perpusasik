@@ -23,16 +23,16 @@ class Reservation extends Model
 
     public function member()
     {
-        return $this->belongsTo(Member::class);
+        return $this->belongsTo(Member::class)->withTrashed();
     }
 
     public function book()
     {
-        return $this->belongsTo(Book::class);
+        return $this->belongsTo(Book::class)->withTrashed();
     }
 
     public function bookItem()
     {
-        return $this->belongsTo(BookItem::class);
+        return $this->belongsTo(BookItem::class)->withTrashed();
     }
 }

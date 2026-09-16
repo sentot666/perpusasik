@@ -72,6 +72,11 @@ class Book extends Model
         return $this->authors()->wherePivot('order', 1)->first()?->name;
     }
 
+    public function isDigital(): bool
+    {
+        return !empty($this->digital_file_path);
+    }
+
     // ── Scopes ────────────────────────────────────────────────────────────────
 
     public function scopeSearch($query, string $term)

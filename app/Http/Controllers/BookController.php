@@ -237,7 +237,7 @@ class BookController extends Controller
 
     public function printBarcode(Request $request, Book $book)
     {
-        $allItems = $book->items()->get();
+        $allItems = $book->items()->orderBy('id')->get();
         $copyNumbers = [];
         foreach ($allItems as $index => $itm) {
             $copyNumbers[$itm->id] = $index + 1;
@@ -250,7 +250,7 @@ class BookController extends Controller
             $query->whereIn('id', $itemsInput);
         }
         
-        $items = $query->get();
+        $items = $query->orderBy('id')->get();
         return view('books.barcode', compact('book', 'items', 'copyNumbers'));
     }
 }

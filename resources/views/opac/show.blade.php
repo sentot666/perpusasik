@@ -1,6 +1,7 @@
 @extends('layouts.opac')
 
 @section('title', $book->title . ' - OPAC Detail')
+@section('no_footer', true)
 
 @push('styles')
 <style>

@@ -1,172 +1,184 @@
-@extends('layouts.app')
+@extends('layouts.member')
 
-@section('title', __('Katalog Buku'))
+@section('title', 'Katalog Buku')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-800">Katalog Buku</h1>
-            <p class="text-sm text-slate-500 mt-1">Cari dan temukan buku favorit Anda.</p>
+<div class="space-y-6 pb-8">
+
+    {{-- Search & Header --}}
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
+        <div class="max-w-2xl mb-4">
+            <h1 class="text-xl font-bold text-slate-800 tracking-tight">
+                Katalog Buku Perpustakaan
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                Cari dan temukan koleksi buku cetak maupun buku digital sekolah.
+            </p>
         </div>
+
+        {{-- Search Form --}}
+        <form action="{{ route('member.catalog') }}" method="GET" class="flex flex-col sm:flex-row gap-2">
+            @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
+            @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
+
+            <div class="relative flex-1">
+                <span class="absolute inset-y-0 left-3.5 flex items-center text-slate-400">
+                    <i class="bi bi-search text-sm"></i>
+                </span>
+                <input type="text" 
+                       name="q" 
+                       value="{{ request('q') }}"
+                       placeholder="Cari berdasarkan judul buku, nama pengarang, atau ISBN..." 
+                       class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors">
+            </div>
+
+            <button type="submit" 
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-colors cursor-pointer flex-shrink-0">
+                Cari
+            </button>
+
+            @if(request('q') || request('category'))
+                <a href="{{ route('member.catalog') }}" 
+                   class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold flex items-center justify-center transition-colors no-underline flex-shrink-0">
+                    Reset Filter
+                </a>
+            @endif
+        </form>
     </div>
 
-    {{-- Search Bar --}}
-    <form action="{{ route('member.catalog') }}" method="GET" class="w-full shadow-sm rounded-xl overflow-hidden flex bg-white border border-slate-200 p-1">
-        <span class="flex items-center px-4 bg-white text-slate-400"><i class="bi bi-search text-xl"></i></span>
-        <input type="text" name="q" class="w-full border-0 focus:ring-0 text-slate-700 py-3 px-2 text-base outline-none" placeholder="{{ __('Ketik judul buku, pengarang, penerbit...') }}" value="{{ request('q') }}">
-        <button type="submit" class="btn-gradient-blue text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap">{{ __('Cari') }}</button>
-    </form>
+    {{-- Category Filter Pills --}}
+    @if($categories->isNotEmpty())
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <a href="{{ route('member.catalog', array_filter(['q' => request('q'), 'sort' => request('sort')])) }}" 
+               class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors no-underline {{ !request('category') ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' }}">
+                Semua Kategori
+            </a>
 
-    <div class="flex flex-wrap -mx-4 mt-6">
-        {{-- Left side: Filters --}}
-        <div class="w-full lg:w-1/4 px-4">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 font-bold text-slate-800 flex items-center">
-                    <i class="bi bi-funnel mr-2 text-indigo-500"></i> {{ __('Filter Pencarian') }}
-                </div>
-                <div class="p-6">
-                    <form action="{{ route('member.catalog') }}" method="GET" id="filterForm">
-                        @if(request('q'))
-                        <input type="hidden" name="q" value="{{ request('q') }}">
-                        @endif
+            @foreach($categories as $cat)
+                @php $isSelected = request('category') === $cat; @endphp
+                <a href="{{ route('member.catalog', array_filter(['category' => $cat, 'q' => request('q'), 'sort' => request('sort')])) }}" 
+                   class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors no-underline {{ $isSelected ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' }}">
+                    {{ $cat }}
+                </a>
+            @endforeach
+        </div>
+    @endif
 
-                        <div class="mb-5">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{{ __('Kategori') }}</label>
-                            <select name="category" class="w-full rounded-lg border-slate-300 py-2.5 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border bg-white" onchange="this.form.submit()">
-                                <option value="">{{ __('Semua Kategori') }}</option>
-                                @foreach($categories as $category)
-                                <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>{{ $category }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-6">
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{{ __('Urutkan') }}</label>
-                            <select name="sort" class="w-full rounded-lg border-slate-300 py-2.5 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none border bg-white" onchange="this.form.submit()">
-                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('Terbaru') }}</option>
-                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>{{ __('Terlama') }}</option>
-                                <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>{{ __('Judul (A-Z)') }}</option>
-                                <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>{{ __('Judul (Z-A)') }}</option>
-                            </select>
-                        </div>
-
-                        <a href="{{ route('member.catalog') }}" class="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">
-                            <i class="bi bi-arrow-counterclockwise"></i> {{ __('Reset Filter') }}
-                        </a>
-                    </form>
-                </div>
-            </div>
+    {{-- Filter Meta & Sorter --}}
+    <div class="flex items-center justify-between text-xs text-slate-500 px-1">
+        <div>
+            Menampilkan <strong class="text-slate-800 font-bold">{{ $books->total() }}</strong> buku
+            @if(request('q')) untuk pencarian <span class="font-bold text-slate-800">"{{ request('q') }}"</span> @endif
         </div>
 
-        {{-- Right side: Book grid --}}
-        <div class="w-full lg:w-3/4 px-4">
-            @if(request('q') || request('category'))
-                <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl px-5 py-3 mb-6 flex justify-between items-center">
-                    <div class="text-sm text-slate-600">
-                        {{ __('Menampilkan hasil untuk:') }}
-                        @if(request('q')) <strong class="text-slate-800">"{{ request('q') }}"</strong> @endif
-                        @if(request('category')) <span class="ml-1 inline-flex py-0.5 px-2 text-xs font-semibold rounded-md bg-white text-indigo-600 border border-indigo-200">{{ request('category') }}</span> @endif
-                    </div>
-                    <span class="text-sm font-medium text-slate-500">{{ $books->total() }} {{ __('buku ditemukan') }}</span>
-                </div>
-            @endif
+        <form action="{{ route('member.catalog') }}" method="GET" class="flex items-center gap-2">
+            @if(request('q')) <input type="hidden" name="q" value="{{ request('q') }}"> @endif
+            @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
+            
+            <label for="sortSelect" class="text-slate-400 hidden sm:inline">Urutkan:</label>
+            <select id="sortSelect" 
+                    name="sort" 
+                    onchange="this.form.submit()" 
+                    class="bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg px-2.5 py-1.5 outline-none focus:border-indigo-500 cursor-pointer">
+                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
+                <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Judul (A - Z)</option>
+                <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Judul (Z - A)</option>
+                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+            </select>
+        </form>
+    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                @forelse($books as $book)
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-200/60 overflow-hidden group flex flex-col h-full">
-                    
-                    <!-- Cover -->
-                    <div class="aspect-[3/4] bg-slate-100 relative overflow-hidden flex items-center justify-center border-b border-slate-100">
-                        @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
-                            <img src="{{ asset('storage/' . $book->cover_image) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        @else
-                            @php
-                                $colors = ['from-blue-500 to-indigo-600', 'from-emerald-400 to-teal-600', 'from-orange-400 to-red-500', 'from-purple-500 to-pink-600', 'from-cyan-500 to-blue-600'];
-                                $gradient = $colors[crc32($book->title) % count($colors)];
-                                $words = explode(' ', $book->title);
-                                $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
-                            @endphp
-                            <div class="w-full h-full bg-gradient-to-br {{ $gradient }} flex flex-col items-center justify-center text-white p-4 text-center group-hover:scale-105 transition-transform duration-500">
-                                <span class="text-6xl font-bold opacity-90 drop-shadow-md mb-2">{{ $initials }}</span>
-                            </div>
-                        @endif
-                        
-                        <!-- Category Badge overlay -->
-                        @if($book->collection_type)
-                        <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-[10px] font-bold text-slate-700 shadow-sm uppercase tracking-wide">
-                            {{ $book->collection_type }}
-                        </div>
-                        @endif
-                    </div>
-
-                    <!-- Content -->
-                    <div class="p-5 flex flex-col flex-grow">
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight mb-1 line-clamp-2">
-                            {{ $book->title }}
-                        </h3>
-                        <p class="text-sm text-slate-500 mb-2">{{ $book->main_author ?? 'Pengarang Tidak Diketahui' }}</p>
-                        
-                        <!-- Static Stars -->
-                        <div class="flex text-amber-400 text-xs mb-4 gap-0.5">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                        </div>
-                        
-                        <!-- Spacer to push footer down -->
-                        <div class="mt-auto"></div>
-                        
-                        <!-- Stock Info -->
-                        <div class="mb-4">
-                            @if($book->available_items_count > 0)
-                                <div class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                    Tersedia {{ $book->available_items_count }}
-                                </div>
-                            @elseif(isset($book->items_count) && $book->items_count == 0)
-                                <div class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-                                    Stok Kosong
-                                </div>
+    {{-- Book Grid / Empty --}}
+    @if($books->isEmpty())
+        <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center max-w-md mx-auto">
+            <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center text-xl mx-auto mb-2">
+                <i class="bi bi-search"></i>
+            </div>
+            <h3 class="font-bold text-slate-700 text-sm">Buku Tidak Ditemukan</h3>
+            <p class="text-xs text-slate-400 mt-1 mb-4">Coba cari dengan kata kunci yang lebih umum atau periksa ejaan.</p>
+            <a href="{{ route('member.catalog') }}" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors no-underline">
+                Lihat Semua Koleksi
+            </a>
+        </div>
+    @else
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            @foreach($books as $book)
+                @php
+                    $isDigital = $book->isDigital();
+                    $available = $book->available_items_count > 0;
+                @endphp
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between hover:border-indigo-300 hover:shadow-sm transition-all group">
+                    <div>
+                        {{-- Cover Image --}}
+                        <a href="{{ route('member.catalog.show', $book) }}" class="block aspect-[3/4] bg-slate-100 relative overflow-hidden border-b border-slate-100">
+                            @if($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image))
+                                <img src="{{ asset('storage/' . $book->cover_image) }}" alt="{{ $book->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             @else
-                                <div class="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-md">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                                    Dipinjam Semua
+                                <div class="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400 text-xs font-bold p-2 text-center">
+                                    {{ strtoupper(substr($book->title, 0, 2)) }}
                                 </div>
                             @endif
-                        </div>
 
-                        <!-- Action Buttons -->
-                        <div class="flex gap-2 w-full mt-2">
-                            <a href="{{ route('member.catalog.show', $book) }}" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-lg transition-colors text-center border border-slate-200/50">
-                                Detail
+                            @if($isDigital)
+                                <span class="absolute top-2 left-2 bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+                                    E-Book
+                                </span>
+                            @endif
+                        </a>
+
+                        {{-- Info --}}
+                        <div class="p-3">
+                            <a href="{{ route('member.catalog.show', $book) }}" class="block no-underline">
+                                <h3 class="font-bold text-xs text-slate-800 line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors mb-1">
+                                    {{ $book->title }}
+                                </h3>
                             </a>
-                            <button type="button" class="flex-1 btn-gradient-blue text-white text-xs font-bold py-2.5 rounded-lg transition-colors text-center shadow-sm" onclick="alert('Silakan lihat detail buku untuk meminjam.')">
-                                Pinjam
-                            </button>
+                            <p class="text-[11px] text-slate-400 line-clamp-1">
+                                {{ $book->main_author ?? '-' }}
+                            </p>
+
+                            <div class="mt-2">
+                                @if($available)
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                                        <span>Tersedia ({{ $book->available_items_count }})</span>
+                                    </span>
+                                @elseif($isDigital)
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
+                                        <span>Baca Digital</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                                        <span>Dipinjam</span>
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-                @empty
-                <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-slate-200 border-dashed">
-                    <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                        <i class="bi bi-search"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-700 mb-1">Buku Tidak Ditemukan</h3>
-                    <p class="text-slate-500">Coba gunakan kata kunci atau filter pencarian yang lain.</p>
-                </div>
-                @endforelse
-            </div>
 
-            @if($books->hasPages())
-            <div class="mt-8">
+                    {{-- Action --}}
+                    <div class="p-3 pt-0 flex gap-1.5">
+                        <a href="{{ route('member.catalog.show', $book) }}" 
+                           class="flex-1 py-1.5 text-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition-colors no-underline">
+                            Detail
+                        </a>
+                        @if($isDigital)
+                            <a href="{{ route('opac.read', $book) }}" target="_blank" 
+                               class="py-1.5 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] transition-colors no-underline" 
+                               title="Baca E-Book">
+                                <i class="bi bi-book"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        @if($books->hasPages())
+            <div class="mt-6 flex justify-center">
                 {{ $books->links() }}
             </div>
-            @endif
-        </div>
-    </div>
+        @endif
+    @endif
+
 </div>
 @endsection

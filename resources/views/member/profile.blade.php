@@ -1,118 +1,196 @@
-@extends('layouts.app')
+@extends('layouts.member')
 
-@section('title', __('Profil & Kartu Anggota'))
+@section('title', 'Kartu Anggota & Profil')
+
+@push('styles')
+<style>
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #printableCard, #printableCard * {
+        visibility: visible;
+    }
+    #printableCard {
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        transform: translateX(-50%);
+        width: 360px !important;
+        border: 1px solid #94a3b8 !important;
+        box-shadow: none !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+</style>
+@endpush
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+<div class="space-y-6 pb-8">
+
+    {{-- Header --}}
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800">Profil & Kartu Anggota</h1>
-            <p class="text-sm text-slate-500 mt-1">Data diri dan kartu keanggotaan digital Anda.</p>
+            <h1 class="text-xl font-bold text-slate-800 tracking-tight">
+                Kartu Anggota & Profil Siswa
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                Kartu identitas perpustakaan digital dan informasi data diri siswa.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2 flex-shrink-0">
+            <button onclick="window.print()" 
+                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer">
+                <i class="bi bi-printer"></i>
+                <span>Cetak Kartu</span>
+            </button>
+            <a href="{{ route('member.profile.edit') }}" 
+               class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-colors no-underline">
+                <i class="bi bi-pencil"></i>
+                <span>Edit Profil</span>
+            </a>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Kartu Anggota Digital -->
-        <div class="lg:col-span-1">
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-xl overflow-hidden relative">
-                <!-- Decorative Elements -->
-                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 rounded-full bg-white opacity-5"></div>
-                <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-40 h-40 rounded-full bg-white opacity-5"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        {{-- LEFT: Clean Student Library Card --}}
+        <div class="lg:col-span-5 flex flex-col items-center">
+            <div id="printableCard" class="w-full max-w-sm bg-slate-900 text-white rounded-2xl p-5 shadow-sm border border-slate-800 relative">
                 
-                <div class="p-6 relative pb-16 min-h-[210px]">
-                    <div class="flex justify-between items-start mb-4 border-b border-white/10 pb-3">
+                {{-- Card Header --}}
+                <div class="flex items-center justify-between border-b border-slate-700/80 pb-3 mb-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white text-sm">
+                            <i class="bi bi-book"></i>
+                        </div>
                         <div>
-                            <h3 class="text-white font-bold text-base tracking-wide uppercase">{{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</h3>
-                            <p class="text-slate-400 text-xs">Kartu Anggota Digital</p>
-                        </div>
-                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white backdrop-blur-sm border border-white/20">
-                            <i class="bi bi-person-badge text-lg"></i>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2 text-xs pr-32">
-                        <div class="flex">
-                            <span class="w-28 text-slate-400 font-semibold shrink-0">ID Anggota</span>
-                            <span class="text-white font-mono font-bold truncate">: {{ $member->member_code }}</span>
-                        </div>
-                        <div class="flex">
-                            <span class="w-28 text-slate-400 font-semibold shrink-0">Nama</span>
-                            <span class="text-white font-semibold uppercase truncate">: {{ $member->name }}</span>
-                        </div>
-                        <div class="flex">
-                            <span class="w-28 text-slate-400 font-semibold shrink-0">Nomor Identitas</span>
-                            <span class="text-white truncate">: {{ $member->identity_number ?? '-' }}</span>
-                        </div>
-                        <div class="flex items-start">
-                            <span class="w-28 text-slate-400 font-semibold shrink-0">Alamat</span>
-                            <span class="text-white flex-1 pr-32 leading-snug break-words text-xs">: {{ $member->address ?? '-' }}</span>
+                            <h2 class="font-bold text-xs text-white leading-tight uppercase tracking-wide">
+                                {{ \App\Models\Setting::get('library_name', 'Perpustakaan') }}
+                            </h2>
+                            <p class="text-[10px] text-slate-400">Kartu Anggota Perpustakaan</p>
                         </div>
                     </div>
+                    <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Aktif
+                    </span>
+                </div>
 
-                    <!-- Barcode Container at absolute bottom right -->
-                    <div class="absolute bottom-4 right-5 bg-white p-2 rounded-lg shadow-md text-right">
-                        <img src="data:image/png;base64,{{ $barcodeBase64 }}" alt="Barcode {{ $member->barcode }}" class="h-9 w-28 object-contain rounded">
-                        <div class="text-center font-mono text-[9px] mt-0.5 text-slate-800 tracking-wider font-semibold">{{ $member->member_code }}</div>
+                {{-- Card Body --}}
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-18 h-22 rounded-xl overflow-hidden bg-slate-800 border border-slate-700 flex-shrink-0 flex items-center justify-center">
+                        @if($member->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($member->photo))
+                            <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->name }}" class="w-full h-full object-cover">
+                        @else
+                            <span class="font-bold text-lg text-slate-400">
+                                {{ strtoupper(substr($member->name, 0, 1)) }}
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="min-w-0 flex-1 space-y-1 text-xs">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">Nama Siswa:</span>
+                            <p class="font-bold text-white text-sm leading-tight truncate uppercase">{{ $member->name }}</p>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">Nomor Induk (NIS):</span>
+                            <p class="font-mono font-bold text-indigo-300">{{ $member->member_code }}</p>
+                        </div>
+                        <div class="text-[11px] text-slate-400">
+                            JK: <strong class="text-slate-200">{{ $member->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</strong>
+                        </div>
                     </div>
                 </div>
+
+                {{-- Barcode --}}
+                <div class="bg-white rounded-xl p-2.5 flex flex-col items-center justify-center">
+                    @if($barcodeBase64)
+                        <img src="data:image/png;base64,{{ $barcodeBase64 }}" alt="Barcode" class="h-9 w-full max-w-[220px] object-contain">
+                    @endif
+                    <span class="font-mono text-[10px] text-slate-700 font-bold tracking-widest mt-1">
+                        {{ $member->member_code }}
+                    </span>
+                </div>
+
             </div>
-            
-            <div class="mt-4 text-sm text-slate-500 text-center">
-                <i class="bi bi-info-circle mr-1"></i> Tunjukkan kartu digital ini kepada petugas saat meminjam buku.
-            </div>
+
+            <p class="text-[11px] text-slate-400 text-center mt-3 no-print">
+                Tunjukkan barcode kartu ini kepada petugas saat meminjam buku.
+            </p>
         </div>
 
-        <!-- Profil Details -->
-        <div class="lg:col-span-2">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                    <h2 class="text-lg font-bold text-slate-800">Detail Informasi</h2>
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium {{ $member->status_badge_class === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+        {{-- RIGHT: Clean Profile Information --}}
+        <div class="lg:col-span-7 no-print">
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-slate-800 text-sm">Informasi Data Diri</h3>
+                    <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
                         {{ $member->status_label }}
                     </span>
                 </div>
-                
-                <div class="p-6">
-                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6">
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500">Nama Lengkap</dt>
-                            <dd class="mt-1 text-sm text-slate-900 font-medium">{{ $member->name }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500">Nomor Telepon</dt>
-                            <dd class="mt-1 text-sm text-slate-900">{{ $member->phone ?? '-' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500">Email</dt>
-                            <dd class="mt-1 text-sm text-slate-900">{{ $member->email ?? '-' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500">Jenis Kelamin</dt>
-                            <dd class="mt-1 text-sm text-slate-900">{{ $member->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500">Alamat</dt>
-                            <dd class="mt-1 text-sm text-slate-900">{{ $member->address ?? '-' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500">Tanggal Daftar</dt>
-                            <dd class="mt-1 text-sm text-slate-900">{{ $member->register_date ? $member->register_date->format('d F Y') : '-' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-slate-500">Berlaku Hingga</dt>
-                            <dd class="mt-1 text-sm text-slate-900">{{ $member->expired_date ? $member->expired_date->format('d F Y') : '-' }}</dd>
-                        </div>
-                    </dl>
-                    
-                    <div class="mt-8 border-t border-slate-100 pt-6">
-                        <h3 class="text-sm font-bold text-slate-800 mb-4">Pengaturan Akun</h3>
-                        <a href="{{ route('profile.edit') }}" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors py-2 px-4">
-                            <i class="bi bi-key mr-2"></i> Ubah Password
-                        </a>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Nama Lengkap</span>
+                        <p class="font-semibold text-slate-800">{{ $member->name }}</p>
                     </div>
+
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Nomor Anggota (NIS)</span>
+                        <p class="font-mono font-semibold text-slate-800">{{ $member->member_code }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Nomor Identitas (NIK/NISN)</span>
+                        <p class="font-medium text-slate-700">{{ $member->identity_number ?? '-' }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Jenis Kelamin</span>
+                        <p class="font-medium text-slate-700">{{ $member->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">No. Telepon / WA</span>
+                        <p class="font-medium text-slate-700">{{ $member->phone ?? '-' }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Alamat Email</span>
+                        <p class="font-medium text-slate-700">{{ $member->email ?? '-' }}</p>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <span class="text-slate-400 block mb-0.5">Alamat Rumah</span>
+                        <p class="font-medium text-slate-700">{{ $member->address ?? '-' }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Tanggal Terdaftar</span>
+                        <p class="font-medium text-slate-700">{{ $member->register_date ? $member->register_date->format('d F Y') : '-' }}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-slate-400 block mb-0.5">Masa Berlaku Kartu</span>
+                        <p class="font-medium text-slate-700">{{ $member->expired_date ? $member->expired_date->format('d F Y') : '-' }}</p>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 flex gap-2">
+                    <a href="{{ route('member.profile.edit') }}" 
+                       class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors no-underline">
+                        <i class="bi bi-pencil"></i>
+                        <span>Ubah Kontak & Password</span>
+                    </a>
                 </div>
             </div>
         </div>
+
     </div>
+
 </div>
 @endsection

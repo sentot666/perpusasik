@@ -35,13 +35,7 @@ Route::get('/opac/autocomplete', [OpacController::class, 'autocomplete'])->name(
 Route::get('/opac/agenda', [OpacController::class, 'agenda'])->name('opac.agenda');
 Route::get('/opac/buku/{book}', [OpacController::class, 'show'])->name('opac.show');
 Route::get('/opac/buku/{book}/read', [OpacController::class, 'read'])->name('opac.read');
-Route::get('/opac/program-kerja', [OpacController::class, 'programKerja'])->name('opac.program-kerja');
-Route::get('/opac/sejarah', [OpacController::class, 'sejarah'])->name('opac.sejarah');
-Route::get('/opac/visi-misi', [OpacController::class, 'visiMisi'])->name('opac.visi-misi');
-Route::get('/opac/struktur-organisasi', [OpacController::class, 'strukturOrganisasi'])->name('opac.struktur-organisasi');
-Route::get('/opac/pustakawan', [OpacController::class, 'pustakawan'])->name('opac.pustakawan');
-Route::get('/opac/tata-tertib', [OpacController::class, 'tataTertib'])->name('opac.tata-tertib');
-Route::get('/opac/jam-layanan', [OpacController::class, 'jamLayanan'])->name('opac.jam-layanan');
+Route::get('/opac/halaman/{slug}', [OpacController::class, 'showPage'])->name('opac.page');
 Route::get('/opac/jadwal-kunjungan/{level}', [OpacController::class, 'jadwalKunjungan'])->name('opac.jadwal-kunjungan');
 
 // ── Buku Tamu Mandiri (public) ────────────────────────────────────────────────

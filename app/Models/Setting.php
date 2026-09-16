@@ -13,8 +13,10 @@ class Setting extends Model
      */
     public static function get(string $key, mixed $default = null): mixed
     {
-        $setting = static::where('key', $key)->first();
-        return $setting ? $setting->value : $default;
+        return \Illuminate\Support\Facades\Cache::rememberForever("setting_{$key}", function () use ($key, $default) {
+            $setting = static::where('key', $key)->first();
+            return $setting ? $setting->value : $default;
+        });
     }
 
     /**
@@ -26,5 +28,6 @@ class Setting extends Model
             ['key' => $key],
             ['value' => $value]
         );
+        \Illuminate\Support\Facades\Cache::forget("setting_{$key}");
     }
 }
