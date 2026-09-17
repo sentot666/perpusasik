@@ -256,6 +256,11 @@
             <span class="sidebar-text truncate">{{ __('Agenda Perpustakaan') }}</span>
             <span class="sidebar-tooltip">{{ __('Agenda Perpustakaan') }}</span>
         </a>
+        <a href="{{ route('class-visits.index') }}" class="{{ request()->routeIs('class-visits.*') ? $navLinkActive : $navLink }}" title="{{ __('Jadwal Kunjungan') }}">
+            <i class="bi bi-calendar-check text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
+            <span class="sidebar-text truncate">{{ __('Jadwal Kunjungan') }}</span>
+            <span class="sidebar-tooltip">{{ __('Jadwal Kunjungan') }}</span>
+        </a>
         <a href="{{ route('pages.index') }}" class="{{ request()->routeIs('pages.*') ? $navLinkActive : $navLink }}" title="{{ __('Manajemen Halaman') }}">
             <i class="bi bi-file-earmark-richtext text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
             <span class="sidebar-text truncate">{{ __('Manajemen Halaman') }}</span>

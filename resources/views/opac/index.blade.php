@@ -84,7 +84,7 @@
     <div class="particles-bg"></div>
     <div class="mask-a"></div>
 
-    <div class="hero-content max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-8">
+    <div class="hero-content w-full px-6 sm:px-8 lg:px-12 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-8">
         
         {{-- Left: Text & Search --}}
         <div class="w-full lg:w-1/2 text-center lg:text-left">
@@ -140,7 +140,7 @@
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto sm:px-6 lg:px-8 px-6 -mt-10 relative z-20">
+<div class="w-full px-6 sm:px-8 lg:px-12 -mt-10 relative z-20">
 
     {{-- Section: Inovasi / Layanan Cepat --}}
     <div id="layanan" class="text-center mb-12 scroll-mt-[140px]">

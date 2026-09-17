@@ -11,12 +11,27 @@ class ClassVisitController extends Controller
     {
         $query = ClassVisit::query();
 
-        if ($request->has('level') && $request->level != '') {
+        if ($request->filled('level')) {
             $query->where('level', $request->level);
         }
 
-        $visits = $query->orderBy('level')->orderBy('day')->orderBy('time')->paginate(15);
-        return view('class_visits.index', compact('visits'));
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('class_name', 'like', "%{$search}%")
+                  ->orWhere('teacher_name', 'like', "%{$search}%")
+                  ->orWhere('day', 'like', "%{$search}%");
+            });
+        }
+
+        $visits = $query->orderBy('level')->orderBy('day')->orderBy('time')->paginate(15)->withQueryString();
+
+        $totalVisits = ClassVisit::count();
+        $sdCount = ClassVisit::where('level', 'sd')->count();
+        $smpCount = ClassVisit::where('level', 'smp')->count();
+        $smaCount = ClassVisit::where('level', 'sma')->count();
+
+        return view('class_visits.index', compact('visits', 'totalVisits', 'sdCount', 'smpCount', 'smaCount'));
     }
 
     public function create()
