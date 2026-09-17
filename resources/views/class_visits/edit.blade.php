@@ -12,17 +12,12 @@
 @section('content')
 <div class="page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1 flex items-center gap-2.5">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl flex-shrink-0">
-                <i class="bi bi-pencil-square"></i>
-            </div>
-            <span>{{ __('Edit Jadwal Kunjungan') }}</span>
-        </h1>
-        <p class="text-slate-500 text-xs sm:text-sm">{{ __('Perbarui informasi rutinitas kunjungan kelas perpustakaan.') }}</p>
+        <h1 class="text-2xl font-bold text-slate-800 mb-1">{{ __('Edit Jadwal Kunjungan') }}</h1>
+        <p class="text-slate-500 text-xs sm:text-sm">{{ __('Perbarui informasi rutinitas kunjungan kelas perpustakaan') }}</p>
     </div>
     <div>
         <a href="{{ route('class-visits.index') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg border border-slate-300 text-slate-700 bg-white hover:bg-slate-50 shadow-sm gap-2 py-2 px-4 transition-all">
-            <i class="bi bi-arrow-left"></i> {{ __('Kembali ke Daftar') }}
+            <i class="bi bi-arrow-left"></i> {{ __('Kembali') }}
         </a>
     </div>
 </div>
