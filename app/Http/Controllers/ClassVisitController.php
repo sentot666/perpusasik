@@ -26,10 +26,17 @@ class ClassVisitController extends Controller
 
         $visits = $query->orderBy('level')->orderBy('day')->orderBy('time')->paginate(15)->withQueryString();
 
-        $totalVisits = ClassVisit::count();
-        $sdCount = ClassVisit::where('level', 'sd')->count();
-        $smpCount = ClassVisit::where('level', 'smp')->count();
-        $smaCount = ClassVisit::where('level', 'sma')->count();
+        $counts = ClassVisit::selectRaw("
+            count(*) as total,
+            count(case when level = 'sd' then 1 end) as sd,
+            count(case when level = 'smp' then 1 end) as smp,
+            count(case when level = 'sma' then 1 end) as sma
+        ")->first();
+
+        $totalVisits = $counts->total ?? 0;
+        $sdCount = $counts->sd ?? 0;
+        $smpCount = $counts->smp ?? 0;
+        $smaCount = $counts->sma ?? 0;
 
         return view('class_visits.index', compact('visits', 'totalVisits', 'sdCount', 'smpCount', 'smaCount'));
     }
