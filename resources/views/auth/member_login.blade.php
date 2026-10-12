@@ -2,78 +2,83 @@
 @section('title', 'Masuk Portal Siswa')
 
 @section('content')
-<div class="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col md:flex-row min-h-[520px]">
+<div class="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl border border-[#dee3e9] overflow-hidden flex flex-col md:flex-row min-h-[520px]">
     
-    {{-- Left side: School & Portal Branding --}}
-    <div class="w-full md:w-5/12 bg-slate-900 text-white p-8 sm:p-10 flex flex-col justify-between hidden md:flex">
-        <div>
+    {{-- Left side: Meta Dark Brand Showcase (Hidden on mobile) --}}
+    <div class="w-full md:w-5/12 bg-[#0a1317] text-white p-8 sm:p-10 flex flex-col justify-between hidden md:flex border-r border-[#dee3e9]/20 relative overflow-hidden">
+        {{-- Subtle Blue Ambient Glow --}}
+        <div class="absolute -top-20 -left-20 w-72 h-72 bg-[#0064e0]/25 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-20 -right-20 w-72 h-72 bg-[#0457cb]/25 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10">
             <div class="flex items-center gap-3 mb-8">
-                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center p-1.5 border border-white/20 flex-shrink-0">
-                    <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-lg">
+                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 border border-[#dee3e9] flex-shrink-0 shadow-sm">
+                    <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-lg mix-blend-multiply">
                 </div>
                 <div class="min-w-0">
                     <h2 class="font-bold text-sm text-white leading-tight truncate">
                         {{ \App\Models\Setting::get('library_name', 'Perpustakaan') }}
                     </h2>
-                    <span class="text-xs text-indigo-400 font-semibold block mt-0.5">Portal Anggota Siswa</span>
+                    <span class="text-xs text-[#0091ff] font-bold block mt-0.5">Portal Anggota Siswa</span>
                 </div>
             </div>
 
-            <h3 class="text-2xl font-bold tracking-tight text-white mb-3">
+            <h3 class="text-2xl font-extrabold tracking-tight text-white mb-3 leading-snug">
                 Layanan Perpustakaan Digital Sekolah
             </h3>
-            <p class="text-xs text-slate-400 leading-relaxed">
-                Akses peminjaman buku, katalog cerita anak, riwayat membaca, dan koleksi e-book langsung dari gadget kamu.
+            <p class="text-xs text-[#ced0d4] leading-relaxed">
+                Akses peminjaman buku, katalog cerita, riwayat membaca, dan koleksi e-book langsung dari perangkatmu.
             </p>
         </div>
 
-        <div class="space-y-2 pt-6 border-t border-slate-800 text-xs text-slate-400">
+        <div class="space-y-2.5 pt-6 border-t border-white/10 text-xs text-[#ced0d4] relative z-10">
             <div class="flex items-center gap-2">
-                <i class="bi bi-check2 text-indigo-400"></i>
+                <i class="bi bi-check2 text-[#0091ff]"></i>
                 <span>Cari buku cetak & baca e-book sekolah</span>
             </div>
             <div class="flex items-center gap-2">
-                <i class="bi bi-check2 text-indigo-400"></i>
+                <i class="bi bi-check2 text-[#0091ff]"></i>
                 <span>Pesan buku untuk diambil saat istirahat</span>
             </div>
             <div class="flex items-center gap-2">
-                <i class="bi bi-check2 text-indigo-400"></i>
+                <i class="bi bi-check2 text-[#0091ff]"></i>
                 <span>Cek jadwal pengembalian buku dengan mudah</span>
             </div>
         </div>
     </div>
 
     {{-- Right side: Login Form --}}
-    <div class="w-full md:w-7/12 p-8 sm:p-12 flex flex-col justify-center bg-white">
+    <div class="w-full md:w-7/12 p-8 sm:p-12 flex flex-col justify-center bg-white relative z-10">
         
         {{-- Mobile Header --}}
-        <div class="md:hidden flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center p-1.5 flex-shrink-0">
+        <div class="md:hidden flex items-center gap-3 mb-6 pb-4 border-b border-[#dee3e9]">
+            <div class="w-10 h-10 rounded-xl bg-white border border-[#dee3e9] flex items-center justify-center p-1 flex-shrink-0 shadow-sm">
                 <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-lg">
             </div>
             <div>
-                <h2 class="font-bold text-sm text-slate-800">Portal Siswa</h2>
-                <p class="text-xs text-slate-400">Perpustakaan Santo Paulus</p>
+                <h2 class="font-bold text-sm text-[#0a1317]">Portal Siswa</h2>
+                <p class="text-xs text-[#5d6c7b]">{{ \App\Models\Setting::get('library_name', 'Perpustakaan') }}</p>
             </div>
         </div>
 
         <div class="mb-6">
-            <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mb-1">
+            <span class="text-xs font-bold text-[#0064e0] uppercase tracking-wider">Akses Siswa & Anggota</span>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-[#0a1317] tracking-tight mt-1 mb-1">
                 Masuk ke Portal Siswa
             </h1>
-            <p class="text-xs sm:text-sm text-slate-500">
+            <p class="text-xs text-[#5d6c7b]">
                 Masukkan NIS atau nama lengkap beserta kata sandimu.
             </p>
         </div>
 
         @if(session('status'))
-            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs mb-4">
+            <div class="p-3 rounded-xl bg-[#31a24c]/10 border border-[#31a24c]/30 text-[#31a24c] text-xs mb-4 font-semibold">
                 {{ session('status') }}
             </div>
         @endif
 
         @if(isset($errors) && $errors->any())
-            <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs mb-4">
+            <div class="p-3 rounded-xl bg-[#e41e3f]/10 border border-[#e41e3f]/30 text-[#e41e3f] text-xs mb-4 font-semibold">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -83,14 +88,14 @@
 
             {{-- Input NIS / Name --}}
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label class="block text-xs font-bold text-[#1c1e21] mb-1.5 uppercase tracking-wide">
                     NIS atau Nama Siswa
                 </label>
                 <div class="relative">
                     <input type="text"
                            name="login"
                            id="login"
-                           class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors"
+                           class="w-full px-3.5 py-2.5 bg-white border border-[#ced0d4] rounded-xl text-xs sm:text-sm font-medium text-[#1c1e21] placeholder:text-[#8595a4] focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 outline-none transition-all shadow-sm"
                            placeholder="Contoh: 26010001 atau nama lengkap"
                            value="{{ old('login') }}"
                            required
@@ -101,49 +106,51 @@
             {{-- Input Password --}}
             <div>
                 <div class="flex items-center justify-between mb-1.5">
-                    <label class="block text-xs font-semibold text-slate-700">
+                    <label class="block text-xs font-bold text-[#1c1e21] uppercase tracking-wide">
                         Kata Sandi (Password)
                     </label>
-                    <span class="text-[11px] text-slate-400">Format: YYYY-MM-DD</span>
+                    <span class="text-[11px] text-[#8595a4]">Format: YYYY-MM-DD</span>
                 </div>
                 <div class="relative flex items-center">
                     <input type="password"
                            name="password"
                            id="password"
-                           class="w-full px-3.5 py-2.5 pr-10 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors"
+                           class="w-full px-3.5 py-2.5 pr-10 bg-white border border-[#ced0d4] rounded-xl text-xs sm:text-sm font-medium text-[#1c1e21] placeholder:text-[#8595a4] focus:border-[#0064e0] focus:ring-2 focus:ring-[#0064e0]/20 outline-none transition-all shadow-sm"
                            placeholder="Contoh: 2012-08-17"
                            required>
                     <button type="button" 
-                            class="absolute right-3 text-slate-400 hover:text-slate-600 cursor-pointer" 
+                            class="absolute right-3 text-[#8595a4] hover:text-[#0064e0] cursor-pointer" 
                             id="togglePassword"
                             title="Tampilkan / Sembunyikan">
                         <i class="bi bi-eye text-sm" id="eyeIcon"></i>
                     </button>
                 </div>
-                <p class="text-[11px] text-slate-400 mt-1">
-                    Gunakan tanggal lahirmu sebagai kata sandi awal (contoh: <code>2012-08-17</code>).
+                <p class="text-[11px] text-[#8595a4] mt-1.5">
+                    Gunakan tanggal lahirmu sebagai kata sandi awal (contoh: <code class="bg-[#f1f4f7] px-1 py-0.5 rounded text-[#0a1317]">2012-08-17</code>).
                 </p>
             </div>
 
-            {{-- Submit Button --}}
+            {{-- Submit Button (Meta Cobalt Pill) --}}
             <div class="pt-2">
                 <button type="submit" 
-                        class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm rounded-xl transition-colors cursor-pointer" 
+                        class="w-full py-3.5 px-6 bg-[#0064e0] hover:bg-[#0457cb] active:bg-[#0344a1] text-white font-bold text-xs uppercase tracking-wider rounded-full shadow-md shadow-blue-500/20 transition-all cursor-pointer" 
                         id="loginBtn">
-                    Masuk ke Portal
+                    Masuk ke Portal Siswa
                 </button>
             </div>
         </form>
 
         {{-- Footer links --}}
-        <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between text-xs">
-            <a href="{{ route('opac.index') }}" class="text-slate-500 hover:text-slate-800 font-medium no-underline">
+        <div class="mt-6 pt-5 border-t border-[#dee3e9] flex items-center justify-between text-xs">
+            <a href="{{ route('opac.index') }}" class="text-[#5d6c7b] hover:text-[#0064e0] font-bold no-underline">
                 &larr; Beranda Utama
             </a>
-            <a href="{{ route('login') }}" class="text-slate-400 hover:text-slate-600 no-underline">
+            <a href="{{ route('login') }}" class="text-[#8595a4] hover:text-[#0a1317] no-underline">
                 Login Petugas
             </a>
         </div>
+    </div>
+</div>
     </div>
 </div>
 

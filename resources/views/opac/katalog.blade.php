@@ -39,76 +39,75 @@
 @section('content')
 @if($tab == 'home')
     {{-- Hero Section (Pusdiklat & UBSI Inspired, matching Beranda style) --}}
-    <div id="katalog-hero" class="pt-32 pb-36 md:pt-40 md:pb-44 relative">
-        <div class="katalog-particles-bg"></div>
-        <div class="katalog-mask-a"></div>
-
-        <div class="absolute -right-20 -top-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    {{-- Hero Section (Meta Hero Band Style) --}}
+    <div id="katalog-hero" class="pt-32 pb-36 md:pt-40 md:pb-44 relative bg-[#0a1317] text-white overflow-hidden">
+        {{-- Ambient Glows --}}
+        <div class="absolute -right-24 -top-24 w-96 h-96 bg-[#0064e0]/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-24 -bottom-24 w-96 h-96 bg-[#0457cb]/20 rounded-full blur-3xl pointer-events-none"></div>
         
         <div class="relative z-10 w-full px-6 sm:px-8 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
             
             {{-- Left: Text, Pill Search, and CTA Buttons --}}
-            <div class="w-full lg:w-7/12 text-left">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-indigo-300 text-xs font-bold uppercase tracking-wider mb-5 border border-white/15 shadow-sm">
-                    <i class="bi bi-mortarboard-fill text-indigo-400"></i> Katalog Digital Perpustakaan Sekolah
+            <div class="w-full lg:w-7/12 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider mb-5 border border-white/15 shadow-sm">
+                    <i class="bi bi-book-half text-[#0091ff]"></i> Katalog Digital Perpustakaan
                 </div>
 
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
-                    Jelajahi Dunia <br class="hidden sm:inline">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-sky-200 to-white">Pengetahuan Tanpa Batas</span>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.18] tracking-tight mb-4">
+                    Jelajahi Koleksi <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#0091ff] via-sky-200 to-white">Katalog Tanpa Batas</span>
                 </h1>
                 
-                <p class="text-slate-300 text-sm sm:text-base md:text-lg mb-8 leading-relaxed max-w-xl">
-                    Akses ribuan koleksi buku cetak, referensi belajar, dan e-book perpustakaan kapan saja dan di mana saja. Mudah, cepat, dan praktis.
+                <p class="text-[#ced0d4] text-sm sm:text-base md:text-lg mb-8 leading-relaxed max-w-xl">
+                    Akses ribuan koleksi buku cetak, referensi belajar, dan e-book perpustakaan kapan saja dan di mana saja.
                 </p>
 
-                {{-- Pill Search Bar (UBSI Signature Capsule) --}}
-                <form action="{{ route('opac.katalog') }}" method="GET" class="w-full max-w-xl mb-8 relative z-30" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
+                {{-- Pill Search Bar (Meta Signature Capsule) --}}
+                <form action="{{ route('opac.katalog') }}" method="GET" class="w-full max-w-xl mb-8 relative z-30 mx-auto lg:mx-0" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
                     <input type="hidden" name="tab" value="koleksi">
-                    <div class="bg-white rounded-full p-1.5 sm:p-2 flex items-center shadow-2xl border border-white/30 relative">
-                        <span class="pl-4 text-slate-400">
+                    <div class="bg-white rounded-full p-1.5 sm:p-2 flex items-center shadow-2xl border border-white/20 relative">
+                        <span class="pl-4 text-[#8595a4]">
                             <i class="bi bi-search text-base"></i>
                         </span>
-                        <input type="text" name="q" placeholder="Cari buku, penulis, topik, atau ISBN..." class="flex-1 min-w-[120px] px-3 sm:px-4 py-2 sm:py-3 text-slate-700 text-sm sm:text-base outline-none border-0 rounded-full placeholder:text-slate-400" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                        <input type="text" name="q" placeholder="Cari buku, penulis, topik, atau ISBN..." class="flex-1 min-w-[120px] px-3 sm:px-4 py-2 sm:py-2.5 text-[#1c1e21] text-sm outline-none border-0 rounded-full placeholder:text-[#8595a4]" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
                         
-                        <div class="relative flex items-center border-l border-slate-200 pl-2 pr-1 hidden sm:flex">
-                            <select name="search_by" class="px-3 py-2 bg-transparent text-slate-600 outline-none border-0 text-xs sm:text-sm font-semibold cursor-pointer appearance-none pr-6">
+                        <div class="relative flex items-center border-l border-[#dee3e9] pl-2 pr-1 hidden sm:flex">
+                            <select name="search_by" class="px-3 py-2 bg-transparent text-[#1c1e21] outline-none border-0 text-xs font-bold cursor-pointer appearance-none pr-6">
                                 <option value="title">Judul</option>
                                 <option value="author">Penulis</option>
                                 <option value="subject">Topik</option>
                             </select>
-                            <i class="bi bi-chevron-down text-[10px] text-slate-400 absolute right-2 pointer-events-none"></i>
+                            <i class="bi bi-chevron-down text-[10px] text-[#8595a4] absolute right-2 pointer-events-none"></i>
                         </div>
 
-                        <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-md flex-shrink-0" title="Cari Buku">
-                            <i class="bi bi-arrow-right text-lg sm:text-xl"></i>
+                        <button type="submit" x-ref="submitBtn" class="bg-[#0064e0] hover:bg-[#0457cb] text-white w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-md flex-shrink-0 cursor-pointer" title="Cari Buku">
+                            <i class="bi bi-arrow-right text-lg"></i>
                         </button>
                     </div>
 
                     {{-- Autocomplete Dropdown --}}
-                    <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
+                    <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-[#dee3e9] overflow-hidden z-[100]" style="display: none;">
                         <template x-for="item in suggestions" :key="item.text + item.type">
-                            <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-5 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group transition-colors">
+                            <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-5 py-3 hover:bg-[#f1f4f7] border-b border-[#dee3e9]/50 last:border-0 flex items-center justify-between group transition-colors cursor-pointer">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                    <div class="w-8 h-8 rounded-full bg-[#f1f4f7] text-[#0064e0] flex items-center justify-center group-hover:bg-[#0064e0] group-hover:text-white transition-colors">
                                         <i :class="'bi ' + item.icon"></i>
                                     </div>
-                                    <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                    <span class="text-[#1c1e21] font-semibold text-sm truncate" x-text="item.text"></span>
                                 </div>
-                                <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-600 flex-shrink-0 ml-2" x-text="item.type"></span>
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-[#8595a4] group-hover:text-[#0064e0] flex-shrink-0 ml-2" x-text="item.type"></span>
                             </button>
                         </template>
                     </div>
                 </form>
 
-                {{-- CTA Buttons (Pill Style) --}}
-                <div class="flex flex-wrap items-center gap-4">
-                    <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="bg-white text-indigo-700 hover:bg-indigo-50 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 text-sm sm:text-base flex items-center gap-2 no-underline">
-                        <i class="bi bi-grid-fill"></i> Lihat Koleksi
+                {{-- CTA Buttons (Meta Dual Pill System) --}}
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                    <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="bg-white text-[#0a1317] hover:bg-[#dee3e9] font-bold py-3 px-8 rounded-full shadow-lg transition-all text-sm flex items-center gap-2 no-underline hover:scale-[1.02]">
+                        <i class="bi bi-grid-fill"></i> Jelajahi Koleksi
                     </a>
-                    <a href="{{ route('opac.page', 'tata-tertib') }}" class="border-2 border-white/80 text-white hover:bg-white/10 font-bold py-3 px-8 rounded-full transition-all duration-200 transform hover:scale-105 text-sm sm:text-base flex items-center gap-2 no-underline backdrop-blur-md">
-                        <i class="bi bi-journal-text"></i> Panduan & Tata Tertib
+                    <a href="{{ route('opac.page', 'tata-tertib') }}" class="border-2 border-white/70 text-white hover:bg-white/10 hover:border-white font-bold py-3 px-8 rounded-full transition-all text-sm flex items-center gap-2 no-underline">
+                        <i class="bi bi-journal-text"></i> Tata Tertib
                     </a>
                 </div>
             </div>
@@ -196,18 +195,17 @@
         {{-- HOME TAB: Buku Populer & Buku Terbaru --}}
         
         {{-- Buku Populer (UBSI Signature Section) --}}
-        <div class="mb-20">
+        {{-- Buku Populer (Meta Showcase Section) --}}
+        <div class="mb-16">
             <div class="flex items-center justify-between mb-8 flex-row gap-4">
-                <div class="flex items-center">
-                    <div class="w-2 h-8 rounded-full bg-indigo-600 mr-3"></div>
-                    <div>
-                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 m-0 tracking-tight leading-none mb-1">
-                            Buku Populer
-                        </h2>
-                        <p class="text-xs sm:text-sm text-slate-500 m-0">Rekomendasi Wajib Baca Minggu Ini</p>
-                    </div>
+                <div>
+                    <span class="text-xs font-bold text-[#0064e0] uppercase tracking-wider">Rekomendasi</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0a1317] m-0 tracking-tight leading-none mt-1 mb-1">
+                        Buku Populer
+                    </h2>
+                    <p class="text-xs sm:text-sm text-[#5d6c7b] m-0">Koleksi buku dengan minat peminjaman tertinggi minggu ini.</p>
                 </div>
-                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-xs sm:text-sm font-bold text-indigo-600 px-4 py-2 border border-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all no-underline flex items-center gap-1.5 shadow-sm">
+                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-xs font-bold text-[#1c1e21] px-5 py-2 border border-[#ced0d4] rounded-full hover:bg-slate-100 transition-all no-underline flex items-center gap-1.5 shadow-sm">
                     <span>Lihat Semua</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -216,7 +214,7 @@
                 @forelse($popularBooks as $book)
                     @include('components.book-card', ['book' => $book])
                 @empty
-                    <div class="col-span-full text-center py-12 text-slate-400">
+                    <div class="col-span-full text-center py-12 text-[#8595a4]">
                         <i class="bi bi-journal-x text-4xl block mb-2 opacity-50"></i>
                         Belum ada data buku populer.
                     </div>
@@ -224,19 +222,17 @@
             </div>
         </div>
         
-        {{-- Buku Terbaru (UBSI Signature Section) --}}
+        {{-- Buku Terbaru (Meta Showcase Section) --}}
         <div class="mt-8 mb-16">
             <div class="flex items-center justify-between mb-8 flex-row gap-4">
-                <div class="flex items-center">
-                    <div class="w-2 h-8 rounded-full bg-indigo-600 mr-3"></div>
-                    <div>
-                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 m-0 tracking-tight leading-none mb-1">
-                            Buku Terbaru
-                        </h2>
-                        <p class="text-xs sm:text-sm text-slate-500 m-0">Jelajahi Judul-judul Paling Segar di Perpustakaan</p>
-                    </div>
+                <div>
+                    <span class="text-xs font-bold text-[#0064e0] uppercase tracking-wider">Terbaru</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0a1317] m-0 tracking-tight leading-none mt-1 mb-1">
+                        Buku Terbaru
+                    </h2>
+                    <p class="text-xs sm:text-sm text-[#5d6c7b] m-0">Jelajahi judul-judul paling segar di perpustakaan.</p>
                 </div>
-                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-xs sm:text-sm font-bold text-indigo-600 px-4 py-2 border border-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all no-underline flex items-center gap-1.5 shadow-sm">
+                <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-xs font-bold text-[#1c1e21] px-5 py-2 border border-[#ced0d4] rounded-full hover:bg-slate-100 transition-all no-underline flex items-center gap-1.5 shadow-sm">
                     <span>Lihat Semua</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -245,7 +241,7 @@
                 @forelse($newestBooks as $book)
                     @include('components.book-card', ['book' => $book])
                 @empty
-                    <div class="col-span-full text-center py-12 text-slate-400">
+                    <div class="col-span-full text-center py-12 text-[#8595a4]">
                         <i class="bi bi-journal-x text-4xl block mb-2 opacity-50"></i>
                         Belum ada data buku terbaru.
                     </div>
@@ -255,35 +251,35 @@
 
     @else
         {{-- KOLEKSI & DIGITAL TAB: Filter & Grid --}}
-        <div class="flex flex-col lg:flex-row gap-6 pt-4">
-            {{-- Left side: Kategori (Sidebar) --}}
+        <div class="flex flex-col lg:flex-row gap-8 pt-4">
+            {{-- Left side: Kategori (Sidebar Meta) --}}
             <div class="w-full lg:w-72 xl:w-80 flex-shrink-0 mb-6 lg:mb-0">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden sticky top-28" x-data="{ searchCategory: '' }">
-                    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <i class="bi bi-funnel text-indigo-600 text-lg"></i>
-                            <h3 class="font-bold text-slate-800 m-0 text-base tracking-tight">Kategori Subjek</h3>
+                <div class="bg-white rounded-3xl shadow-sm border border-[#dee3e9] overflow-hidden sticky top-28 p-2" x-data="{ searchCategory: '' }">
+                    <div class="px-4 py-3 border-b border-[#dee3e9] flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-funnel text-[#0064e0] text-base"></i>
+                            <h3 class="font-bold text-[#0a1317] m-0 text-sm tracking-tight">Kategori Subjek</h3>
                         </div>
                     </div>
-                    <div class="p-3.5 border-b border-slate-50 bg-slate-50/60">
+                    <div class="p-3 border-b border-[#dee3e9]/60">
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-[#8595a4]">
                                 <i class="bi bi-search text-xs"></i>
                             </span>
-                            <input type="text" x-model="searchCategory" placeholder="Cari Kategori..." class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors shadow-sm">
+                            <input type="text" x-model="searchCategory" placeholder="Cari Kategori..." class="w-full pl-9 pr-3 py-2 bg-[#f1f4f7] border border-transparent rounded-full text-xs focus:outline-none focus:border-[#0064e0] focus:bg-white transition-all">
                         </div>
                     </div>
-                    <div class="p-2.5 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                    <div class="p-2 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-1">
                         <a href="{{ route('opac.katalog', ['tab' => $tab, 'q' => request('q')]) }}" 
-                           class="block px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all mb-1 {{ !request('subject_id') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' }} no-underline">
+                           class="block px-4 py-2 rounded-full text-xs font-bold transition-all {{ !request('subject_id') ? 'bg-[#0a1317] text-white shadow-sm' : 'text-[#5d6c7b] hover:bg-[#f1f4f7] hover:text-[#0064e0]' }} no-underline">
                             Semua Kategori
                         </a>
                         
                         @foreach($categories as $category)
                         <a href="{{ route('opac.katalog', ['tab' => $tab, 'subject_id' => $category->id, 'q' => request('q')]) }}" 
                            x-show="searchCategory === '' || '{{ strtolower(addslashes($category->name)) }}'.includes(searchCategory.toLowerCase())"
-                           class="block px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all mb-1 flex items-center gap-2.5 no-underline {{ request('subject_id') == $category->id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' }}">
-                            <i class="bi bi-book text-xs {{ request('subject_id') == $category->id ? 'text-white/80' : 'text-slate-400' }}"></i>
+                           class="block px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 no-underline {{ request('subject_id') == $category->id ? 'bg-[#0a1317] text-white shadow-sm' : 'text-[#5d6c7b] hover:bg-[#f1f4f7] hover:text-[#0064e0]' }}">
+                            <i class="bi bi-book text-xs {{ request('subject_id') == $category->id ? 'text-white/80' : 'text-[#8595a4]' }}"></i>
                             <span class="truncate">{{ $category->name }}</span>
                         </a>
                         @endforeach
@@ -293,52 +289,52 @@
 
             {{-- Right side: Content & Grid --}}
             <div class="flex-1 min-w-0">
-                {{-- Search Bar --}}
+                {{-- Search Bar (Meta Pill Search) --}}
                 <div class="mb-6">
-                    <form action="{{ route('opac.katalog') }}" method="GET" class="w-full flex shadow-sm rounded-2xl overflow-visible bg-white border border-slate-200 p-1.5 relative items-center" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
+                    <form action="{{ route('opac.katalog') }}" method="GET" class="w-full flex shadow-sm rounded-full overflow-visible bg-white border border-[#dee3e9] p-1.5 relative items-center" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
                         <input type="hidden" name="tab" value="{{ $tab }}">
                         @if(request('subject_id'))
                         <input type="hidden" name="subject_id" value="{{ request('subject_id') }}">
                         @endif
 
-                        <span class="pl-4 text-slate-400">
+                        <span class="pl-4 text-[#8595a4]">
                             <i class="bi bi-search text-base"></i>
                         </span>
-                        <input type="text" name="q" placeholder="Cari buku, penulis, topik, ISBN..." class="w-full bg-transparent border-none py-2.5 px-3 text-slate-700 outline-none text-sm placeholder:text-slate-400" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                        <input type="text" name="q" placeholder="Cari buku, penulis, topik, ISBN..." class="w-full bg-transparent border-none py-2 px-3 text-[#1c1e21] outline-none text-sm placeholder:text-[#8595a4]" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
                         
                         {{-- Autocomplete Dropdown --}}
-                        <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
+                        <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-[#dee3e9] overflow-hidden z-[100]" style="display: none;">
                             <template x-for="item in suggestions" :key="item.text + item.type">
-                                <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 flex items-center justify-between group transition-colors">
+                                <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-5 py-3 hover:bg-[#f1f4f7] border-b border-[#dee3e9]/50 last:border-0 flex items-center justify-between group transition-colors cursor-pointer">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                        <div class="w-8 h-8 rounded-full bg-[#f1f4f7] text-[#0064e0] flex items-center justify-center group-hover:bg-[#0064e0] group-hover:text-white transition-colors">
                                             <i :class="'bi ' + item.icon"></i>
                                         </div>
-                                        <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                        <span class="text-[#1c1e21] font-semibold text-sm truncate" x-text="item.text"></span>
                                     </div>
-                                    <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-600 flex-shrink-0 ml-2" x-text="item.type"></span>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider text-[#8595a4] group-hover:text-[#0064e0] flex-shrink-0 ml-2" x-text="item.type"></span>
                                 </button>
                             </template>
                         </div>
 
-                        <div class="relative flex items-center border-l border-slate-200 pl-2 pr-1 hidden sm:flex">
-                            <select name="search_by" class="bg-transparent text-slate-600 outline-none border-0 text-xs sm:text-sm font-semibold cursor-pointer appearance-none pr-6">
+                        <div class="relative flex items-center border-l border-[#dee3e9] pl-2 pr-1 hidden sm:flex">
+                            <select name="search_by" class="bg-transparent text-[#1c1e21] outline-none border-0 text-xs font-bold cursor-pointer appearance-none pr-6">
                                 <option value="title" {{ request('search_by') == 'title' ? 'selected' : '' }}>Judul</option>
                                 <option value="author" {{ request('search_by') == 'author' ? 'selected' : '' }}>Penulis</option>
                                 <option value="subject" {{ request('search_by') == 'subject' ? 'selected' : '' }}>Topik</option>
                             </select>
-                            <i class="bi bi-chevron-down text-[10px] text-slate-400 absolute right-2 pointer-events-none"></i>
+                            <i class="bi bi-chevron-down text-[10px] text-[#8595a4] absolute right-2 pointer-events-none"></i>
                         </div>
-                        <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl transition-colors whitespace-nowrap ml-2 shadow-sm text-sm">{{ __('Cari') }}</button>
+                        <button type="submit" x-ref="submitBtn" class="bg-[#0064e0] hover:bg-[#0457cb] text-white font-bold py-2.5 px-6 rounded-full transition-colors whitespace-nowrap ml-2 shadow-sm text-xs uppercase tracking-wider cursor-pointer">{{ __('Cari') }}</button>
                     </form>
                 </div>
 
                 {{-- Hasil Filter Header --}}
                 <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <h2 class="text-slate-500 text-sm sm:text-base font-medium m-0">
-                        Hasil dari <span class="font-bold text-slate-800">"{{ $activeCategory ? $activeCategory->name : ($tab == 'digital' ? 'Semua Koleksi Digital' : 'Semua Buku') }}"</span>
+                    <h2 class="text-[#5d6c7b] text-sm sm:text-base font-medium m-0">
+                        Hasil dari <span class="font-bold text-[#0a1317]">"{{ $activeCategory ? $activeCategory->name : ($tab == 'digital' ? 'Semua Koleksi Digital' : 'Semua Buku') }}"</span>
                     </h2>
-                    <span class="text-indigo-600 text-xs bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full font-bold">
+                    <span class="text-[#0064e0] text-xs bg-[#0064e0]/10 border border-[#0064e0]/20 px-3.5 py-1 rounded-full font-bold">
                         {{ $books->count() }} {{ __('judul buku') }}
                     </span>
                 </div>

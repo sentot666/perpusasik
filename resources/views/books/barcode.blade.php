@@ -265,6 +265,10 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Kembali
             </a>
+            <button class="btn btn-secondary" onclick="saveAsDoc()" title="Simpan sebagai file Word (.doc)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                Simpan .DOC
+            </button>
             <button class="btn btn-primary" onclick="window.print()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
                 Cetak Label Barcode
@@ -372,6 +376,67 @@
             @endforelse
         </div>
     </div>
+
+    <script>
+    function saveAsDoc() {
+        var sheet = document.querySelector('.sheet');
+        if (!sheet) return;
+
+        // Collect all inline <style> from <head> to preserve label layout
+        var styles = '';
+        document.querySelectorAll('head style').forEach(function(s) {
+            styles += s.outerHTML;
+        });
+
+        // Collect any Google Fonts link tags
+        var links = '';
+        document.querySelectorAll('head link[href*="fonts.googleapis"]').forEach(function(l) {
+            links += l.outerHTML;
+        });
+
+        // Build a standalone HTML doc that Word can open
+        var html = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                  xmlns:w="urn:schemas-microsoft-com:office:word"
+                  xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+                <meta charset="UTF-8">
+                <!--[if gte mso 9]>
+                <xml>
+                    <w:WordDocument>
+                        <w:View>Print</w:View>
+                        <w:Zoom>100</w:Zoom>
+                        <w:DoNotOptimizeForBrowser/>
+                    </w:WordDocument>
+                </xml>
+                <![endif]-->
+                ${links}
+                ${styles}
+                <style>
+                    @page { size: A4 portrait; margin: 10mm; }
+                    .action-bar, .book-info-header { display: block !important; }
+                    body { background: #ffffff !important; padding: 0 !important; font-family: 'Inter', Arial, sans-serif; }
+                    .sheet { box-shadow: none !important; max-width: 100% !important; padding: 10px !important; }
+                    .label-grid { display: flex; flex-wrap: wrap; gap: 5mm; justify-content: center; }
+                </style>
+            </head>
+            <body>
+                ${sheet.outerHTML}
+            </body>
+            </html>
+        `;
+
+        var blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'Barcode_{{ Str::slug($book->title) }}.doc';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    </script>
 
 </body>
 </html>

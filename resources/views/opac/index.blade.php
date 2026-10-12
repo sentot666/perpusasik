@@ -79,249 +79,279 @@
 
 @section('content')
 
-{{-- Hero Section (Pusdiklat Style) --}}
-<div id="beranda" class="pt-32 pb-40 md:pt-40 md:pb-48">
-    <div class="particles-bg"></div>
-    <div class="mask-a"></div>
+{{-- Hero Section (Meta Hero Band Style) --}}
+<div id="beranda" class="pt-32 pb-24 md:pt-40 md:pb-28 relative bg-[#0a1317] text-white overflow-hidden">
+    {{-- Soft Ambient Glows --}}
+    <div class="absolute -right-24 -top-24 w-96 h-96 bg-[#0064e0]/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-24 -bottom-24 w-96 h-96 bg-[#0457cb]/20 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="hero-content w-full px-6 sm:px-8 lg:px-12 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-8">
+    <div class="w-full px-6 sm:px-8 lg:px-12 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-8 relative z-10">
         
-        {{-- Left: Text & Search --}}
-        <div class="w-full lg:w-1/2 text-center lg:text-left">
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-6" data-aos="fade-up">
-                Selamat Datang di Katalog Online<br />
-                <span class="text-indigo-300">{{ \App\Models\Setting::get('library_name', 'Perpustakaan Sekolah Katolik Santo Paulus') }}</span>
+        {{-- Left: Text, Dual CTA & Pill Search --}}
+        <div class="w-full lg:w-7/12 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider mb-6 border border-white/15 shadow-sm">
+                <i class="bi bi-book-half text-[#0091ff]"></i> Katalog Resmi Perpustakaan
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.18] tracking-tight mb-5">
+                Katalog Online & Literasi <br class="hidden sm:inline">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#0091ff] via-sky-200 to-white">{{ \App\Models\Setting::get('library_name', 'Perpustakaan Makarya') }}</span>
             </h1>
-            <p class="text-white/80 text-lg mb-8" data-aos="fade-up" data-aos-delay="100">
-                Temukan koleksi buku cetak, e-book interaktif, dan referensi akademik terbaik.
+            
+            <p class="text-[#ced0d4] text-base md:text-lg mb-8 leading-relaxed max-w-xl">
+                Telusuri ribuan buku cetak, karya referensi, dan koleksi digital dengan cepat dan mudah.
             </p>
 
-            {{-- Search Bar Integrated --}}
-            <div data-aos="fade-up" data-aos-delay="200" class="max-w-xl mx-auto lg:mx-0">
+            {{-- Dual CTA (Meta Signature: Primary White Pill + Secondary Ghost Pill) --}}
+            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-8">
+                <a href="{{ route('opac.katalog') }}" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-[#0a1317] font-bold text-sm hover:bg-[#dee3e9] transition-all no-underline shadow-lg hover:scale-[1.02]">
+                    <i class="bi bi-search"></i> Jelajahi Koleksi
+                </a>
+                <a href="{{ route('guest-books.visitor') }}" class="inline-flex items-center gap-2 px-7 py-3 rounded-full border-2 border-white/60 text-white font-bold text-sm hover:bg-white/10 hover:border-white transition-all no-underline">
+                    <i class="bi bi-pencil-square"></i> Isi Buku Tamu
+                </a>
+            </div>
+
+            {{-- Meta Pill Search Bar --}}
+            <div class="max-w-xl mx-auto lg:mx-0">
                 <form action="{{ route('opac.katalog') }}" method="GET" class="relative z-50 w-full" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
                     <input type="hidden" name="tab" value="koleksi">
-                    <div class="flex flex-col sm:flex-row items-stretch bg-white rounded-xl overflow-visible shadow-lg relative border border-white/20">
-                        <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-200 py-3 px-4 text-sm font-semibold text-slate-600 outline-none cursor-pointer appearance-none rounded-t-xl sm:rounded-none sm:rounded-l-xl">
+                    <div class="bg-white rounded-full p-1.5 flex items-center shadow-2xl border border-white/20 relative">
+                        <select name="search_by" class="bg-transparent border-0 border-r border-[#dee3e9] py-2.5 pl-4 pr-3 text-xs sm:text-sm font-bold text-[#1c1e21] outline-none cursor-pointer appearance-none rounded-l-full">
                             <option value="title">Judul</option>
                             <option value="author">Penulis</option>
                             <option value="subject">Topik</option>
                         </select>
                         <div class="flex-1 flex items-center bg-transparent relative">
-                            <span class="pl-4 text-slate-400 hidden sm:block"><i class="bi bi-search"></i></span>
-                            <input type="text" name="q" placeholder="Cari buku, penulis, atau topik..." class="w-full bg-transparent border-none py-3 px-3 text-slate-700 outline-none text-sm" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                            <span class="pl-3 text-[#8595a4]"><i class="bi bi-search"></i></span>
+                            <input type="text" name="q" placeholder="Cari judul buku, penulis, atau topik..." class="w-full bg-transparent border-none py-2.5 px-3 text-[#1c1e21] outline-none text-sm placeholder:text-[#8595a4]" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
                             
                             <!-- Autocomplete Dropdown -->
-                            <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
+                            <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-[#dee3e9] overflow-hidden z-[100]" style="display: none;">
                                 <template x-for="item in suggestions" :key="item.text + item.type">
-                                    <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                    <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-5 py-3 hover:bg-[#f1f4f7] border-b border-[#dee3e9]/50 last:border-0 flex items-center justify-between group transition-colors cursor-pointer">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                            <div class="w-8 h-8 rounded-full bg-[#f1f4f7] text-[#0064e0] flex items-center justify-center group-hover:bg-[#0064e0] group-hover:text-white transition-colors">
                                                 <i :class="'bi ' + item.icon"></i>
                                             </div>
-                                            <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                            <span class="text-[#1c1e21] font-semibold text-sm truncate" x-text="item.text"></span>
                                         </div>
-                                        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                                        <span class="text-[10px] uppercase font-bold tracking-wider text-[#8595a4] group-hover:text-[#0064e0] flex-shrink-0 ml-2" x-text="item.type"></span>
                                     </button>
                                 </template>
                             </div>
                         </div>
-                        <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 transition-colors whitespace-nowrap rounded-b-xl sm:rounded-none sm:rounded-r-xl">
-                            <i class="bi bi-search sm:hidden mr-2"></i>Cari
+                        <button type="submit" x-ref="submitBtn" class="bg-[#0064e0] hover:bg-[#0457cb] text-white font-bold py-2.5 px-6 rounded-full transition-all whitespace-nowrap shadow-md cursor-pointer text-xs uppercase tracking-wider">
+                            Cari
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        {{-- Right: Illustration --}}
-        <div class="w-full lg:w-1/2 flex justify-center lg:justify-end" data-aos="fade-left">
-            <img src="{{ asset('images/borrow-illustration.png') }}" alt="Library Illustration" loading="lazy" class="hero-img w-full max-w-md drop-shadow-2xl mix-blend-screen opacity-90 rounded-2xl">
+        {{-- Right: Illustration / Photo Showcase --}}
+        <div class="w-full lg:w-5/12 flex justify-center lg:justify-end">
+            <div class="relative w-full max-w-md p-4 bg-white/5 backdrop-blur-sm rounded-[32px] border border-white/10 shadow-2xl">
+                <img src="{{ asset('images/borrow-illustration.png') }}" alt="Library Illustration" loading="lazy" class="w-full h-auto drop-shadow-2xl rounded-2xl object-cover">
+            </div>
         </div>
     </div>
 </div>
 
-<div class="w-full px-6 sm:px-8 lg:px-12 -mt-10 relative z-20">
+<div class="w-full px-6 sm:px-8 lg:px-12 pt-16 md:pt-20 relative z-20">
 
-    {{-- Section: Inovasi / Layanan Cepat --}}
+    {{-- Section: Layanan Cepat (Meta card-product-feature with 32px rounding) --}}
     <div id="layanan" class="text-center mb-12 scroll-mt-[140px]">
-        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2 uppercase">Layanan Cepat</h2>
-        <div class="w-16 h-1 bg-indigo-600 mx-auto rounded-full mb-4"></div>
-        <p class="text-slate-500">Akses cepat ke berbagai fitur utama perpustakaan.</p>
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0064e0]/10 text-[#0064e0] text-xs font-bold uppercase tracking-wider mb-3">
+            <i class="bi bi-compass"></i> Navigasi Utama
+        </span>
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#0a1317] mb-3 tracking-tight">Layanan Cepat Perpustakaan</h2>
+        <p class="text-[#5d6c7b] text-sm md:text-base max-w-xl mx-auto leading-relaxed m-0">Akses instan ke fasilitas dan layanan terbaik untuk kenyamanan literasi Anda.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         <!-- Katalog -->
-        <a href="{{ route('opac.katalog') }}" class="feature-card p-6 text-center group no-underline">
-            <div class="w-20 h-20 mx-auto bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                <i class="bi bi-journals text-3xl"></i>
+        <a href="{{ route('opac.katalog') }}" class="card-meta p-7 text-center group no-underline hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+            <div class="w-16 h-16 mx-auto bg-[#f1f4f7] text-[#0a1317] rounded-full flex items-center justify-center mb-5 group-hover:bg-[#0064e0] group-hover:text-white transition-all duration-300 shadow-sm">
+                <i class="bi bi-journals text-2xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-indigo-600">Katalog Online</h4>
-            <p class="text-sm text-slate-500 m-0">Telusuri seluruh koleksi buku cetak dan e-book kami.</p>
+            <h4 class="text-base font-bold text-[#0a1317] mb-2 group-hover:text-[#0064e0] transition-colors">Katalog Online</h4>
+            <p class="text-xs leading-relaxed text-[#5d6c7b] m-0">Telusuri seluruh koleksi buku cetak dan e-book kami.</p>
         </a>
 
         <!-- Keanggotaan -->
-        <a href="{{ route('login.member') }}" class="feature-card p-6 text-center group no-underline">
-            <div class="w-20 h-20 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                <i class="bi bi-people-fill text-3xl"></i>
+        <a href="{{ route('login.member') }}" class="card-meta p-7 text-center group no-underline hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+            <div class="w-16 h-16 mx-auto bg-[#f1f4f7] text-[#0a1317] rounded-full flex items-center justify-center mb-5 group-hover:bg-[#0064e0] group-hover:text-white transition-all duration-300 shadow-sm">
+                <i class="bi bi-person-badge text-2xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600">Keanggotaan</h4>
-            <p class="text-sm text-slate-500 m-0">Masuk sebagai anggota untuk meminjam dan mengunduh buku.</p>
+            <h4 class="text-base font-bold text-[#0a1317] mb-2 group-hover:text-[#0064e0] transition-colors">Keanggotaan</h4>
+            <p class="text-xs leading-relaxed text-[#5d6c7b] m-0">Masuk sebagai anggota untuk meminjam dan reservasi buku.</p>
         </a>
 
         <!-- Buku Tamu -->
-        <a href="{{ route('guest-books.visitor') }}" class="feature-card p-6 text-center group no-underline">
-            <div class="w-20 h-20 mx-auto bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
-                <i class="bi bi-person-lines-fill text-3xl"></i>
+        <a href="{{ route('guest-books.visitor') }}" class="card-meta p-7 text-center group no-underline hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+            <div class="w-16 h-16 mx-auto bg-[#f1f4f7] text-[#0a1317] rounded-full flex items-center justify-center mb-5 group-hover:bg-[#0064e0] group-hover:text-white transition-all duration-300 shadow-sm">
+                <i class="bi bi-person-lines-fill text-2xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-emerald-600">Buku Tamu</h4>
-            <p class="text-sm text-slate-500 m-0">Isi daftar hadir kunjungan Anda ke perpustakaan fisik.</p>
+            <h4 class="text-base font-bold text-[#0a1317] mb-2 group-hover:text-[#0064e0] transition-colors">Buku Tamu</h4>
+            <p class="text-xs leading-relaxed text-[#5d6c7b] m-0">Isi daftar hadir kunjungan Anda ke perpustakaan fisik.</p>
         </a>
 
         <!-- Agenda -->
-        <a href="{{ route('opac.agenda') }}" class="feature-card p-6 text-center group no-underline">
-            <div class="w-20 h-20 mx-auto bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-300">
-                <i class="bi bi-calendar-event text-3xl"></i>
+        <a href="{{ route('opac.agenda') }}" class="card-meta p-7 text-center group no-underline hover:-translate-y-1 hover:shadow-xl cursor-pointer">
+            <div class="w-16 h-16 mx-auto bg-[#f1f4f7] text-[#0a1317] rounded-full flex items-center justify-center mb-5 group-hover:bg-[#0064e0] group-hover:text-white transition-all duration-300 shadow-sm">
+                <i class="bi bi-calendar-event text-2xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-amber-600">Agenda Kegiatan</h4>
-            <p class="text-sm text-slate-500 m-0">Jadwal kegiatan, literasi, dan acara perpustakaan.</p>
+            <h4 class="text-base font-bold text-[#0a1317] mb-2 group-hover:text-[#0064e0] transition-colors">Agenda Kegiatan</h4>
+            <p class="text-xs leading-relaxed text-[#5d6c7b] m-0">Jadwal kegiatan literasi, workshop, dan acara perpustakaan.</p>
         </a>
     </div>
 
     {{-- Section Heading for Stats --}}
-    <div id="informasi" class="text-left mt-14 mb-6 scroll-mt-[140px]">
-        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">{{ __('landing.stats_title') }}</h2>
-        <p class="text-slate-500">{{ __('landing.stats_desc') }}</p>
+    <div id="informasi" class="text-left mt-10 mb-6 scroll-mt-[140px]">
+        <span class="text-xs font-bold text-[#0064e0] uppercase tracking-wider">Statistik</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-[#0a1317] mt-1 mb-2 tracking-tight">{{ __('landing.stats_title') }}</h2>
+        <p class="text-[#5d6c7b] text-sm">{{ __('landing.stats_desc') }}</p>
     </div>
 
-    {{-- Statistics Section (Redesigned) --}}
-    <div class="bg-gradient-to-r from-teal-500 to-blue-700 rounded-2xl p-6 md:p-8 shadow-lg mb-16">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            <!-- Total Buku -->
-            <div class="btn-gradient-yellow text-white rounded-xl py-8 px-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
-                <i class="bi bi-journals text-4xl mb-3 hover:scale-110 transition-transform duration-300"></i>
-                <span class="font-bold text-sm md:text-base tracking-wide mt-1 text-white/90">{{ __('landing.total_books') }}</span>
-                <span class="font-bold text-2xl md:text-3xl mt-1">{{ number_format($stats['total_books'] ?? 0) }}</span>
+    {{-- Statistics Section (Meta card-icon-feature tiles) --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
+        <!-- Total Buku -->
+        <div class="bg-white rounded-2xl p-6 border border-[#dee3e9] shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-full bg-[#f1f4f7] text-[#0064e0] flex items-center justify-center text-xl mb-3">
+                <i class="bi bi-journals"></i>
             </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#8595a4]">{{ __('landing.total_books') }}</span>
+            <span class="text-2xl md:text-3xl font-black text-[#0a1317] mt-1">{{ number_format($stats['total_books'] ?? 0) }}</span>
+        </div>
 
-            <!-- Total Eksemplar -->
-            <div class="btn-gradient-green text-white rounded-xl py-8 px-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
-                <i class="bi bi-collection text-4xl mb-3 hover:scale-110 transition-transform duration-300"></i>
-                <span class="font-bold text-sm md:text-base tracking-wide mt-1 text-white/90">{{ __('landing.total_items') }}</span>
-                <span class="font-bold text-2xl md:text-3xl mt-1">{{ number_format($stats['total_items'] ?? 0) }}</span>
+        <!-- Total Eksemplar -->
+        <div class="bg-white rounded-2xl p-6 border border-[#dee3e9] shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-full bg-[#f1f4f7] text-[#31a24c] flex items-center justify-center text-xl mb-3">
+                <i class="bi bi-collection"></i>
             </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#8595a4]">{{ __('landing.total_items') }}</span>
+            <span class="text-2xl md:text-3xl font-black text-[#0a1317] mt-1">{{ number_format($stats['total_items'] ?? 0) }}</span>
+        </div>
 
-            <!-- Total Anggota -->
-            <div class="bg-rose-500 text-white rounded-xl py-8 px-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
-                <i class="bi bi-people-fill text-4xl mb-3 hover:scale-110 transition-transform duration-300"></i>
-                <span class="font-bold text-sm md:text-base tracking-wide mt-1 text-white/90">{{ __('landing.total_members') }}</span>
-                <span class="font-bold text-2xl md:text-3xl mt-1">{{ number_format($stats['total_members'] ?? 0) }}</span>
+        <!-- Total Anggota -->
+        <div class="bg-white rounded-2xl p-6 border border-[#dee3e9] shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-full bg-[#f1f4f7] text-[#e41e3f] flex items-center justify-center text-xl mb-3">
+                <i class="bi bi-people-fill"></i>
             </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#8595a4]">{{ __('landing.total_members') }}</span>
+            <span class="text-2xl md:text-3xl font-black text-[#0a1317] mt-1">{{ number_format($stats['total_members'] ?? 0) }}</span>
+        </div>
 
-            <!-- Total Pengunjung -->
-            <div class="btn-gradient-blue text-white rounded-xl py-8 px-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
-                <i class="bi bi-person-check-fill text-4xl mb-3 hover:scale-110 transition-transform duration-300"></i>
-                <span class="font-bold text-sm md:text-base tracking-wide mt-1 text-white/90">{{ __('landing.total_visitors') }}</span>
-                <span class="font-bold text-2xl md:text-3xl mt-1">{{ number_format($stats['total_visitors'] ?? 0) }}</span>
+        <!-- Total Pengunjung -->
+        <div class="bg-white rounded-2xl p-6 border border-[#dee3e9] shadow-sm flex flex-col items-center justify-center text-center hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-full bg-[#f1f4f7] text-[#f7b928] flex items-center justify-center text-xl mb-3">
+                <i class="bi bi-person-check-fill"></i>
             </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#8595a4]">{{ __('landing.total_visitors') }}</span>
+            <span class="text-2xl md:text-3xl font-black text-[#0a1317] mt-1">{{ number_format($stats['total_visitors'] ?? 0) }}</span>
         </div>
     </div>
 
-    {{-- Section: Tata Cara (Split Screen Style) --}}
-    <div class="mb-20 bg-white rounded-2xl p-8 md:p-12 overflow-hidden border border-slate-100 shadow-sm">
+    {{-- Section: Tata Cara (Meta 32px Split Container) --}}
+    <div class="mb-16 bg-white rounded-3xl p-8 md:p-12 border border-[#dee3e9] shadow-sm">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <!-- Content Left -->
             <div>
-                <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-3 uppercase">Tata Cara Peminjaman</h2>
-                <div class="w-16 h-1 bg-indigo-600 rounded-full mb-6"></div>
-                <p class="text-slate-600 mb-8 leading-relaxed">
+                <span class="text-xs font-bold text-[#0064e0] uppercase tracking-wider">Panduan Peminjaman</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-[#0a1317] mt-1 mb-4 tracking-tight">Tata Cara Peminjaman Buku</h2>
+                <p class="text-[#5d6c7b] text-sm mb-8 leading-relaxed">
                     {{ __('landing.how_to_borrow_desc') }}
                 </p>
                 
                 <ul class="space-y-6 list-none pl-0 m-0">
-                    <li class="flex gap-4">
-                        <div class="w-10 h-10 shrink-0 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                    <li class="flex gap-4 items-start">
+                        <div class="w-9 h-9 shrink-0 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm shadow-sm">1</div>
                         <div>
-                            <h4 class="text-lg font-bold text-slate-800 mb-1 mt-1">{{ __('landing.step1_title') }}</h4>
-                            <p class="text-slate-500 text-sm m-0">{{ __('landing.step1_desc') }}</p>
+                            <h4 class="text-base font-bold text-[#0a1317] mb-1">{{ __('landing.step1_title') }}</h4>
+                            <p class="text-[#5d6c7b] text-xs leading-relaxed m-0">{{ __('landing.step1_desc') }}</p>
                         </div>
                     </li>
-                    <li class="flex gap-4">
-                        <div class="w-10 h-10 shrink-0 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-lg">2</div>
+                    <li class="flex gap-4 items-start">
+                        <div class="w-9 h-9 shrink-0 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm shadow-sm">2</div>
                         <div>
-                            <h4 class="text-lg font-bold text-slate-800 mb-1 mt-1">{{ __('landing.step2_title') }}</h4>
-                            <p class="text-slate-500 text-sm m-0">{{ __('landing.step2_desc') }}</p>
+                            <h4 class="text-base font-bold text-[#0a1317] mb-1">{{ __('landing.step2_title') }}</h4>
+                            <p class="text-[#5d6c7b] text-xs leading-relaxed m-0">{{ __('landing.step2_desc') }}</p>
                         </div>
                     </li>
-                    <li class="flex gap-4">
-                        <div class="w-10 h-10 shrink-0 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-lg">3</div>
+                    <li class="flex gap-4 items-start">
+                        <div class="w-9 h-9 shrink-0 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm shadow-sm">3</div>
                         <div>
-                            <h4 class="text-lg font-bold text-slate-800 mb-1 mt-1">{{ __('landing.step3_title') }}</h4>
-                            <p class="text-slate-500 text-sm m-0">{{ __('landing.step3_desc') }}</p>
+                            <h4 class="text-base font-bold text-[#0a1317] mb-1">{{ __('landing.step3_title') }}</h4>
+                            <p class="text-[#5d6c7b] text-xs leading-relaxed m-0">{{ __('landing.step3_desc') }}</p>
                         </div>
                     </li>
                 </ul>
             </div>
             
-            <!-- Video/Image Right -->
-            <div class="relative group cursor-pointer lg:pl-10">
-                <div class="absolute inset-0 bg-indigo-600/5 rounded-2xl transform rotate-3 group-hover:rotate-1 transition-transform duration-300"></div>
-                <img src="{{ asset('images/borrow-illustration.png') }}" alt="Tata Cara" loading="lazy" class="relative z-10 w-full h-auto rounded-2xl shadow-lg bg-slate-50 object-cover object-center p-8 border border-slate-100">
+            <!-- Illustration Right -->
+            <div class="relative group cursor-pointer lg:pl-6">
+                <div class="p-6 bg-[#f1f4f7] rounded-3xl border border-[#dee3e9] flex items-center justify-center">
+                    <img src="{{ asset('images/borrow-illustration.png') }}" alt="Tata Cara" loading="lazy" class="w-full max-w-sm h-auto rounded-2xl drop-shadow-md object-contain">
+                </div>
             </div>
         </div>
     </div>
 
-    {{-- Section: Berita / Buku Terbaru --}}
-    <div id="buku-terbaru" class="text-center mb-12 scroll-mt-[140px]">
-        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2 uppercase">Buku Terbaru</h2>
-        <div class="w-16 h-1 bg-indigo-600 mx-auto rounded-full mb-4"></div>
-        <p class="text-slate-500">Koleksi buku terbaru yang baru saja ditambahkan ke perpustakaan.</p>
+    {{-- Section: Buku Terbaru --}}
+    <div id="buku-terbaru" class="text-center mb-10 scroll-mt-[140px]">
+        <span class="text-xs font-bold text-[#0064e0] uppercase tracking-wider">Koleksi Baru</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-[#0a1317] mt-1 mb-2 tracking-tight">Koleksi Buku Terbaru</h2>
+        <p class="text-[#5d6c7b] text-sm">Temukan buku-buku yang baru saja tiba di perpustakaan kami.</p>
     </div>
 
     @php
         $latestBooks = \App\Models\Book::with('authors')->where('is_active', true)->latest()->take(3)->get();
     @endphp
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         @forelse($latestBooks as $book)
-            <div class="blog-card flex flex-col h-full">
-                <div class="h-48 bg-slate-100 flex items-center justify-center overflow-hidden border-b border-slate-100 relative">
+            <div class="bg-white rounded-3xl border border-[#dee3e9] overflow-hidden flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                <div class="h-56 bg-[#f1f4f7] flex items-center justify-center overflow-hidden border-b border-[#dee3e9] relative p-4">
                     @if($book->cover_image && Storage::disk('public')->exists($book->cover_image))
-                        <img src="{{ Storage::url($book->cover_image) }}" alt="Cover" loading="lazy" class="w-full h-full object-cover">
+                        <img src="{{ Storage::url($book->cover_image) }}" alt="Cover" loading="lazy" class="max-h-full w-auto object-contain rounded-lg shadow-sm group-hover:scale-105 transition-transform duration-300">
                     @else
-                        <i class="bi bi-book text-5xl text-slate-300"></i>
+                        <div class="w-20 h-28 bg-white border border-[#dee3e9] rounded-lg shadow-sm flex items-center justify-center text-[#8595a4]">
+                            <i class="bi bi-book text-3xl"></i>
+                        </div>
                     @endif
-                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded text-indigo-600 shadow-sm">
+                    <div class="absolute top-3 right-3 bg-black/80 backdrop-blur text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                         {{ $book->collection_type }}
                     </div>
                 </div>
                 <div class="p-6 flex-1 flex flex-col">
-                    <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">
+                    <div class="text-[11px] text-[#8595a4] font-semibold uppercase tracking-wider mb-2">
                         {{ $book->created_at->format('d M Y') }}
                     </div>
-                    <h4 class="text-lg font-bold text-slate-800 mb-3 line-clamp-2">
-                        <a href="{{ route('opac.show', $book) }}" class="hover:text-indigo-600 transition-colors no-underline text-inherit">
+                    <h4 class="text-base font-bold text-[#0a1317] mb-2 line-clamp-2 group-hover:text-[#0064e0] transition-colors leading-snug">
+                        <a href="{{ route('opac.show', $book) }}" class="no-underline text-inherit">
                             {{ $book->title }}
                         </a>
                     </h4>
-                    <p class="text-sm text-slate-500 line-clamp-2 mb-4 flex-1">
-                        {{ $book->abstract ?? 'Tidak ada abstrak.' }}
+                    <p class="text-xs text-[#5d6c7b] line-clamp-2 mb-4 flex-1 leading-relaxed">
+                        {{ $book->abstract ?? 'Buku ini tersedia di perpustakaan. Klik untuk melihat detail eksemplar.' }}
                     </p>
-                    <div class="text-xs text-slate-500 border-t border-slate-100 pt-3 mt-auto">
-                        <i class="bi bi-person mr-1"></i> 
-                        {{ $book->authors->pluck('name')->join(', ') ?: 'Anonim' }}
+                    <div class="text-xs text-[#8595a4] border-t border-[#dee3e9] pt-3 mt-auto flex items-center justify-between">
+                        <span class="truncate pr-2"><i class="bi bi-person mr-1"></i> {{ $book->authors->pluck('name')->join(', ') ?: 'Anonim' }}</span>
+                        <a href="{{ route('opac.show', $book) }}" class="text-[#0064e0] font-bold hover:underline shrink-0 text-xs no-underline">Detail &rarr;</a>
                     </div>
                 </div>
             </div>
         @empty
-            <div class="col-span-3 text-center py-12 text-slate-500">
+            <div class="col-span-3 text-center py-12 text-[#8595a4]">
                 Belum ada buku terbaru.
             </div>
         @endforelse
     </div>
     
     <div class="text-center mb-16">
-        <a href="{{ route('opac.katalog') }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-8 rounded-full shadow-md transition-colors no-underline text-sm uppercase tracking-wider">
-            Lihat Semua Koleksi
+        <a href="{{ route('opac.katalog') }}" class="btn-pill-primary inline-flex">
+            <i class="bi bi-grid-3x3-gap"></i> Lihat Semua Koleksi
         </a>
     </div>
 
