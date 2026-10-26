@@ -3,6 +3,25 @@
 @section('title', 'Dashboard')
 @section('page-title', 'Dashboard')
 
+@push('styles')
+<style>
+    .fav-books-scroll::-webkit-scrollbar {
+        width: 4px;
+    }
+    .fav-books-scroll::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 4px;
+    }
+    .fav-books-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .fav-books-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="page-header flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
@@ -121,10 +140,72 @@
             <canvas id="visitorChart" data-labels="{{ json_encode($chartLabels) }}" data-values="{{ json_encode($chartData) }}"></canvas>
         </div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-6">
-        <h3 class="text-base font-bold text-slate-800 mb-4"><i class="bi bi-pie-chart-fill text-indigo-500 mr-2"></i>Buku Favorit</h3>
-        <div class="relative h-64">
-            <canvas id="categoryChart" data-labels="{{ json_encode($categoryLabels) }}" data-values="{{ json_encode($categoryCounts) }}"></canvas>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-6 relative">
+        {{-- Card Header --}}
+        <div class="flex items-center justify-between mb-4">
+            <div id="favBooksChartHeader" class="flex items-center gap-2">
+                <h3 class="text-base font-bold text-slate-800 flex items-center">
+                    <i class="bi bi-pie-chart-fill text-indigo-500 mr-2"></i>Buku Favorit
+                </h3>
+                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">Top 5</span>
+            </div>
+            <div id="favBooksListHeader" class="hidden items-center gap-2">
+                <h3 class="text-base font-bold text-slate-800 flex items-center">
+                    <i class="bi bi-trophy-fill text-amber-500 mr-2"></i>Semua Buku Favorit
+                </h3>
+                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600">{{ isset($popularBooks) ? $popularBooks->count() : 0 }} Judul</span>
+            </div>
+
+            <div>
+                <button id="btnFavShowAll" type="button" class="inline-flex items-center gap-1.5 py-1 px-2.5 text-xs font-semibold rounded-lg text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-all cursor-pointer" title="{{ __('Geser ke kiri untuk melihat semua buku') }}">
+                    <span>{{ __('Lihat Semua') }}</span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+                <button id="btnFavShowChart" type="button" class="hidden items-center gap-1.5 py-1 px-2.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all cursor-pointer" title="{{ __('Kembali ke grafik') }}">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>{{ __('Grafik') }}</span>
+                </button>
+            </div>
+        </div>
+
+        {{-- Slider Track (Menggeser ke kiri untuk melihat semua) --}}
+        <div class="relative overflow-hidden w-full h-64">
+            <div id="favBooksSlider" class="flex w-[200%] h-full transition-transform duration-500 ease-in-out" style="transform: translateX(0%);">
+                {{-- Slide 1: Donut Chart (Top 5) --}}
+                <div class="w-1/2 h-full flex-shrink-0 relative">
+                    <canvas id="categoryChart" data-labels="{{ json_encode($categoryLabels) }}" data-values="{{ json_encode($categoryCounts) }}"></canvas>
+                </div>
+
+                {{-- Slide 2: Semua Buku Terfavorit (Scrollable List) --}}
+                <div class="w-1/2 h-full flex-shrink-0 overflow-y-auto pl-3 pr-1 fav-books-scroll">
+                    <ul class="divide-y divide-slate-100 text-xs">
+                        @if(isset($popularBooks))
+                            @forelse($popularBooks as $index => $book)
+                            <li class="py-2.5 flex items-center justify-between gap-3 hover:bg-slate-50 px-2 rounded-lg transition-colors">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="w-5 h-5 flex-shrink-0 rounded-full flex items-center justify-center font-bold text-[11px] 
+                                        {{ $index === 0 ? 'bg-amber-100 text-amber-700 font-extrabold shadow-sm' : ($index === 1 ? 'bg-slate-200 text-slate-700 font-bold' : ($index === 2 ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-slate-100 text-slate-500')) }}">
+                                        {{ $index + 1 }}
+                                    </span>
+                                    <div class="min-w-0">
+                                        <a href="{{ route('books.show', $book->id) }}" class="font-medium text-slate-800 hover:text-indigo-600 truncate block transition-colors text-xs" title="{{ $book->title }}">
+                                            {{ $book->title }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 text-right">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                        {{ $book->borrow_count }}x {{ __('pinjam') }}
+                                    </span>
+                                </div>
+                            </li>
+                            @empty
+                            <li class="py-12 text-center text-slate-400">{{ __('Belum ada data peminjaman buku.') }}</li>
+                            @endforelse
+                        @endif
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -373,7 +454,86 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', initDashboardCharts);
-    document.addEventListener('content-refreshed', initDashboardCharts);
+    function initFavoriteBooksSlider() {
+        const slider = document.getElementById('favBooksSlider');
+        const btnShowAll = document.getElementById('btnFavShowAll');
+        const btnShowChart = document.getElementById('btnFavShowChart');
+        const headerChart = document.getElementById('favBooksChartHeader');
+        const headerList = document.getElementById('favBooksListHeader');
+
+        function slideToAll() {
+            if (!slider) return;
+            slider.style.transform = 'translateX(-50%)';
+            if (btnShowAll) {
+                btnShowAll.classList.add('hidden');
+                btnShowAll.classList.remove('inline-flex');
+            }
+            if (btnShowChart) {
+                btnShowChart.classList.remove('hidden');
+                btnShowChart.classList.add('inline-flex');
+            }
+            if (headerChart) {
+                headerChart.classList.add('hidden');
+                headerChart.classList.remove('flex');
+            }
+            if (headerList) {
+                headerList.classList.remove('hidden');
+                headerList.classList.add('flex');
+            }
+        }
+
+        function slideToChart() {
+            if (!slider) return;
+            slider.style.transform = 'translateX(0%)';
+            if (btnShowChart) {
+                btnShowChart.classList.add('hidden');
+                btnShowChart.classList.remove('inline-flex');
+            }
+            if (btnShowAll) {
+                btnShowAll.classList.remove('hidden');
+                btnShowAll.classList.add('inline-flex');
+            }
+            if (headerList) {
+                headerList.classList.add('hidden');
+                headerList.classList.remove('flex');
+            }
+            if (headerChart) {
+                headerChart.classList.remove('hidden');
+                headerChart.classList.add('flex');
+            }
+        }
+
+        if (btnShowAll) btnShowAll.onclick = slideToAll;
+        if (btnShowChart) btnShowChart.onclick = slideToChart;
+
+        // Touch swipe support (geser ke kiri untuk lihat semua, geser ke kanan untuk kembali)
+        if (slider) {
+            let startX = 0;
+            slider.ontouchstart = function(e) {
+                if (e.changedTouches && e.changedTouches[0]) {
+                    startX = e.changedTouches[0].screenX;
+                }
+            };
+            slider.ontouchend = function(e) {
+                if (e.changedTouches && e.changedTouches[0]) {
+                    let diff = startX - e.changedTouches[0].screenX;
+                    if (diff > 40) {
+                        slideToAll();
+                    } else if (diff < -40) {
+                        slideToChart();
+                    }
+                }
+            };
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initDashboardCharts();
+        initFavoriteBooksSlider();
+    });
+    document.addEventListener('content-refreshed', function() {
+        initDashboardCharts();
+        initFavoriteBooksSlider();
+    });
 </script>
 @endpush

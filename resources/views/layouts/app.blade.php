@@ -33,7 +33,9 @@
             body.sidebar-collapsed .sidebar-text,
             body.sidebar-collapsed .sidebar-brand-text,
             body.sidebar-collapsed .sidebar-heading,
-            body.sidebar-collapsed .sidebar-footer-text {
+            body.sidebar-collapsed .sidebar-footer-text,
+            body.sidebar-collapsed .sidebar-sub-menu,
+            body.sidebar-collapsed .sidebar-chevron {
                 display: none !important;
             }
             body.sidebar-collapsed .sidebar-heading-divider {
@@ -144,9 +146,8 @@
     <div class="flex-1 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-slate-200 [&::-webkit-scrollbar-thumb]:rounded-full py-4 space-y-1">
 
         @php
-            $navLink = 'sidebar-item flex items-center gap-3.5 mx-3 px-4 py-3 rounded-xl text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group relative no-underline';
-            $navLinkActive = 'sidebar-item flex items-center gap-3.5 mx-3 px-4 py-3 rounded-xl text-sm btn-gradient-blue font-semibold shadow-md shadow-indigo-500/20 text-white relative no-underline';
-            $menuLabel = 'sidebar-heading text-[11px] uppercase tracking-widest text-slate-400 font-bold px-6 pt-5 pb-1';
+            $navLink = 'sidebar-item flex items-center gap-3.5 mx-3 px-4 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group relative no-underline font-medium';
+            $navLinkActive = 'sidebar-item flex items-center gap-3.5 mx-3 px-4 py-2.5 rounded-xl text-sm btn-gradient-blue font-semibold shadow-md shadow-indigo-500/20 text-white relative no-underline';
         @endphp
 
         @unlessrole('anggota')
@@ -165,143 +166,283 @@
         </a>
         @endcan
 
-        {{-- Pintasan Halaman Depan --}}
-        <p class="{{ $menuLabel }}">{{ __('Pintasan (Front-End)') }}</p>
-        <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
-        <a href="{{ route('opac.katalog') }}" target="_blank" class="{{ request()->routeIs('opac.katalog') ? $navLinkActive : $navLink }}" title="{{ __('Cari Buku (OPAC)') }}">
-            <i class="bi bi-search text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Cari Buku (OPAC)') }}</span>
-            <span class="sidebar-tooltip">{{ __('Cari Buku (OPAC)') }}</span>
-        </a>
-        <a href="{{ route('guest-books.visitor') }}" target="_blank" class="{{ request()->routeIs('guest-books.visitor') ? $navLinkActive : $navLink }}" title="{{ __('Isi Buku Tamu') }}">
-            <i class="bi bi-journal-text text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Isi Buku Tamu') }}</span>
-            <span class="sidebar-tooltip">{{ __('Isi Buku Tamu') }}</span>
-        </a>
-
-        {{-- Sirkulasi Buku --}}
+        {{-- Bab: Sirkulasi Buku --}}
         @can('process-loans')
-        <p class="{{ $menuLabel }}">{{ __('Sirkulasi Buku') }}</p>
-        <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
-        <a href="{{ route('reservations.index') }}" class="{{ request()->routeIs('reservations.*') ? $navLinkActive : $navLink }}" title="{{ __('Reservasi Online') }}">
-            <i class="bi bi-journal-bookmark text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Reservasi Online') }}</span>
-            <span class="sidebar-tooltip">{{ __('Reservasi Online') }}</span>
-        </a>
-        <a href="{{ route('circulations.index') }}" class="{{ request()->routeIs('circulations.index') || request()->routeIs('circulations.show') ? $navLinkActive : $navLink }}" title="{{ __('Transaksi Sirkulasi') }}">
-            <i class="bi bi-arrow-left-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Transaksi Sirkulasi') }}</span>
-            <span class="sidebar-tooltip">{{ __('Transaksi Sirkulasi') }}</span>
-        </a>
-        <a href="{{ route('circulations.loan') }}" class="{{ request()->routeIs('circulations.loan') ? $navLinkActive : $navLink }}" title="{{ __('Peminjaman') }}">
-            <i class="bi bi-box-arrow-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Peminjaman') }}</span>
-            <span class="sidebar-tooltip">{{ __('Peminjaman') }}</span>
-        </a>
-        <a href="{{ route('circulations.return') }}" class="{{ request()->routeIs('circulations.return') ? $navLinkActive : $navLink }}" title="{{ __('Pengembalian') }}">
-            <i class="bi bi-box-arrow-in-left text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Pengembalian') }}</span>
-            <span class="sidebar-tooltip">{{ __('Pengembalian') }}</span>
-        </a>
+        @php
+            $isCircActive = request()->routeIs('circulations.*') || request()->routeIs('reservations.*');
+        @endphp
+        <div x-data="{ open: {{ $isCircActive ? 'true' : 'false' }} }" class="space-y-1">
+            <button type="button" @click="open = !open"
+                    class="sidebar-item flex items-center justify-between w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group relative cursor-pointer {{ $isCircActive ? 'bg-indigo-50/70 text-indigo-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium' }}">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <i class="bi bi-arrow-left-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isCircActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
+                    <span class="sidebar-text truncate text-sm">{{ __('Sirkulasi Buku') }}</span>
+                </div>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isCircActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <span class="sidebar-tooltip">{{ __('Sirkulasi Buku') }}</span>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="sidebar-sub-menu ml-6 mr-3 pl-3.5 py-1 space-y-1 border-l-2 border-slate-200">
+                @php
+                    $isCircIndex = request()->routeIs('circulations.index') || request()->routeIs('circulations.show');
+                    $isCircLoan = request()->routeIs('circulations.loan');
+                    $isCircReturn = request()->routeIs('circulations.return');
+                    $isCircRes = request()->routeIs('reservations.*');
+                @endphp
+                <a href="{{ route('circulations.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isCircIndex ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isCircIndex ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Transaksi Sirkulasi') }}</span>
+                </a>
+                <a href="{{ route('circulations.loan') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isCircLoan ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isCircLoan ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Peminjaman Buku') }}</span>
+                </a>
+                <a href="{{ route('circulations.return') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isCircReturn ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isCircReturn ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Pengembalian Buku') }}</span>
+                </a>
+                <a href="{{ route('reservations.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isCircRes ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isCircRes ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Reservasi Online') }}</span>
+                </a>
+            </div>
+        </div>
         @endcan
 
-        {{-- Katalog & Koleksi --}}
+        {{-- Bab: Katalog & Koleksi --}}
         @can('view-books')
-        <p class="{{ $menuLabel }}">{{ __('Katalog & Koleksi') }}</p>
-        <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
-        <a href="{{ route('books.index') }}" class="{{ request()->routeIs('books.*') ? $navLinkActive : $navLink }}" title="{{ __('Master Buku') }}">
-            <i class="bi bi-journals text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Master Buku') }}</span>
-            <span class="sidebar-tooltip">{{ __('Master Buku') }}</span>
-        </a>
-        <a href="{{ route('authors.index') }}" class="{{ request()->routeIs('authors.*') ? $navLinkActive : $navLink }}" title="{{ __('Pengarang') }}">
-            <i class="bi bi-person-lines-fill text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Pengarang') }}</span>
-            <span class="sidebar-tooltip">{{ __('Pengarang') }}</span>
-        </a>
-        <a href="{{ route('publishers.index') }}" class="{{ request()->routeIs('publishers.*') ? $navLinkActive : $navLink }}" title="{{ __('Penerbit') }}">
-            <i class="bi bi-building text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Penerbit') }}</span>
-            <span class="sidebar-tooltip">{{ __('Penerbit') }}</span>
-        </a>
-        <a href="{{ route('subjects.index') }}" class="{{ request()->routeIs('subjects.*') ? $navLinkActive : $navLink }}" title="{{ __('Subyek') }}">
-            <i class="bi bi-tags text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Subyek') }}</span>
-            <span class="sidebar-tooltip">{{ __('Subyek') }}</span>
-        </a>
-        <a href="{{ route('locations.index') }}" class="{{ request()->routeIs('locations.*') ? $navLinkActive : $navLink }}" title="{{ __('Lokasi/Rak') }}">
-            <i class="bi bi-geo-alt text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Lokasi/Rak') }}</span>
-            <span class="sidebar-tooltip">{{ __('Lokasi/Rak') }}</span>
-        </a>
+        @php
+            $isCatalogActive = request()->routeIs('books.*') || request()->routeIs('authors.*') || request()->routeIs('publishers.*') || request()->routeIs('subjects.*') || request()->routeIs('locations.*');
+        @endphp
+        <div x-data="{ open: {{ $isCatalogActive ? 'true' : 'false' }} }" class="space-y-1">
+            <button type="button" @click="open = !open"
+                    class="sidebar-item flex items-center justify-between w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group relative cursor-pointer {{ $isCatalogActive ? 'bg-indigo-50/70 text-indigo-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium' }}">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <i class="bi bi-journals text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isCatalogActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
+                    <span class="sidebar-text truncate text-sm">{{ __('Katalog & Koleksi') }}</span>
+                </div>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isCatalogActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <span class="sidebar-tooltip">{{ __('Katalog & Koleksi') }}</span>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="sidebar-sub-menu ml-6 mr-3 pl-3.5 py-1 space-y-1 border-l-2 border-slate-200">
+                @php
+                    $isBooksActive = request()->routeIs('books.*');
+                    $isAuthorsActive = request()->routeIs('authors.*');
+                    $isPublishersActive = request()->routeIs('publishers.*');
+                    $isSubjectsActive = request()->routeIs('subjects.*');
+                    $isLocationsActive = request()->routeIs('locations.*');
+                @endphp
+                <a href="{{ route('books.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isBooksActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isBooksActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Master Buku') }}</span>
+                </a>
+                <a href="{{ route('authors.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isAuthorsActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isAuthorsActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Pengarang') }}</span>
+                </a>
+                <a href="{{ route('publishers.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isPublishersActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isPublishersActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Penerbit') }}</span>
+                </a>
+                <a href="{{ route('subjects.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isSubjectsActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isSubjectsActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Subyek Buku') }}</span>
+                </a>
+                <a href="{{ route('locations.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isLocationsActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isLocationsActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Lokasi / Rak') }}</span>
+                </a>
+            </div>
+        </div>
         @endcan
 
-        {{-- Keanggotaan --}}
+        {{-- Bab: Keanggotaan --}}
         @can('view-members')
-        <p class="{{ $menuLabel }}">{{ __('Keanggotaan') }}</p>
-        <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
-        <a href="{{ route('members.index') }}" class="{{ request()->routeIs('members.*') ? $navLinkActive : $navLink }}" title="{{ __('Data Anggota') }}">
-            <i class="bi bi-people text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Data Anggota') }}</span>
-            <span class="sidebar-tooltip">{{ __('Data Anggota') }}</span>
-        </a>
+        @php
+            $isMembersActive = request()->routeIs('members.*');
+        @endphp
+        <div x-data="{ open: {{ $isMembersActive ? 'true' : 'false' }} }" class="space-y-1">
+            <button type="button" @click="open = !open"
+                    class="sidebar-item flex items-center justify-between w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group relative cursor-pointer {{ $isMembersActive ? 'bg-indigo-50/70 text-indigo-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium' }}">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <i class="bi bi-people text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isMembersActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
+                    <span class="sidebar-text truncate text-sm">{{ __('Keanggotaan') }}</span>
+                </div>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isMembersActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <span class="sidebar-tooltip">{{ __('Keanggotaan') }}</span>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="sidebar-sub-menu ml-6 mr-3 pl-3.5 py-1 space-y-1 border-l-2 border-slate-200">
+                @php
+                    $isMembersIndex = request()->routeIs('members.index') || request()->routeIs('members.show') || request()->routeIs('members.edit');
+                    $isMembersCreate = request()->routeIs('members.create');
+                @endphp
+                <a href="{{ route('members.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isMembersIndex ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isMembersIndex ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Data Anggota') }}</span>
+                </a>
+                <a href="{{ route('members.create') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isMembersCreate ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isMembersCreate ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Tambah Anggota') }}</span>
+                </a>
+            </div>
+        </div>
         @endcan
 
-        {{-- Layanan & Agenda --}}
-        <p class="{{ $menuLabel }}">{{ __('Layanan & Agenda') }}</p>
-        <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
-        <a href="{{ route('agendas.index') }}" class="{{ request()->routeIs('agendas.*') ? $navLinkActive : $navLink }}" title="{{ __('Agenda Perpustakaan') }}">
-            <i class="bi bi-calendar-event text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Agenda Perpustakaan') }}</span>
-            <span class="sidebar-tooltip">{{ __('Agenda Perpustakaan') }}</span>
-        </a>
-        <a href="{{ route('class-visits.index') }}" class="{{ request()->routeIs('class-visits.*') ? $navLinkActive : $navLink }}" title="{{ __('Jadwal Kunjungan') }}">
-            <i class="bi bi-calendar-check text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Jadwal Kunjungan') }}</span>
-            <span class="sidebar-tooltip">{{ __('Jadwal Kunjungan') }}</span>
-        </a>
-        <a href="{{ route('pages.index') }}" class="{{ request()->routeIs('pages.*') ? $navLinkActive : $navLink }}" title="{{ __('Manajemen Halaman') }}">
-            <i class="bi bi-file-earmark-richtext text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Manajemen Halaman') }}</span>
-            <span class="sidebar-tooltip">{{ __('Manajemen Halaman') }}</span>
-        </a>
-        <a href="{{ route('guest-books.index') }}" class="{{ request()->routeIs('guest-books.index') ? $navLinkActive : $navLink }}" title="{{ __('Data Buku Tamu') }}">
-            <i class="bi bi-journal-check text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Data Buku Tamu') }}</span>
-            <span class="sidebar-tooltip">{{ __('Data Buku Tamu') }}</span>
-        </a>
-        @can('view-reports')
-        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? $navLinkActive : $navLink }}" title="{{ __('Laporan') }}">
-            <i class="bi bi-bar-chart-line text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Laporan') }}</span>
-            <span class="sidebar-tooltip">{{ __('Laporan') }}</span>
-        </a>
-        @endcan
+        {{-- Bab: Layanan & Agenda --}}
+        @php
+            $isServicesActive = request()->routeIs('agendas.*') || request()->routeIs('class-visits.*') || request()->routeIs('pages.*') || request()->routeIs('guest-books.index') || request()->routeIs('reports.*');
+        @endphp
+        <div x-data="{ open: {{ $isServicesActive ? 'true' : 'false' }} }" class="space-y-1">
+            <button type="button" @click="open = !open"
+                    class="sidebar-item flex items-center justify-between w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group relative cursor-pointer {{ $isServicesActive ? 'bg-indigo-50/70 text-indigo-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium' }}">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <i class="bi bi-calendar-event text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isServicesActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
+                    <span class="sidebar-text truncate text-sm">{{ __('Layanan & Agenda') }}</span>
+                </div>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isServicesActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <span class="sidebar-tooltip">{{ __('Layanan & Agenda') }}</span>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="sidebar-sub-menu ml-6 mr-3 pl-3.5 py-1 space-y-1 border-l-2 border-slate-200">
+                @php
+                    $isAgendasActive = request()->routeIs('agendas.*');
+                    $isClassVisitsActive = request()->routeIs('class-visits.*');
+                    $isPagesActive = request()->routeIs('pages.*');
+                    $isGuestBooksActive = request()->routeIs('guest-books.index');
+                    $isReportsActive = request()->routeIs('reports.*');
+                @endphp
+                <a href="{{ route('agendas.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isAgendasActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isAgendasActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Agenda Perpustakaan') }}</span>
+                </a>
+                <a href="{{ route('class-visits.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isClassVisitsActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isClassVisitsActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Jadwal Kunjungan') }}</span>
+                </a>
+                <a href="{{ route('pages.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isPagesActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isPagesActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Profil & Halaman OPAC') }}</span>
+                </a>
+                <a href="{{ route('guest-books.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isGuestBooksActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isGuestBooksActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Data Buku Tamu') }}</span>
+                </a>
+                @can('view-reports')
+                <a href="{{ route('reports.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isReportsActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isReportsActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Laporan Sirkulasi') }}</span>
+                </a>
+                @endcan
+            </div>
+        </div>
 
-        {{-- Administrasi --}}
+        {{-- Bab: Administrasi --}}
         @canany(['manage-users', 'manage-settings'])
-        <p class="{{ $menuLabel }}">{{ __('Administrasi') }}</p>
-        <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
-        @can('manage-users')
-        <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? $navLinkActive : $navLink }}" title="{{ __('Manajemen User') }}">
-            <i class="bi bi-person-gear text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Manajemen User') }}</span>
-            <span class="sidebar-tooltip">{{ __('Manajemen User') }}</span>
-        </a>
-        @endcan
-        @can('manage-settings')
-        <a href="{{ route('settings.index') }}" class="{{ request()->routeIs('settings.*') ? $navLinkActive : $navLink }}" title="{{ __('Pengaturan') }}">
-            <i class="bi bi-gear text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Pengaturan') }}</span>
-            <span class="sidebar-tooltip">{{ __('Pengaturan') }}</span>
-        </a>
-        @endcan
+        @php
+            $isAdminActive = request()->routeIs('users.*') || request()->routeIs('settings.*');
+        @endphp
+        <div x-data="{ open: {{ $isAdminActive ? 'true' : 'false' }} }" class="space-y-1">
+            <button type="button" @click="open = !open"
+                    class="sidebar-item flex items-center justify-between w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group relative cursor-pointer {{ $isAdminActive ? 'bg-indigo-50/70 text-indigo-700 font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium' }}">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <i class="bi bi-person-gear text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isAdminActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
+                    <span class="sidebar-text truncate text-sm">{{ __('Administrasi') }}</span>
+                </div>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isAdminActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <span class="sidebar-tooltip">{{ __('Administrasi') }}</span>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="sidebar-sub-menu ml-6 mr-3 pl-3.5 py-1 space-y-1 border-l-2 border-slate-200">
+                @can('manage-users')
+                @php $isUsersActive = request()->routeIs('users.*'); @endphp
+                <a href="{{ route('users.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isUsersActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isUsersActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Manajemen Pengguna') }}</span>
+                </a>
+                @endcan
+                @can('manage-settings')
+                @php $isSettingsActive = request()->routeIs('settings.*'); @endphp
+                <a href="{{ route('settings.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline {{ $isSettingsActive ? 'bg-indigo-600 text-white font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium' }}">
+                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 {{ $isSettingsActive ? 'bg-white' : 'bg-slate-300 group-hover:bg-slate-500' }}"></span>
+                    <span class="sidebar-text truncate text-sm">{{ __('Pengaturan') }}</span>
+                </a>
+                @endcan
+            </div>
+        </div>
         @endcanany
+
+        {{-- Bab: Pintasan Website --}}
+        <div x-data="{ open: false }" class="space-y-1">
+            <button type="button" @click="open = !open"
+                    class="sidebar-item flex items-center justify-between w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm transition-all duration-200 group relative cursor-pointer text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <i class="bi bi-box-arrow-up-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon text-slate-400 group-hover:text-slate-600"></i>
+                    <span class="sidebar-text truncate text-sm">{{ __('Pintasan Website') }}</span>
+                </div>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 text-slate-400 group-hover:text-slate-600" :class="{ 'rotate-180': open }"></i>
+                <span class="sidebar-tooltip">{{ __('Pintasan Website') }}</span>
+            </button>
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 class="sidebar-sub-menu ml-6 mr-3 pl-3.5 py-1 space-y-1 border-l-2 border-slate-200">
+                <a href="{{ route('opac.katalog') }}" target="_blank" class="flex items-center justify-between px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-slate-300 group-hover:bg-slate-500"></span>
+                        <span class="sidebar-text truncate text-sm">{{ __('Cari Buku (OPAC)') }}</span>
+                    </div>
+                    <i class="bi bi-arrow-up-right text-xs text-slate-400 group-hover:text-slate-600"></i>
+                </a>
+                <a href="{{ route('guest-books.visitor') }}" target="_blank" class="flex items-center justify-between px-3.5 py-2 rounded-xl text-sm transition-all duration-150 group no-underline text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-slate-300 group-hover:bg-slate-500"></span>
+                        <span class="sidebar-text truncate text-sm">{{ __('Isi Buku Tamu') }}</span>
+                    </div>
+                    <i class="bi bi-arrow-up-right text-xs text-slate-400 group-hover:text-slate-600"></i>
+                </a>
+            </div>
+        </div>
         @endunlessrole
 
         {{-- Portal Anggota --}}
         @role('anggota')
-        <p class="{{ $menuLabel }}">{{ __('Portal Anggota') }}</p>
+        <div class="px-5 pt-3 pb-2 text-xs font-bold text-slate-400 uppercase tracking-wider sidebar-text">{{ __('Portal Anggota') }}</div>
         <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
         <a href="{{ route('member.dashboard') }}" class="{{ request()->routeIs('member.dashboard') ? $navLinkActive : $navLink }}" title="{{ __('Dashboard Anggota') }}">
             <i class="bi bi-house-door text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
@@ -342,8 +483,22 @@
 
     </div>
 
+    {{-- Menu Keluar / Logout --}}
+    @auth
+    <div class="py-2 border-t border-slate-200 flex-shrink-0">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="sidebar-item flex items-center gap-3.5 w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 group relative font-medium cursor-pointer border-0 bg-transparent text-left" title="{{ __('Keluar') }}">
+                <i class="bi bi-box-arrow-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon text-red-500 group-hover:text-red-600"></i>
+                <span class="sidebar-text truncate text-sm font-semibold">{{ __('Keluar') }}</span>
+                <span class="sidebar-tooltip">{{ __('Keluar') }}</span>
+            </button>
+        </form>
+    </div>
+    @endauth
+
     {{-- Sidebar Footer --}}
-    <div class="sidebar-footer px-5 border-t border-slate-200 text-xs text-slate-400 flex-shrink-0 py-4 flex items-center justify-between">
+    <div class="sidebar-footer px-5 border-t border-slate-200 text-xs text-slate-400 flex-shrink-0 py-3 flex items-center justify-between">
         <span class="sidebar-footer-text truncate">&copy; {{ date('Y') }} {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</span>
     </div>
 </nav>

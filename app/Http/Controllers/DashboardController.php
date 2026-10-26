@@ -69,14 +69,14 @@ class DashboardController extends Controller
             $chartData[] = isset($visitsData[$dateStr]) ? (int) $visitsData[$dateStr]->total : 0;
         }
 
-        // Top 5 Books by Borrow Frequency (Popularity)
+        // Top Books by Borrow Frequency (Popularity)
         $popularBooks = \App\Models\Book::select('books.id', 'books.title')
             ->join('book_items', 'books.id', '=', 'book_items.book_id')
             ->join('circulations', 'book_items.id', '=', 'circulations.book_item_id')
             ->selectRaw('count(circulations.id) as borrow_count')
             ->groupBy('books.id', 'books.title')
             ->orderByDesc('borrow_count')
-            ->limit(10)
+            ->limit(20)
             ->get();
 
         // If no circulations yet, fallback to most owned books to avoid empty chart
@@ -84,15 +84,17 @@ class DashboardController extends Controller
             $popularBooks = \App\Models\Book::withCount('items as borrow_count')
                 ->having('borrow_count', '>', 0)
                 ->orderByDesc('borrow_count')
-                ->limit(10)
+                ->limit(20)
                 ->get();
         }
             
-        $categoryLabels = $popularBooks->pluck('title')->map(function($title) {
-            return \Illuminate\Support\Str::limit($title, 25); 
+        // Tampilkan 5 judul buku saja untuk grafik default
+        $top5Books = $popularBooks->take(5);
+        $categoryLabels = $top5Books->pluck('title')->map(function($title) {
+            return \Illuminate\Support\Str::limit($title, 22); 
         })->toArray();
-        $categoryCounts = $popularBooks->pluck('borrow_count')->toArray();
+        $categoryCounts = $top5Books->pluck('borrow_count')->toArray();
 
-        return view('dashboard', compact('stats', 'recentLoans', 'overdueLoans', 'chartLabels', 'chartData', 'categoryLabels', 'categoryCounts'));
+        return view('dashboard', compact('stats', 'recentLoans', 'overdueLoans', 'chartLabels', 'chartData', 'categoryLabels', 'categoryCounts', 'popularBooks'));
     }
 }

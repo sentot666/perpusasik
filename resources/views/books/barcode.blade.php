@@ -124,7 +124,8 @@
         /* Label Grid */
         .label-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(9cm, 1fr));
+            grid-template-columns: repeat(auto-fill, 9cm);
+            justify-content: flex-start;
             gap: 16px;
         }
 
@@ -219,6 +220,7 @@
             body {
                 background: #ffffff !important;
                 padding: 0 !important;
+                display: block !important;
             }
 
             .action-bar, .book-info-header {
@@ -229,12 +231,16 @@
                 box-shadow: none !important;
                 padding: 0 !important;
                 max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
             }
 
             .label-grid {
-                grid-template-columns: repeat(2, max-content) !important;
-                justify-content: center;
+                grid-template-columns: repeat(2, 9cm) !important;
+                justify-content: flex-start !important;
+                justify-items: start !important;
                 gap: 5mm !important;
+                margin: 0 !important;
             }
 
             .barcode-label {

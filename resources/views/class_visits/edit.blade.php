@@ -70,30 +70,15 @@
                     @error('level') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
-                {{-- Hari --}}
-                <div>
-                    <label for="day" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                        {{ __('Hari') }} <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <input type="text" name="day" id="day" value="{{ old('day', $classVisit->day) }}" class="w-full rounded-lg border border-slate-300 py-2.5 pl-3.5 pr-9 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors" placeholder="{{ __('Contoh: Senin / Selasa') }}" required>
-                        <i class="bi bi-calendar-event absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"></i>
-                    </div>
-                    @error('day') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                </div>
-
-                {{-- Tanggal Spesifik (Opsional) --}}
+                {{-- Tanggal Kunjungan --}}
                 <div>
                     <label for="date" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                        {{ __('Tanggal Spesifik') }} <span class="text-slate-400 font-normal">({{ __('Opsional') }})</span>
+                        {{ __('Tanggal Kunjungan') }} <span class="text-red-500">*</span>
                     </label>
                     <div class="relative">
-                        <input type="date" name="date" id="date" value="{{ old('date', $classVisit->date ? $classVisit->date->format('Y-m-d') : '') }}" class="w-full rounded-lg border border-slate-300 py-2.5 px-3.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors bg-white">
+                        <input type="date" name="date" id="date" value="{{ old('date', $classVisit->date ? $classVisit->date->format('Y-m-d') : '') }}" class="w-full rounded-lg border border-slate-300 py-2.5 px-3.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors bg-white" required>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
-                        <i class="bi bi-info-circle text-indigo-500"></i>
-                        <span>{{ __('Kosongkan jika jadwal ini berlaku rutin berulang setiap minggu.') }}</span>
-                    </p>
+                    <div id="day-preview" class="text-xs text-indigo-600 font-medium mt-1.5 flex items-center gap-1.5 min-h-[18px]"></div>
                     @error('date') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
 
@@ -146,4 +131,32 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('date');
+        const preview = document.getElementById('day-preview');
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+        function updateDay() {
+            if (!dateInput || !preview) return;
+            if (!dateInput.value) {
+                preview.innerHTML = '';
+                return;
+            }
+            const parts = dateInput.value.split('-');
+            if (parts.length === 3) {
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                const dayName = days[d.getDay()];
+                preview.innerHTML = `<i class="bi bi-calendar-check text-indigo-600"></i> <span>Hari otomatis: <strong class="text-indigo-700">${dayName}</strong></span>`;
+            }
+        }
+
+        if (dateInput) {
+            dateInput.addEventListener('change', updateDay);
+            dateInput.addEventListener('input', updateDay);
+            updateDay();
+        }
+    });
+</script>
 @endsection

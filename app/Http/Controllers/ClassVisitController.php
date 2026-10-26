@@ -24,7 +24,15 @@ class ClassVisitController extends Controller
             });
         }
 
-        $visits = $query->orderBy('level')->orderBy('day')->orderBy('time')->paginate(15)->withQueryString();
+        $visits = $query->orderByRaw("FIELD(level, 'sd', 'smp', 'sma')")
+            ->orderByRaw("CASE WHEN REGEXP_SUBSTR(class_name, '[0-9]+') IS NULL THEN 1 ELSE 0 END ASC")
+            ->orderByRaw("CAST(REGEXP_SUBSTR(class_name, '[0-9]+') AS UNSIGNED) ASC")
+            ->orderBy('class_name', 'asc')
+            ->orderByRaw('CASE WHEN date IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('date', 'asc')
+            ->orderBy('time', 'asc')
+            ->paginate(15)
+            ->withQueryString();
 
         $counts = ClassVisit::selectRaw("
             count(*) as total,
@@ -50,12 +58,22 @@ class ClassVisitController extends Controller
     {
         $validated = $request->validate([
             'level' => 'required|in:sd,smp,sma',
-            'day' => 'required|string|max:50',
-            'date' => 'nullable|date',
+            'date' => 'required|date',
             'time' => 'required|string|max:50',
             'class_name' => 'required|string|max:255',
             'teacher_name' => 'required|string|max:255',
         ]);
+
+        $days = [
+            'Sunday' => 'Minggu',
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+        ];
+        $validated['day'] = $days[\Carbon\Carbon::parse($validated['date'])->format('l')] ?? '';
 
         ClassVisit::create($validated);
         return redirect()->route('class-visits.index')->with('success', 'Jadwal kunjungan berhasil ditambahkan.');
@@ -70,12 +88,22 @@ class ClassVisitController extends Controller
     {
         $validated = $request->validate([
             'level' => 'required|in:sd,smp,sma',
-            'day' => 'required|string|max:50',
-            'date' => 'nullable|date',
+            'date' => 'required|date',
             'time' => 'required|string|max:50',
             'class_name' => 'required|string|max:255',
             'teacher_name' => 'required|string|max:255',
         ]);
+
+        $days = [
+            'Sunday' => 'Minggu',
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu',
+        ];
+        $validated['day'] = $days[\Carbon\Carbon::parse($validated['date'])->format('l')] ?? '';
 
         $classVisit->update($validated);
         return redirect()->route('class-visits.index')->with('success', 'Jadwal kunjungan berhasil diperbarui.');

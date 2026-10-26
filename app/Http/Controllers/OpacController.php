@@ -231,8 +231,12 @@ class OpacController extends Controller
         $levelName = $levels[$level];
 
         $schedules = \App\Models\ClassVisit::where('level', $level)
-            ->orderByRaw("FIELD(day, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")
-            ->orderBy('time')
+            ->orderByRaw("CASE WHEN REGEXP_SUBSTR(class_name, '[0-9]+') IS NULL THEN 1 ELSE 0 END ASC")
+            ->orderByRaw("CAST(REGEXP_SUBSTR(class_name, '[0-9]+') AS UNSIGNED) ASC")
+            ->orderBy('class_name', 'asc')
+            ->orderByRaw('CASE WHEN date IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('date', 'asc')
+            ->orderBy('time', 'asc')
             ->get();
 
         return view('opac.jadwal-kunjungan', compact('level', 'levelName', 'schedules'));

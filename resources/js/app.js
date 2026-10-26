@@ -205,8 +205,27 @@ function initSidebar() {
     });
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSidebar);
-} else {
+// Preserve sidebar scroll position across navigation
+function initSidebarScroll() {
+    const sidebarScroll = document.querySelector('#sidebar > div.flex-1');
+    if (sidebarScroll) {
+        const saved = sessionStorage.getItem('sidebar_scroll_pos');
+        if (saved !== null) {
+            sidebarScroll.scrollTop = parseInt(saved, 10);
+        }
+        sidebarScroll.addEventListener('scroll', () => {
+            sessionStorage.setItem('sidebar_scroll_pos', sidebarScroll.scrollTop);
+        }, { passive: true });
+    }
+}
+
+function initApp() {
     initSidebar();
+    initSidebarScroll();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
 }

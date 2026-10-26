@@ -4,14 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Page;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
+    protected array $coreSlugs = [
+        'visi-misi',
+        'sejarah',
+        'struktur-organisasi',
+        'jam-layanan',
+        'tata-tertib',
+        'pustakawan',
+        'program-kerja',
+    ];
+
     public function index()
     {
-        $pages = Page::orderBy('title')->paginate(10);
-        return view('pages.index', compact('pages'));
+        $fieldOrder = "'" . implode("', '", $this->coreSlugs) . "'";
+        $pages = Page::orderByRaw("CASE WHEN slug IN ($fieldOrder) THEN 0 ELSE 1 END")
+            ->orderByRaw("FIELD(slug, $fieldOrder)")
+            ->orderBy('title')
+            ->paginate(15);
+
+        $coreSlugs = $this->coreSlugs;
+
+        return view('pages.index', compact('pages', 'coreSlugs'));
     }
 
     public function create()
@@ -23,48 +41,82 @@ class PageController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug',
+            'slug' => 'nullable|string|max:255|unique:pages,slug',
             'content' => 'nullable|string',
             'is_active' => 'boolean'
         ]);
 
+        $slug = $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->title);
+        
+        // Pastikan slug unik
+        $baseSlug = $slug ?: 'halaman';
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Page::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+
         Page::create([
             'title' => $request->title,
-            'slug' => Str::slug($request->slug),
+            'slug' => $slug,
             'content' => $request->content,
-            'is_active' => $request->boolean('is_active')
+            'is_active' => $request->boolean('is_active', true)
         ]);
 
-        return redirect()->route('pages.index')->with('success', 'Halaman berhasil dibuat.');
+        Cache::forget('opac_pages_menu');
+
+        return redirect()->route('pages.index')->with('success', 'Halaman baru berhasil ditambahkan.');
     }
 
     public function edit(Page $page)
     {
-        return view('pages.edit', compact('page'));
+        $coreSlugs = $this->coreSlugs;
+        $isCore = in_array($page->slug, $this->coreSlugs);
+        return view('pages.edit', compact('page', 'coreSlugs', 'isCore'));
     }
 
     public function update(Request $request, Page $page)
     {
-        $request->validate([
+        $isCore = in_array($page->slug, $this->coreSlugs);
+
+        $rules = [
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:pages,slug,' . $page->id,
             'content' => 'nullable|string',
             'is_active' => 'boolean'
-        ]);
+        ];
 
-        $page->update([
+        if (!$isCore && $request->filled('slug')) {
+            $rules['slug'] = 'required|string|max:255|unique:pages,slug,' . $page->id;
+        }
+
+        $request->validate($rules);
+
+        $data = [
             'title' => $request->title,
-            'slug' => Str::slug($request->slug),
             'content' => $request->content,
             'is_active' => $request->boolean('is_active')
-        ]);
+        ];
 
-        return redirect()->route('pages.index')->with('success', 'Halaman berhasil diperbarui.');
+        if (!$isCore && $request->filled('slug')) {
+            $data['slug'] = Str::slug($request->slug);
+        }
+
+        $page->update($data);
+
+        Cache::forget('opac_pages_menu');
+
+        return redirect()->route('pages.index')->with('success', 'Konten halaman ' . $page->title . ' berhasil diperbarui.');
     }
 
     public function destroy(Page $page)
     {
+        if (in_array($page->slug, $this->coreSlugs)) {
+            return redirect()->route('pages.index')->with('error', 'Halaman profil utama OPAC tidak dapat dihapus.');
+        }
+
         $page->delete();
+        Cache::forget('opac_pages_menu');
+
         return redirect()->route('pages.index')->with('success', 'Halaman berhasil dihapus.');
     }
 }
