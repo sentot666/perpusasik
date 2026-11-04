@@ -121,6 +121,28 @@ function initSidebar() {
 
     if (!sidebar) return;
 
+    // Sinkronisasi status collapsed dari localStorage ke DOM saat inisialisasi
+    try {
+        const isCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
+        if (window.innerWidth >= 1024) {
+            if (isCollapsed) {
+                document.documentElement.classList.add('sidebar-collapsed');
+                body.classList.add('sidebar-collapsed');
+            } else {
+                document.documentElement.classList.remove('sidebar-collapsed');
+                body.classList.remove('sidebar-collapsed');
+            }
+        }
+    } catch (e) {}
+
+    // Aktifkan kembali transisi secara mulus setelah browser menyelesaikan initial paint
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            document.documentElement.classList.remove('sidebar-no-transition');
+            body.classList.remove('sidebar-no-transition');
+        });
+    });
+
     // Mobile Drawer Operations
     const closeMobileSidebar = () => {
         sidebar.classList.add('-translate-x-full');
@@ -136,10 +158,11 @@ function initSidebar() {
 
     // Desktop Collapse Operations
     const toggleDesktopSidebar = () => {
-        const isCollapsed = body.classList.toggle('sidebar-collapsed');
-        document.documentElement.classList.toggle('sidebar-collapsed', isCollapsed);
+        const isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+        body.classList.toggle('sidebar-collapsed', isCollapsed);
         try {
             localStorage.setItem('sidebar_collapsed', isCollapsed ? 'true' : 'false');
+            document.cookie = "sidebar_collapsed=" + (isCollapsed ? 'true' : 'false') + "; path=/; max-age=31536000; SameSite=Lax";
         } catch (e) {}
     };
 
@@ -196,9 +219,13 @@ function initSidebar() {
             if (overlay) overlay.classList.add('hidden');
             body.classList.remove('overflow-hidden');
             try {
-                if (localStorage.getItem('sidebar_collapsed') === 'true') {
+                const isCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
+                if (isCollapsed) {
                     body.classList.add('sidebar-collapsed');
                     document.documentElement.classList.add('sidebar-collapsed');
+                } else {
+                    body.classList.remove('sidebar-collapsed');
+                    document.documentElement.classList.remove('sidebar-collapsed');
                 }
             } catch (e) {}
         }

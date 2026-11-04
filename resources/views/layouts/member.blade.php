@@ -68,14 +68,14 @@
 
 {{-- 2. Sidebar --}}
 <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-       class="fixed lg:sticky top-0 left-0 z-50 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-200 ease-in-out flex-shrink-0 overflow-y-auto">
+       class="-translate-x-full lg:translate-x-0 fixed lg:sticky top-0 left-0 z-50 h-screen w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-200 ease-in-out flex-shrink-0 overflow-y-auto">
     
     <div>
         {{-- Brand --}}
         <div class="p-5 border-b border-slate-100 flex items-center justify-between">
             <a href="{{ route('member.dashboard') }}" class="flex items-center gap-3 no-underline">
                 <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center p-1.5 flex-shrink-0">
-                    <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-lg">
+                    <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-lg" width="40" height="40">
                 </div>
                 <div class="min-w-0">
                     <h1 class="font-bold text-sm text-slate-800 leading-tight truncate">

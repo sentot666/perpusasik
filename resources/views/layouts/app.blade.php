@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html lang="id">
+@php
+    $isSidebarCollapsed = request()->cookie('sidebar_collapsed') === 'true';
+@endphp
+<html lang="id" class="sidebar-no-transition {{ $isSidebarCollapsed ? 'sidebar-collapsed' : '' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') - {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</title>
+
+    {{-- Inline script dieksekusi sinkron di <head> untuk mencegah Layout Shift (CLS) saat halaman pertama kali load --}}
+    <script>
+        (function() {
+            try {
+                var isCollapsed = localStorage.getItem('sidebar_collapsed');
+                if (isCollapsed === null) {
+                    @if($isSidebarCollapsed)
+                    isCollapsed = 'true';
+                    try { localStorage.setItem('sidebar_collapsed', 'true'); } catch(e) {}
+                    @endif
+                }
+                if (isCollapsed === 'true' && window.innerWidth >= 1024) {
+                    document.documentElement.classList.add('sidebar-collapsed');
+                } else if (isCollapsed === 'false') {
+                    document.documentElement.classList.remove('sidebar-collapsed');
+                }
+                document.documentElement.classList.add('sidebar-no-transition');
+            } catch (e) {}
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -12,6 +37,15 @@
     <style>
         [x-cloak] {
             display: none !important;
+        }
+
+        /* ── Mencegah transisi berkedip / bergeser saat inisialisasi load ── */
+        .sidebar-no-transition,
+        .sidebar-no-transition *,
+        .sidebar-no-transition #sidebar,
+        .sidebar-no-transition #mainWrapper,
+        .sidebar-no-transition .sidebar-transition {
+            transition: none !important;
         }
 
         /* ── Collapsible & Mini Sidebar ── */
@@ -24,39 +58,39 @@
         }
 
         @media (min-width: 1024px) {
-            body.sidebar-collapsed #sidebar {
+            .sidebar-collapsed #sidebar {
                 width: 5rem !important;
             }
-            body.sidebar-collapsed #mainWrapper {
+            .sidebar-collapsed #mainWrapper {
                 margin-left: 5rem !important;
             }
-            body.sidebar-collapsed .sidebar-text,
-            body.sidebar-collapsed .sidebar-brand-text,
-            body.sidebar-collapsed .sidebar-heading,
-            body.sidebar-collapsed .sidebar-footer-text,
-            body.sidebar-collapsed .sidebar-sub-menu,
-            body.sidebar-collapsed .sidebar-chevron {
+            .sidebar-collapsed .sidebar-text,
+            .sidebar-collapsed .sidebar-brand-text,
+            .sidebar-collapsed .sidebar-heading,
+            .sidebar-collapsed .sidebar-footer-text,
+            .sidebar-collapsed .sidebar-sub-menu,
+            .sidebar-collapsed .sidebar-chevron {
                 display: none !important;
             }
-            body.sidebar-collapsed .sidebar-heading-divider {
+            .sidebar-collapsed .sidebar-heading-divider {
                 display: block !important;
             }
-            body.sidebar-collapsed .sidebar-brand-wrapper {
+            .sidebar-collapsed .sidebar-brand-wrapper {
                 justify-content: center !important;
                 padding-left: 0.5rem !important;
                 padding-right: 0.5rem !important;
             }
-            body.sidebar-collapsed .sidebar-item {
+            .sidebar-collapsed .sidebar-item {
                 margin-left: 0.5rem !important;
                 margin-right: 0.5rem !important;
                 padding-left: 0 !important;
                 padding-right: 0 !important;
                 justify-content: center !important;
             }
-            body.sidebar-collapsed .sidebar-item .sidebar-icon {
+            .sidebar-collapsed .sidebar-item .sidebar-icon {
                 margin: 0 !important;
             }
-            body.sidebar-collapsed .sidebar-item:hover .sidebar-tooltip {
+            .sidebar-collapsed .sidebar-item:hover .sidebar-tooltip {
                 display: flex !important;
                 position: absolute;
                 left: calc(100% + 0.75rem);
@@ -73,7 +107,7 @@
                 pointer-events: none;
                 z-index: 9999;
             }
-            body.sidebar-collapsed .sidebar-item:hover .sidebar-tooltip::before {
+            .sidebar-collapsed .sidebar-item:hover .sidebar-tooltip::before {
                 content: '';
                 position: absolute;
                 right: 100%;
@@ -118,7 +152,7 @@
     </style>
     @stack('styles')
 </head>
-<body class="bg-blue-50 text-slate-800 antialiased" style="font-family: 'Inter', sans-serif;">
+<body class="bg-blue-50 text-slate-800 antialiased {{ $isSidebarCollapsed ? 'sidebar-collapsed' : '' }}" style="font-family: 'Inter', sans-serif;">
 
 {{-- ═══ MOBILE OVERLAY ═══════════════════════════════════════════════════════ --}}
 <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity duration-300"></div>
@@ -130,7 +164,7 @@
     <div class="sidebar-brand-wrapper flex items-center justify-between px-5 py-5 border-b border-slate-200 flex-shrink-0">
         <a href="{{ route('dashboard') }}" class="flex items-center no-underline gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 flex items-center justify-center flex-shrink-0 bg-white rounded-lg p-0.5 border border-slate-100 shadow-xs">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-md">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full h-full object-contain rounded-md" width="40" height="40">
             </div>
             <div class="sidebar-brand-text min-w-0 flex-1">
                 <div class="font-bold text-base leading-tight text-slate-800 truncate">{{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</div>
@@ -178,10 +212,11 @@
                     <i class="bi bi-arrow-left-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isCircActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
                     <span class="sidebar-text truncate text-sm">{{ __('Sirkulasi Buku') }}</span>
                 </div>
-                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isCircActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isCircActive ? 'text-indigo-600 rotate-180' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
                 <span class="sidebar-tooltip">{{ __('Sirkulasi Buku') }}</span>
             </button>
             <div x-show="open"
+                 @if(!$isCircActive) x-cloak style="display: none;" @endif
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
@@ -227,10 +262,11 @@
                     <i class="bi bi-journals text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isCatalogActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
                     <span class="sidebar-text truncate text-sm">{{ __('Katalog & Koleksi') }}</span>
                 </div>
-                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isCatalogActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isCatalogActive ? 'text-indigo-600 rotate-180' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
                 <span class="sidebar-tooltip">{{ __('Katalog & Koleksi') }}</span>
             </button>
             <div x-show="open"
+                 @if(!$isCatalogActive) x-cloak style="display: none;" @endif
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
@@ -281,10 +317,11 @@
                     <i class="bi bi-people text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isMembersActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
                     <span class="sidebar-text truncate text-sm">{{ __('Keanggotaan') }}</span>
                 </div>
-                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isMembersActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isMembersActive ? 'text-indigo-600 rotate-180' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
                 <span class="sidebar-tooltip">{{ __('Keanggotaan') }}</span>
             </button>
             <div x-show="open"
+                 @if(!$isMembersActive) x-cloak style="display: none;" @endif
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
@@ -319,10 +356,11 @@
                     <i class="bi bi-calendar-event text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isServicesActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
                     <span class="sidebar-text truncate text-sm">{{ __('Layanan & Agenda') }}</span>
                 </div>
-                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isServicesActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isServicesActive ? 'text-indigo-600 rotate-180' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
                 <span class="sidebar-tooltip">{{ __('Layanan & Agenda') }}</span>
             </button>
             <div x-show="open"
+                 @if(!$isServicesActive) x-cloak style="display: none;" @endif
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
@@ -374,10 +412,11 @@
                     <i class="bi bi-person-gear text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon {{ $isAdminActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}"></i>
                     <span class="sidebar-text truncate text-sm">{{ __('Administrasi') }}</span>
                 </div>
-                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isAdminActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
+                <i class="bi bi-chevron-down text-xs sidebar-chevron transition-transform duration-200 {{ $isAdminActive ? 'text-indigo-600 rotate-180' : 'text-slate-400 group-hover:text-slate-600' }}" :class="{ 'rotate-180': open }"></i>
                 <span class="sidebar-tooltip">{{ __('Administrasi') }}</span>
             </button>
             <div x-show="open"
+                 @if(!$isAdminActive) x-cloak style="display: none;" @endif
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
@@ -415,6 +454,8 @@
                 <span class="sidebar-tooltip">{{ __('Pintasan Website') }}</span>
             </button>
             <div x-show="open"
+                 x-cloak
+                 style="display: none;"
                  x-transition:enter="transition ease-out duration-150"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
