@@ -265,10 +265,15 @@
         <p class="{{ $menuLabel }}">{{ __('Keanggotaan') }}</p>
         <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
 
-        <a href="{{ route('members.index') }}" class="{{ request()->routeIs('members.*') ? $navLinkActive : $navLink }}" title="{{ __('Data Anggota') }}">
+        <a href="{{ route('members.index') }}" class="{{ request()->routeIs('members.index') || request()->routeIs('members.show') || request()->routeIs('members.edit') ? $navLinkActive : $navLink }}" title="{{ __('Data Anggota') }}">
             <i class="bi bi-people text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
             <span class="sidebar-text truncate">{{ __('Data Anggota') }}</span>
             <span class="sidebar-tooltip">{{ __('Data Anggota') }}</span>
+        </a>
+        <a href="{{ route('members.create') }}" class="{{ request()->routeIs('members.create') ? $navLinkActive : $navLink }}" title="{{ __('Tambah Anggota') }}">
+            <i class="bi bi-person-plus text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
+            <span class="sidebar-text truncate">{{ __('Tambah Anggota') }}</span>
+            <span class="sidebar-tooltip">{{ __('Tambah Anggota') }}</span>
         </a>
         @endcan
 

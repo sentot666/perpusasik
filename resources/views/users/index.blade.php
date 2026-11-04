@@ -8,16 +8,41 @@
 @endsection
 
 @section('content')
-<div x-data="{ showAddModal: false }">
+<div x-data="{ showAddModal: false, showEditModal: false }"
+     @open-edit.window="
+        showEditModal = true;
+        document.getElementById('editUserForm').action = '/users/' + $event.detail.id;
+        document.getElementById('editName').value = $event.detail.name;
+        document.getElementById('editUsername').value = $event.detail.username;
+        document.getElementById('editEmail').value = $event.detail.email || '';
+        document.getElementById('editRole').value = $event.detail.role;
+        document.getElementById('editIsActive').value = $event.detail.is_active ? '1' : '0';
+     ">
 <div class="page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
         <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Manajemen User / Petugas') }}</h1>
         <p class="text-slate-500 text-xs sm:text-sm">{{ __('Kelola data hak akses petugas perpustakaan digital') }}</p>
     </div>
-    <div class="w-full sm:w-auto">
-        <button type="button" @click="showAddModal = true" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-5">
+    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+        <a href="{{ route('members.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg text-indigo-600 border border-slate-300 hover:bg-indigo-50 transition-colors gap-2 py-2 px-4 no-underline">
+            <i class="bi bi-people"></i>{{ __('Tambah Anggota') }}
+        </a>
+        <button type="button" @click="showAddModal = true" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-5 cursor-pointer">
             <i class="bi bi-person-plus"></i>{{ __('Tambah Petugas') }}
         </button>
+    </div>
+</div>
+
+{{-- Banner Info Perbedaan Petugas & Anggota --}}
+<div class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4 mb-6 flex items-start gap-3">
+    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <i class="bi bi-info-circle text-base"></i>
+    </div>
+    <div class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+        <span class="font-semibold text-slate-800">{{ __('Catatan:') }}</span> 
+        {{ __('Halaman ini khusus untuk mengelola akun Petugas / Admin. Jika Anda ingin mendaftarkan') }} 
+        <span class="font-semibold text-indigo-700">{{ __('Anggota Perpustakaan') }}</span> {{ __('(Siswa, Guru, atau Umum), silakan gunakan menu') }} 
+        <a href="{{ route('members.create') }}" class="font-bold text-indigo-600 hover:underline inline-flex items-center gap-1">{{ __('Tambah Anggota') }} <i class="bi bi-arrow-right"></i></a>.
     </div>
 </div>
 
@@ -53,7 +78,7 @@
                 </thead>
                 <tbody>
                     @forelse($users as $u)
-                    <tr x-data="{ showEditModal: false }">
+                    <tr>
                         <td style="width:50px">{{ $users->firstItem() + $loop->index }}</td>
                         <td><code class="text-base font-semibold">{{ $u->username }}</code></td>
                         <td class="font-semibold">{{ $u->name }}</td>
@@ -71,13 +96,23 @@
                         </td>
                         <td class="text-center" style="width:150px">
                             <div class="inline-flex rounded-md shadow-sm rounded-lg">
-                                <button type="button" @click="showEditModal = true" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6" title="{{ __('Edit') }}">
+                                <button type="button" 
+                                        @click="$dispatch('open-edit', {
+                                            id: {{ $u->id }},
+                                            name: '{{ addslashes($u->name) }}',
+                                            username: '{{ addslashes($u->username) }}',
+                                            email: '{{ addslashes($u->email ?? '') }}',
+                                            role: '{{ $u->roles->first()?->name ?? '' }}',
+                                            is_active: {{ $u->is_active ? 'true' : 'false' }}
+                                        })" 
+                                        class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 border border-slate-200 border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-6 cursor-pointer" 
+                                        title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 @if($u->id !== auth()->id())
                                 <form method="POST" action="{{ route('users.destroy', $u) }}" onsubmit="return confirm('{{ __('Hapus petugas ini?') }}')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6" title="{{ __('Hapus') }}">
+                                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6 cursor-pointer" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -85,64 +120,63 @@
                             </div>
                         </td>
                     </tr>
-
-                    {{-- Edit Modal --}}
-                    <div x-show="showEditModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-y-auto p-6">
-                        <div @click.outside="showEditModal = false" class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden relative mt-10">
-                            <form method="POST" action="{{ route('users.update', $u) }}">
-                                @csrf @method('PUT')
-                                
-                                <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                                    <h5 class="font-semibold text-slate-800">{{ __('Edit Petugas') }}</h5>
-                                    <button type="button" @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
-                                </div>
-                                <div class="p-8 text-left max-h-[70vh] overflow-y-auto">
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Lengkap') }}</label>
-                                            <input type="text" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $u->name }}" required>
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Username') }}</label>
-                                            <input type="text" name="username" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $u->username }}" required>
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Alamat Email') }}</label>
-                                            <input type="email" name="email" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" value="{{ $u->email }}">
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Role / Peran') }}</label>
-                                            <select name="role" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
-                                                @foreach($roles as $role)
-                                                <option value="{{ $role->name }}" {{ $u->hasRole($role->name) ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Password Baru') }} <span class="text-slate-500">({{ __('Kosongkan jika tidak diganti') }})</span></label>
-                                            <input type="password" name="password" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Min. 8 karakter') }}">
-                                        </div>
-                                        <div class="mb-6">
-                                            <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Status Aktif') }}</label>
-                                            <select name="is_active" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
-                                                <option value="1" {{ $u->is_active ? 'selected' : '' }}>{{ __('Aktif') }}</option>
-                                                <option value="0" {{ !$u->is_active ? 'selected' : '' }}>{{ __('Nonaktif') }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                                        <button type="button" @click="showEditModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
-                                        <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
-                                    </div>
-                                
-                            </form>
-                        </div>
-                    </div>
                     @empty
                     <tr><td colspan="8" class="text-center text-slate-500 py-6">{{ __('Belum ada data user') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+
+{{-- Edit Modal --}}
+<div x-show="showEditModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-y-auto p-6">
+    <div @click.outside="showEditModal = false" class="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden relative mt-10">
+        <form method="POST" id="editUserForm">
+            @csrf @method('PUT')
+            
+            <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h5 class="font-semibold text-slate-800">{{ __('Edit Petugas') }}</h5>
+                <button type="button" @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="p-8 text-left max-h-[70vh] overflow-y-auto">
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Lengkap') }}</label>
+                    <input type="text" id="editName" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Username') }}</label>
+                    <input type="text" id="editUsername" name="username" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Alamat Email') }}</label>
+                    <input type="email" id="editEmail" name="email" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Role / Peran') }}</label>
+                    <select id="editRole" name="role" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
+                        @foreach($roles as $role)
+                        <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Password Baru') }} <span class="text-slate-500">({{ __('Kosongkan jika tidak diganti') }})</span></label>
+                    <input type="password" name="password" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Min. 8 karakter') }}">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Status Aktif') }}</label>
+                    <select id="editIsActive" name="is_active" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
+                        <option value="1">{{ __('Aktif') }}</option>
+                        <option value="0">{{ __('Nonaktif') }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+                <button type="button" @click="showEditModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6 cursor-pointer">{{ __('Batal') }}</button>
+                <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6 cursor-pointer">{{ __('Simpan') }}</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -153,7 +187,7 @@
                 @csrf
                 <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                     <h5 class="font-semibold text-slate-800">{{ __('Tambah Petugas') }}</h5>
-                    <button type="button" @click="showAddModal = false" class="text-slate-400 hover:text-slate-600 transition-colors"><i class="bi bi-x-lg"></i></button>
+                    <button type="button" @click="showAddModal = false" class="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="p-8 max-h-[70vh] overflow-y-auto">
                     <div class="mb-6">
@@ -182,14 +216,14 @@
                     </div>
                 </div>
                 <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
-                    <button type="button" @click="showAddModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6">{{ __('Batal') }}</button>
-                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6">{{ __('Simpan') }}</button>
+                    <button type="button" @click="showAddModal = false" class="inline-flex items-center justify-center text-sm font-medium rounded-lg bg-slate-200 hover:bg-slate-300 transition-colors text-slate-700 py-2 px-6 cursor-pointer">{{ __('Batal') }}</button>
+                    <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white py-2 px-6 cursor-pointer">{{ __('Simpan') }}</button>
                 </div>
             </form>
         </div>
     </div>
     
-    </div> <!-- End x-data showAddModal wrapper -->
+</div> <!-- End x-data wrapper -->
 @endsection
 
 
