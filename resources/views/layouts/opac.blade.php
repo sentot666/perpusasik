@@ -226,7 +226,7 @@
     </div>
 </nav>
 
-<main class="{{ $isTransparentNav ? '' : 'pt-28 md:pt-32' }} relative z-10 min-h-[calc(100vh-250px)]">
+<main class="{{ $isTransparentNav ? '' : 'pt-28 md:pt-32' }} relative min-h-[calc(100vh-250px)]">
     @yield('content')
 </main>
 
@@ -319,6 +319,7 @@
 </footer>
 @endif
 
+@stack('modals')
 @stack('scripts')
 
     <x-toast />
