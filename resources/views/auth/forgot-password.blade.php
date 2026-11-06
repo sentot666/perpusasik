@@ -54,7 +54,7 @@
         </form>
 
         <div class="text-center mt-6">
-            <a href="{{ route('login') }}" class="text-slate-500 hover:text-slate-700 transition-colors text-xs">
+            <a href="{{ route('admin.login') }}" class="text-slate-500 hover:text-slate-700 transition-colors text-xs">
                 <i class="bi bi-arrow-left mr-1"></i>{{ __('Kembali ke Halaman Login') }}
             </a>
         </div>

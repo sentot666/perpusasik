@@ -59,22 +59,29 @@
                     <td class="px-6 py-4 text-right">
                         @if($res->status == 'Menunggu')
                             <div class="flex items-center justify-end gap-2">
-                                <form action="{{ route('reservations.approve', $res->id) }}" method="POST">
+                                <form action="{{ route('reservations.approve', $res->id) }}" method="POST"
+                                      data-confirm="{{ __('Tandai buku ini sudah siap diambil oleh siswa?') }}"
+                                      data-confirm-title="{{ __('Siapkan Buku?') }}"
+                                      data-confirm-button="{{ __('Ya, Siapkan') }}">
                                     @csrf
-                                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg text-xs" title="Tandai Siap Diambil">
-                                        <i class="bi bi-box-seam"></i> Siapkan Buku
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1.5 px-3 rounded-lg text-xs transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer" title="{{ __('Tandai Siap Diambil') }}">
+                                        <i class="bi bi-box-seam"></i> <span>{{ __('Siapkan Buku') }}</span>
                                     </button>
                                 </form>
-                                <form action="{{ route('reservations.reject', $res->id) }}" method="POST" onsubmit="return confirm('Tolak pemesanan ini?')">
+                                <form action="{{ route('reservations.reject', $res->id) }}" method="POST"
+                                      data-confirm="{{ __('Tolak dan batalkan reservasi buku ini?') }}"
+                                      data-confirm-title="{{ __('Tolak Reservasi?') }}"
+                                      data-confirm-button="{{ __('Ya, Tolak') }}"
+                                      data-confirm-danger="true">
                                     @csrf
-                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg text-xs" title="Tolak">
-                                        <i class="bi bi-x-lg"></i>
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-3 rounded-lg text-xs transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer" title="{{ __('Tolak') }}">
+                                        <i class="bi bi-x-lg"></i> <span>{{ __('Tolak') }}</span>
                                     </button>
                                 </form>
                             </div>
                         @elseif($res->status == 'Siap')
-                            <a href="{{ route('circulations.loan', ['member' => $res->member?->member_code ?? $res->member?->member_number ?? $res->member_id]) }}" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white py-1.5 px-3 rounded-lg text-xs font-bold shadow-sm" title="Proses Peminjaman Fisik">
-                                <i class="bi bi-arrow-left-right mr-1"></i> Proses Pinjam
+                            <a href="{{ route('circulations.loan', ['member' => $res->member?->member_code ?? $res->member?->member_number ?? $res->member_id]) }}" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 rounded-lg text-xs font-bold shadow-xs transition-colors no-underline" title="{{ __('Proses Peminjaman Fisik') }}">
+                                <i class="bi bi-arrow-left-right"></i> <span>{{ __('Proses Pinjam') }}</span>
                             </a>
                         @endif
                     </td>

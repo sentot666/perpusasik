@@ -123,7 +123,11 @@
                                 </a>
                                 @endcan
                                 @can('delete-books')
-                                <form action="{{ route('books.destroy', $book) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?')">
+                                <form action="{{ route('books.destroy', $book) }}" method="POST" class="inline-block"
+                                      data-confirm="{{ __('Apakah Anda yakin ingin menghapus buku ini?') }}"
+                                      data-confirm-title="{{ __('Hapus Buku?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">

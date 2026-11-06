@@ -132,7 +132,11 @@
                                 <a href="{{ route('class-visits.edit', $visit->id) }}" class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form action="{{ route('class-visits.destroy', $visit->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus jadwal kunjungan kelas {{ $visit->class_name }}?');">
+                                <form action="{{ route('class-visits.destroy', $visit->id) }}" method="POST" class="inline-block"
+                                      data-confirm="{{ __('Hapus jadwal kunjungan kelas :class?', ['class' => $visit->class_name]) }}"
+                                      data-confirm-title="{{ __('Hapus Jadwal Kunjungan?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Membaca: {{ $book->title }}</title>
+    <title>{{ __('Membaca:') }} {{ $book->title }} - {{ \App\Models\Setting::get('library_name', __('Perpustakaan')) }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -41,21 +41,30 @@
 <body>
 
     <div class="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('opac.show', $book->id) }}" class="text-white hover:text-blue-400 transition-colors bg-white/10 px-3 py-1.5 rounded-lg flex items-center text-sm font-medium">
-                <i class="bi bi-arrow-left mr-2"></i> Kembali
+        <div class="flex items-center gap-3">
+            <a href="{{ route('opac.show', $book->id) }}" id="btn-back" class="text-white hover:text-white hover:bg-white/20 transition-all bg-white/10 px-3 py-1.5 rounded-lg flex items-center text-xs sm:text-sm font-semibold no-underline" title="{{ __('Kembali ke Detail Buku (Esc)') }}">
+                <i class="bi bi-arrow-left mr-1.5 text-base"></i>
+                <span>{{ __('Kembali ke Detail Buku') }}</span>
             </a>
-            <h1 class="text-base font-bold truncate max-w-xs md:max-w-md m-0">{{ $book->title }}</h1>
+
+            <a href="{{ route('opac.katalog') }}" class="text-slate-400 hover:text-white hover:bg-white/10 transition-all px-2.5 py-1.5 rounded-lg hidden sm:flex items-center text-xs font-medium no-underline" title="{{ __('Katalog Buku') }}">
+                <i class="bi bi-grid mr-1.5"></i>
+                <span>{{ __('Katalog') }}</span>
+            </a>
+
+            <div class="h-4 w-px bg-slate-700 hidden sm:block"></div>
+
+            <h1 class="text-xs sm:text-sm font-bold text-slate-200 truncate max-w-[160px] sm:max-w-xs md:max-w-md m-0" title="{{ $book->title }}">{{ $book->title }}</h1>
         </div>
-        <div class="flex items-center gap-4 text-sm text-slate-400">
-            <span id="page-counter">Hal 1 dari ?</span>
+        <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span id="page-counter" class="bg-white/5 border border-white/10 px-2.5 py-1 rounded-md font-mono">{{ __('Hal.') }} 1 {{ __('dari') }} ?</span>
         </div>
     </div>
 
     <div class="workspace" id="workspace">
         <div id="loader">
             <div class="spinner"></div>
-            <div id="loader-text" class="font-semibold text-slate-300">Memuat Dokumen...</div>
+            <div id="loader-text" class="font-semibold text-slate-300">{{ __('Memuat Dokumen...') }}</div>
         </div>
 
         <button class="nav-btn" id="btn-prev" style="display:none;"><i class="bi bi-chevron-left text-xl"></i></button>
@@ -217,6 +226,27 @@
             }
         }
         
+        // Smart back navigation (supports Escape key & popup tab close)
+        const backBtn = document.getElementById('btn-back');
+        if (backBtn) {
+            backBtn.addEventListener('click', function(e) {
+                if (window.opener && !window.opener.closed && window.history.length <= 2) {
+                    e.preventDefault();
+                    window.close();
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (window.opener && !window.opener.closed && window.history.length <= 2) {
+                    window.close();
+                } else if (backBtn) {
+                    backBtn.click();
+                }
+            }
+        });
+
         // Start
         renderPDF();
     </script>

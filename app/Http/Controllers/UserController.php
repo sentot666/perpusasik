@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -35,30 +37,96 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
-            'username' => 'required|string|max:100|unique:users,username',
-            'email'    => 'nullable|email|max:255|unique:users,email',
+            'username' => 'required|string|max:100',
+            'email'    => 'nullable|email|max:255',
             'password' => ['required', Password::min(8)],
             'role'     => 'required|exists:roles,name',
+        ], [
+            'password.min'  => 'Password minimal harus 8 karakter.',
+            'role.required' => 'Role/Peran wajib dipilih.',
+            'role.exists'   => 'Role yang dipilih tidak valid atau belum tersedia.',
         ]);
+
+        // 1. Cek apakah ada akun AKTIF dengan username yang sama
+        $activeUserByUsername = User::where('username', $request->username)->first();
+        if ($activeUserByUsername) {
+            return back()->withInput()->withErrors(['username' => 'Username ini sudah digunakan oleh akun lain yang aktif.']);
+        }
+
+        // 2. Cek apakah ada akun AKTIF dengan email yang sama
+        if ($request->filled('email')) {
+            $activeUserByEmail = User::where('email', $request->email)->first();
+            if ($activeUserByEmail) {
+                return back()->withInput()->withErrors(['email' => 'Email ini sudah digunakan oleh akun lain yang aktif.']);
+            }
+        }
+
+        $roleName = $validated['role'];
+        unset($validated['role']);
 
         $validated['password']  = Hash::make($validated['password']);
         $validated['is_active'] = true;
 
-        $user = User::create($validated);
-        $user->assignRole($request->role);
+        try {
+            // 3. Cek apakah ada akun di tong sampah (soft-deleted) dengan username atau email tersebut
+            $trashedByUsername = User::onlyTrashed()->where('username', $request->username)->first();
+            $trashedByEmail    = $request->filled('email') 
+                ? User::onlyTrashed()->where('email', $request->email)->first() 
+                : null;
 
-        return back()->with('success', 'User/Petugas berhasil ditambahkan.');
+            $trashedTarget = $trashedByUsername ?? $trashedByEmail;
+
+            if ($trashedTarget) {
+                // Jika trashedByUsername dan trashedByEmail adalah dua baris berbeda, bersihkan email baris kedua agar tidak bentrok
+                if ($trashedByUsername && $trashedByEmail && $trashedByUsername->id !== $trashedByEmail->id) {
+                    $trashedByEmail->update(['email' => null]);
+                }
+
+                DB::transaction(function () use ($trashedTarget, $validated, $roleName) {
+                    $trashedTarget->restore();
+                    $trashedTarget->name = $validated['name'];
+                    $trashedTarget->username = $validated['username'];
+                    $trashedTarget->email = $validated['email'] ?? null;
+                    $trashedTarget->password = $validated['password'];
+                    $trashedTarget->is_active = true;
+                    $trashedTarget->save();
+
+                    $trashedTarget->syncRoles([$roleName]);
+                });
+
+                return back()->with('success', 'Akun petugas yang sebelumnya pernah dinonaktifkan/dihapus berhasil dipulihkan dan diperbarui.');
+            }
+
+            // 4. Jika murni akun baru
+            DB::transaction(function () use ($validated, $roleName) {
+                $user = User::create($validated);
+                $user->assignRole($roleName);
+            });
+
+            return back()->with('success', 'User/Petugas berhasil ditambahkan.');
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return back()->withInput()->with('error', 'Gagal menyimpan: Username atau Email tersebut sudah terdaftar di sistem. Harap gunakan username/email lain.');
+        } catch (\Throwable $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Terjadi kesalahan sistem saat menyimpan data: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
             'name'      => 'required|string|max:255',
-            'username'  => 'required|string|max:100|unique:users,username,' . $user->id,
-            'email'     => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'username'  => ['required', 'string', 'max:100', Rule::unique('users', 'username')->ignore($user->id)],
+            'email'     => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'role'      => 'required|exists:roles,name',
             'password'  => ['nullable', Password::min(8)],
             'is_active' => 'required|boolean',
+        ], [
+            'username.unique' => 'Username ini sudah terdaftar di sistem.',
+            'email.unique'    => 'Email ini sudah terdaftar di sistem.',
+            'password.min'    => 'Password minimal harus 8 karakter.',
+            'role.required'   => 'Role/Peran wajib dipilih.',
+            'role.exists'     => 'Role yang dipilih tidak valid atau belum tersedia.',
         ]);
 
         // Prevent self-demotion or self-deactivation
@@ -71,16 +139,28 @@ class UserController extends Controller
             }
         }
 
-        if ($request->filled('password')) {
-            $validated['password'] = Hash::make($request->password);
-        } else {
-            unset($validated['password']);
+        try {
+            if ($request->filled('password')) {
+                $validated['password'] = Hash::make($request->password);
+            } else {
+                unset($validated['password']);
+            }
+
+            $roleName = $validated['role'];
+            unset($validated['role']);
+
+            DB::transaction(function () use ($user, $validated, $roleName) {
+                $user->update($validated);
+                $user->syncRoles([$roleName]);
+            });
+
+            return back()->with('success', 'Data user/petugas berhasil diperbarui.');
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return back()->withInput()->with('error', 'Gagal memperbarui: Username atau Email tersebut sudah digunakan oleh akun lain di sistem.');
+        } catch (\Throwable $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Terjadi kesalahan sistem saat memperbarui data: ' . $e->getMessage());
         }
-
-        $user->update($validated);
-        $user->syncRoles([$request->role]);
-
-        return back()->with('success', 'Data user/petugas berhasil diperbarui.');
     }
 
     public function destroy(User $user)

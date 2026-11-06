@@ -203,7 +203,12 @@
                 <a href="{{ route('agendas.edit', $agenda) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit Agenda') }}">
                     <i class="bi bi-pencil"></i>
                 </a>
-                <form method="POST" action="{{ route('agendas.destroy', $agenda) }}" onsubmit="return confirm('{{ __('Apakah Anda yakin ingin menghapus agenda kegiatan ini?') }}')" class="inline-block">
+                <form method="POST" action="{{ route('agendas.destroy', $agenda) }}" 
+                      data-confirm="{{ __('Apakah Anda yakin ingin menghapus agenda kegiatan ini?') }}"
+                      data-confirm-title="{{ __('Hapus Agenda?') }}"
+                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                      data-confirm-danger="true"
+                      class="inline-block">
                     @csrf @method('DELETE')
                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus Agenda') }}">
                         <i class="bi bi-trash"></i>

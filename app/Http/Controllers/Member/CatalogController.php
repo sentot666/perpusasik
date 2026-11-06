@@ -10,6 +10,8 @@ class CatalogController extends Controller
 {
     public function __invoke(Request $request)
     {
+        session(['member_catalog_url' => $request->fullUrl()]);
+
         $query = Book::with(['authors', 'publisher'])
             ->withCount(['items', 'availableItems'])
             ->where('is_active', true);
@@ -40,7 +42,7 @@ class CatalogController extends Controller
         return view('member.catalog', compact('books', 'categories'));
     }
 
-    public function show(Book $book)
+    public function show(Request $request, Book $book)
     {
         $book->load(['authors', 'publisher', 'subjects', 'items.location']);
         
@@ -48,6 +50,18 @@ class CatalogController extends Controller
             ->where('book_id', $book->id)
             ->exists();
 
-        return view('member.catalog_show', compact('book', 'inWishlist'));
+        // Smart back URL tracking
+        $prevUrl = url()->previous();
+        $isSelfOrReader = str_contains($prevUrl, '/member/catalog/' . $book->id) || str_contains($prevUrl, '/read');
+        
+        if ($prevUrl && !$isSelfOrReader && (str_contains($prevUrl, '/member') || str_contains($prevUrl, '/opac'))) {
+            session(['member_catalog_back_url' => $prevUrl]);
+        }
+        
+        $backUrl = session('member_catalog_back_url') 
+            ?: session('member_catalog_url') 
+            ?: route('member.catalog');
+
+        return view('member.catalog_show', compact('book', 'inWishlist', 'backUrl'));
     }
 }

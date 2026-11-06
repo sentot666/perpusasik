@@ -150,7 +150,11 @@
                                 </a>
 
                                 @if(!$isCore)
-                                <form action="{{ route('pages.destroy', $page) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus halaman {{ $page->title }} secara permanen?');">
+                                <form action="{{ route('pages.destroy', $page) }}" method="POST" class="inline-block"
+                                      data-confirm="{{ __('Hapus halaman :title secara permanen?', ['title' => $page->title]) }}"
+                                      data-confirm-title="{{ __('Hapus Halaman?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">

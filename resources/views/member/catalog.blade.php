@@ -1,6 +1,6 @@
 @extends('layouts.member')
 
-@section('title', 'Katalog Buku')
+@section('title', __('Katalog Buku'))
 
 @section('content')
 <div class="space-y-6 pb-8">
@@ -9,10 +9,10 @@
     <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">
         <div class="max-w-2xl mb-4">
             <h1 class="text-xl font-bold text-slate-800 tracking-tight">
-                Katalog Buku Perpustakaan
+                {{ __('Katalog Buku Perpustakaan') }}
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
-                Cari dan temukan koleksi buku cetak maupun buku digital sekolah.
+                {{ __('Cari dan temukan koleksi buku cetak maupun buku digital sekolah.') }}
             </p>
         </div>
 
@@ -28,19 +28,19 @@
                 <input type="text" 
                        name="q" 
                        value="{{ request('q') }}"
-                       placeholder="Cari berdasarkan judul buku, nama pengarang, atau ISBN..." 
+                       placeholder="{{ __('Cari berdasarkan judul buku, nama pengarang, atau ISBN...') }}" 
                        class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors">
             </div>
 
             <button type="submit" 
                     class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-colors cursor-pointer flex-shrink-0">
-                Cari
+                {{ __('Cari') }}
             </button>
 
             @if(request('q') || request('category'))
                 <a href="{{ route('member.catalog') }}" 
                    class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold flex items-center justify-center transition-colors no-underline flex-shrink-0">
-                    Reset Filter
+                    {{ __('Reset Filter') }}
                 </a>
             @endif
         </form>
@@ -51,13 +51,13 @@
         <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             <a href="{{ route('member.catalog', array_filter(['q' => request('q'), 'sort' => request('sort')])) }}" 
                class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors no-underline {{ !request('category') ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' }}">
-                Semua Kategori
+                {{ __('Semua Kategori') }}
             </a>
 
             @foreach($categories as $cat)
                 @php $isSelected = request('category') === $cat; @endphp
                 <a href="{{ route('member.catalog', array_filter(['category' => $cat, 'q' => request('q'), 'sort' => request('sort')])) }}" 
-                   class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors no-underline {{ $isSelected ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' }}">
+                    class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors no-underline {{ $isSelected ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' }}">
                     {{ $cat }}
                 </a>
             @endforeach
@@ -67,23 +67,23 @@
     {{-- Filter Meta & Sorter --}}
     <div class="flex items-center justify-between text-xs text-slate-500 px-1">
         <div>
-            Menampilkan <strong class="text-slate-800 font-bold">{{ $books->total() }}</strong> buku
-            @if(request('q')) untuk pencarian <span class="font-bold text-slate-800">"{{ request('q') }}"</span> @endif
+            {{ __('Menampilkan') }} <strong class="text-slate-800 font-bold">{{ $books->total() }}</strong> {{ __('buku') }}
+            @if(request('q')) {{ __('untuk pencarian') }} <span class="font-bold text-slate-800">"{{ request('q') }}"</span> @endif
         </div>
 
         <form action="{{ route('member.catalog') }}" method="GET" class="flex items-center gap-2">
             @if(request('q')) <input type="hidden" name="q" value="{{ request('q') }}"> @endif
             @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
             
-            <label for="sortSelect" class="text-slate-400 hidden sm:inline">Urutkan:</label>
+            <label for="sortSelect" class="text-slate-400 hidden sm:inline">{{ __('Urutkan:') }}</label>
             <select id="sortSelect" 
                     name="sort" 
                     onchange="this.form.submit()" 
                     class="bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg px-2.5 py-1.5 outline-none focus:border-indigo-500 cursor-pointer">
-                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
-                <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Judul (A - Z)</option>
-                <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Judul (Z - A)</option>
-                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('Terbaru') }}</option>
+                <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>{{ __('Judul (A - Z)') }}</option>
+                <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>{{ __('Judul (Z - A)') }}</option>
+                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>{{ __('Terlama') }}</option>
             </select>
         </form>
     </div>
@@ -94,10 +94,10 @@
             <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center text-xl mx-auto mb-2">
                 <i class="bi bi-search"></i>
             </div>
-            <h3 class="font-bold text-slate-700 text-sm">Buku Tidak Ditemukan</h3>
-            <p class="text-xs text-slate-400 mt-1 mb-4">Coba cari dengan kata kunci yang lebih umum atau periksa ejaan.</p>
+            <h3 class="font-bold text-slate-700 text-sm">{{ __('Buku Tidak Ditemukan') }}</h3>
+            <p class="text-xs text-slate-400 mt-1 mb-4">{{ __('Coba cari dengan kata kunci yang lebih umum atau periksa ejaan.') }}</p>
             <a href="{{ route('member.catalog') }}" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors no-underline">
-                Lihat Semua Koleksi
+                {{ __('Lihat Semua Koleksi') }}
             </a>
         </div>
     @else
@@ -121,7 +121,7 @@
 
                             @if($isDigital)
                                 <span class="absolute top-2 left-2 bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                                    E-Book
+                                    {{ __('E-Book') }}
                                 </span>
                             @endif
                         </a>
@@ -140,15 +140,15 @@
                             <div class="mt-2">
                                 @if($available)
                                     <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                                        <span>Tersedia ({{ $book->available_items_count }})</span>
+                                        <span>{{ __('Tersedia (:count)', ['count' => $book->available_items_count]) }}</span>
                                     </span>
                                 @elseif($isDigital)
                                     <span class="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
-                                        <span>Baca Digital</span>
+                                        <span>{{ __('Baca Digital') }}</span>
                                     </span>
                                 @else
                                     <span class="inline-flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                                        <span>Dipinjam</span>
+                                        <span>{{ __('Dipinjam') }}</span>
                                     </span>
                                 @endif
                             </div>
@@ -159,12 +159,12 @@
                     <div class="p-3 pt-0 flex gap-1.5">
                         <a href="{{ route('member.catalog.show', $book) }}" 
                            class="flex-1 py-1.5 text-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition-colors no-underline">
-                            Detail
+                            {{ __('Detail') }}
                         </a>
                         @if($isDigital)
                             <a href="{{ route('opac.read', $book) }}" target="_blank" 
                                class="py-1.5 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] transition-colors no-underline" 
-                               title="Baca E-Book">
+                               title="{{ __('Baca E-Book') }}">
                                 <i class="bi bi-book"></i>
                             </a>
                         @endif

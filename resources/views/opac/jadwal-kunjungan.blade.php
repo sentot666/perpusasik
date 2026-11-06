@@ -7,7 +7,7 @@
     
     <div class="mb-8">
         <a href="{{ route('opac.agenda') }}" class="inline-flex items-center text-slate-500 hover:text-indigo-600 font-medium text-base transition-colors no-underline">
-            <i class="bi bi-arrow-left mr-2"></i>Kembali ke Agenda
+            <i class="bi bi-arrow-left mr-2"></i>{{ __('Kembali ke Agenda') }}
         </a>
     </div>
 
@@ -25,8 +25,8 @@
                         <i class="bi bi-mortarboard text-slate-600"></i>
                     @endif
                 </div>
-                <h1 class="text-3xl md:text-4xl font-extrabold mb-3 text-slate-800">Jadwal Kunjungan {{ $levelName }}</h1>
-                <p class="text-slate-600 max-w-2xl mx-auto">Jadwal rutin kelas untuk memanfaatkan fasilitas perpustakaan, membaca buku, dan kegiatan literasi wajib mingguan.</p>
+                <h1 class="text-3xl md:text-4xl font-extrabold mb-3 text-slate-800">{{ __('Jadwal Kunjungan') }} {{ $levelName }}</h1>
+                <p class="text-slate-600 max-w-2xl mx-auto">{{ __('Jadwal rutin kelas untuk memanfaatkan fasilitas perpustakaan, membaca buku, dan kegiatan literasi wajib mingguan.') }}</p>
             </div>
         </div>
 
@@ -38,8 +38,8 @@
                 <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-xl mb-8 flex items-start gap-4">
                     <i class="bi bi-info-circle-fill text-indigo-500 text-xl mt-0.5"></i>
                     <div>
-                        <h4 class="font-bold text-slate-800 text-base mb-1">Informasi Kunjungan</h4>
-                        <p class="text-sm text-slate-600 leading-relaxed">Siswa diwajibkan membawa kartu anggota perpustakaan saat jadwal kunjungan kelas. Waktu kunjungan adalah 45 menit (1 jam pelajaran). Silakan ikuti arahan dari wali kelas dan petugas perpustakaan.</p>
+                        <h4 class="font-bold text-slate-800 text-base mb-1">{{ __('Informasi Kunjungan') }}</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">{{ __('Siswa diwajibkan membawa kartu anggota perpustakaan saat jadwal kunjungan kelas. Waktu kunjungan adalah 45 menit (1 jam pelajaran). Silakan ikuti arahan dari wali kelas dan petugas perpustakaan.') }}</p>
                     </div>
                 </div>
 
@@ -48,11 +48,11 @@
                     <table class="w-full text-base text-left">
                         <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-sm">
                             <tr>
-                                <th scope="col" class="px-6 py-4 border-b border-slate-200">Hari</th>
-                                <th scope="col" class="px-6 py-4 border-b border-slate-200">Tanggal</th>
-                                <th scope="col" class="px-6 py-4 border-b border-slate-200">Jam (WIB)</th>
-                                <th scope="col" class="px-6 py-4 border-b border-slate-200">Kelas / Rombel</th>
-                                <th scope="col" class="px-6 py-4 border-b border-slate-200">Guru Pendamping</th>
+                                <th scope="col" class="px-6 py-4 border-b border-slate-200">{{ __('Hari') }}</th>
+                                <th scope="col" class="px-6 py-4 border-b border-slate-200">{{ __('Tanggal') }}</th>
+                                <th scope="col" class="px-6 py-4 border-b border-slate-200">{{ __('Jam (WIB)') }}</th>
+                                <th scope="col" class="px-6 py-4 border-b border-slate-200">{{ __('Kelas / Rombel') }}</th>
+                                <th scope="col" class="px-6 py-4 border-b border-slate-200">{{ __('Guru Pendamping') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-slate-600">

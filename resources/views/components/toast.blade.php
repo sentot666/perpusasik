@@ -55,6 +55,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                showModernToast('error', "{{ addslashes($error) }}");
+            @endforeach
+        @endif
         @if(session('success'))
             showModernToast('success', "{{ session('success') }}");
         @endif

@@ -8,7 +8,7 @@
             @if($page)
                 {!! $page->content !!}
             @else
-                <p>Halaman ini belum memiliki konten.</p>
+                <p>{{ __('Halaman ini belum memiliki konten.') }}</p>
             @endif
         </div>
     </div>

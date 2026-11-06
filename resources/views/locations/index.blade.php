@@ -69,7 +69,11 @@
                                     class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <form method="POST" action="{{ route('locations.destroy', $loc) }}" onsubmit="return confirm('{{ __('Hapus lokasi ini?') }}')">
+                                <form method="POST" action="{{ route('locations.destroy', $loc) }}"
+                                      data-confirm="{{ __('Apakah Anda yakin ingin menghapus lokasi ini?') }}"
+                                      data-confirm-title="{{ __('Hapus Lokasi?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>

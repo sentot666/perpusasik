@@ -234,7 +234,12 @@
                                 <a href="{{ route('items.edit', $item) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form method="POST" action="{{ route('items.destroy', $item) }}" onsubmit="return confirm('{{ __('Hapus eksemplar ini?') }}')" class="inline-block">
+                                <form method="POST" action="{{ route('items.destroy', $item) }}" 
+                                      data-confirm="{{ __('Apakah Anda yakin ingin menghapus eksemplar ini?') }}"
+                                      data-confirm-title="{{ __('Hapus Eksemplar?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true"
+                                      class="inline-block">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
@@ -268,7 +273,16 @@
     function printSelected() {
         const checked = document.querySelectorAll('.item-checkbox:checked');
         if (checked.length === 0) {
-            alert('Pilih setidaknya satu eksemplar untuk dicetak.');
+            if (window.Swal) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '{{ __('Pilih Eksemplar') }}',
+                    text: '{{ __('Pilih setidaknya satu eksemplar untuk dicetak.') }}',
+                    confirmButtonColor: '#4f46e5'
+                });
+            } else {
+                alert('{{ __('Pilih setidaknya satu eksemplar untuk dicetak.') }}');
+            }
             return;
         }
         

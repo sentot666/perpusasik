@@ -28,7 +28,7 @@ class SystemEndToEndTest extends TestCase
     
     public function test_login_page_loads()
     {
-        $response = $this->get('/login');
+        $response = $this->get('/admin/login');
         $response->assertStatus(200);
     }
     
@@ -41,7 +41,7 @@ class SystemEndToEndTest extends TestCase
 
         $response = $this->actingAs($admin)->get('/dashboard');
         $response->assertStatus(200);
-        $response->assertSee('Perpustakaan Santo Paulus'); 
+        $response->assertSee(\App\Models\Setting::get('library_name', 'Perpustakaan')); 
     }
     
     public function test_admin_can_access_books_module()

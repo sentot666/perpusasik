@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal Siswa Perpustakaan Sekolah Katolik Santo Paulus">
-    <title>@hasSection('title')@yield('title') - @endif Portal Siswa | {{ \App\Models\Setting::get('library_name', 'Perpustakaan Santo Paulus') }}</title>
+    <meta name="description" content="{{ __('Portal Siswa Perpustakaan Sekolah Katolik Santo Paulus') }}">
+    <title>@hasSection('title')@yield('title') - @endif {{ __('Portal Siswa') }} | {{ \App\Models\Setting::get('library_name', __('Perpustakaan')) }}</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +39,7 @@
 @php
     $currentUser = auth()->user();
     $currentMember = $currentUser?->member;
-    $firstName = $currentUser ? explode(' ', $currentUser->name)[0] : 'Siswa';
+    $firstName = $currentUser ? explode(' ', $currentUser->name)[0] : __('Siswa');
     
     // Calculate pending due notifications
     $pendingNotifCount = 0;
@@ -79,9 +79,9 @@
                 </div>
                 <div class="min-w-0">
                     <h1 class="font-bold text-sm text-slate-800 leading-tight truncate">
-                        {{ \App\Models\Setting::get('library_name', 'Perpustakaan') }}
+                        {{ \App\Models\Setting::get('library_name', __('Perpustakaan')) }}
                     </h1>
-                    <span class="text-xs font-semibold text-indigo-600 block mt-0.5">Portal Siswa</span>
+                    <span class="text-xs font-semibold text-indigo-600 block mt-0.5">{{ __('Portal Siswa') }}</span>
                 </div>
             </a>
 
@@ -108,7 +108,7 @@
         {{-- Nav Items --}}
         <nav class="px-3 space-y-1">
             <div class="px-3 pt-2 pb-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                Menu
+                {{ __('Menu') }}
             </div>
 
             {{-- Beranda --}}
@@ -116,7 +116,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.dashboard') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-grid-fill text-sm {{ request()->routeIs('member.dashboard') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Beranda</span>
+                    <span>{{ __('Beranda') }}</span>
                 </div>
             </a>
 
@@ -125,7 +125,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.my-books') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-book text-sm {{ request()->routeIs('member.my-books') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Buku Saya</span>
+                    <span>{{ __('Buku Saya') }}</span>
                 </div>
                 @if($activeLoanCount > 0)
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ request()->routeIs('member.my-books') ? 'bg-white text-indigo-700' : 'bg-indigo-100 text-indigo-700' }}">
@@ -139,7 +139,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.catalog*') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-search text-sm {{ request()->routeIs('member.catalog*') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Cari Buku</span>
+                    <span>{{ __('Cari Buku') }}</span>
                 </div>
             </a>
 
@@ -148,7 +148,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.reservations*') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-bookmark text-sm {{ request()->routeIs('member.reservations*') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Pemesanan</span>
+                    <span>{{ __('Pemesanan') }}</span>
                 </div>
                 @if($activeReserveCount > 0)
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
@@ -162,7 +162,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.wishlist') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-heart text-sm {{ request()->routeIs('member.wishlist') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Favorit</span>
+                    <span>{{ __('Favorit') }}</span>
                 </div>
                 @if($wishlistCount > 0)
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ request()->routeIs('member.wishlist') ? 'bg-white text-indigo-700' : 'bg-slate-100 text-slate-600' }}">
@@ -176,7 +176,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.loans') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-clock-history text-sm {{ request()->routeIs('member.loans') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Riwayat Baca</span>
+                    <span>{{ __('Riwayat Baca') }}</span>
                 </div>
             </a>
 
@@ -185,7 +185,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.profile*') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-person-badge text-sm {{ request()->routeIs('member.profile*') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Kartu Anggota</span>
+                    <span>{{ __('Kartu Anggota') }}</span>
                 </div>
             </a>
 
@@ -194,7 +194,7 @@
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors no-underline {{ request()->routeIs('member.fines') ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
                 <div class="flex items-center gap-3">
                     <i class="bi bi-shield-check text-sm {{ request()->routeIs('member.fines') ? 'text-white' : 'text-slate-400' }}"></i>
-                    <span>Status Denda</span>
+                    <span>{{ __('Status Denda') }}</span>
                 </div>
             </a>
         </nav>
@@ -206,18 +206,22 @@
            class="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors no-underline">
             <span class="flex items-center gap-2">
                 <i class="bi bi-globe"></i>
-                <span>Katalog Web</span>
+                <span>{{ __('Katalog Web') }}</span>
             </span>
             <i class="bi bi-box-arrow-up-right text-[10px]"></i>
         </a>
 
-        <form action="{{ route('logout') }}" method="POST">
+        <form action="{{ route('logout') }}" method="POST"
+              data-confirm="{{ __('Apakah kamu yakin ingin keluar dari portal siswa?') }}"
+              data-confirm-title="{{ __('Keluar dari Akun?') }}"
+              data-confirm-button="{{ __('Ya, Keluar') }}"
+              data-confirm-cancel="{{ __('Batal') }}"
+              data-confirm-danger="true">
             @csrf
             <button type="submit" 
-                    class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-colors cursor-pointer text-left"
-                    onclick="return confirm('Keluar dari akun?')">
+                    class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-colors cursor-pointer text-left">
                 <i class="bi bi-box-arrow-right"></i>
-                <span>Keluar</span>
+                <span>{{ __('Keluar') }}</span>
             </button>
         </form>
     </div>
@@ -233,26 +237,32 @@
         <div class="flex items-center gap-3">
             <button @click="sidebarOpen = true" 
                     class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 cursor-pointer"
-                    title="Buka Menu">
+                    title="{{ __('Buka Menu') }}">
                 <i class="bi bi-list text-xl"></i>
             </button>
 
             <div>
                 <h2 class="font-bold text-slate-800 text-sm sm:text-base leading-tight">
-                    Halo, {{ $firstName }}
+                    {{ __('Halo, :name', ['name' => $firstName]) }}
                 </h2>
                 <p class="text-xs text-slate-500 hidden sm:block">
-                    Selamat datang di perpustakaan sekolah.
+                    {{ __('Selamat datang di perpustakaan sekolah.') }}
                 </p>
             </div>
         </div>
 
         <div class="flex items-center gap-2 sm:gap-3">
+            {{-- Language Switcher --}}
+            <div class="flex items-center bg-slate-100 rounded-lg p-1 border border-slate-200">
+                <a href="{{ route('lang.switch', 'id') }}" class="px-2 py-0.5 rounded text-xs font-bold transition {{ app()->getLocale() == 'id' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">ID</a>
+                <a href="{{ route('lang.switch', 'en') }}" class="px-2 py-0.5 rounded text-xs font-bold transition {{ app()->getLocale() == 'en' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">EN</a>
+            </div>
+
             {{-- Notification --}}
             <div class="relative" @click.away="notifOpen = false">
                 <button type="button" @click="notifOpen = !notifOpen" 
                         class="w-9 h-9 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors flex items-center justify-center relative cursor-pointer" 
-                        title="Pemberitahuan">
+                        title="{{ __('Pemberitahuan') }}">
                     <i class="bi bi-bell text-sm"></i>
                     @if($pendingNotifCount > 0)
                     <span class="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full"></span>
@@ -262,10 +272,10 @@
                 {{-- Notification Popover --}}
                 <div x-show="notifOpen" x-transition.opacity.duration.150ms class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50" style="display: none;">
                     <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                        <span class="font-bold text-xs text-slate-700">Pemberitahuan</span>
+                        <span class="font-bold text-xs text-slate-700">{{ __('Pemberitahuan') }}</span>
                         @if($pendingNotifCount > 0)
                         <span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                            {{ $pendingNotifCount }} Perlu Diperhatikan
+                            {{ __(':count Perlu Diperhatikan', ['count' => $pendingNotifCount]) }}
                         </span>
                         @endif
                     </div>
@@ -281,20 +291,20 @@
                                     {{ $notifLoan->bookItem?->book?->title }}
                                 </p>
                                 <p class="text-[11px] {{ $isOverdueNotif ? 'text-rose-600 font-semibold' : 'text-amber-700 font-medium' }} mb-1">
-                                    {{ $isOverdueNotif ? 'Terlambat ' . abs($daysLeft) . ' hari. Mohon kembalikan ke perpustakaan.' : 'Batas pengembalian ' . ($daysLeft == 0 ? 'hari ini' : $daysLeft . ' hari lagi') . '.' }}
+                                    {{ $isOverdueNotif ? __('Terlambat :days hari. Mohon kembalikan ke perpustakaan.', ['days' => abs($daysLeft)]) : __('Batas pengembalian :time.', ['time' => ($daysLeft == 0 ? __('hari ini') : __(':days hari lagi', ['days' => $daysLeft]))]) }}
                                 </p>
-                                <span class="text-[10px] text-slate-400">Jatuh tempo: {{ \Carbon\Carbon::parse($notifLoan->due_date)->format('d M Y') }}</span>
+                                <span class="text-[10px] text-slate-400">{{ __('Jatuh tempo:') }} {{ \Carbon\Carbon::parse($notifLoan->due_date)->format('d M Y') }}</span>
                             </div>
                         @empty
                             <div class="py-6 text-center text-xs text-slate-400">
-                                Tidak ada pemberitahuan pengembalian.
+                                {{ __('Tidak ada pemberitahuan pengembalian.') }}
                             </div>
                         @endforelse
                     </div>
 
                     <div class="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
                         <a href="{{ route('member.my-books') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 no-underline">
-                            Lihat Semua Buku Saya
+                            {{ __('Lihat Semua Buku Saya') }}
                         </a>
                     </div>
                 </div>
@@ -344,12 +354,76 @@
     {{-- Clean Minimalist Footer --}}
     <footer class="mt-auto bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>{{ \App\Models\Setting::get('library_name', 'Perpustakaan Sekolah Katolik Santo Paulus') }}</span>
-            <span>&copy; {{ date('Y') }} Portal Siswa</span>
+            <span>{{ \App\Models\Setting::get('library_name', __('Perpustakaan')) }}</span>
+            <span>&copy; {{ date('Y') }} {{ __('Portal Siswa') }}</span>
         </div>
     </footer>
 
 </div>
+
+<x-toast />
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Universal Modern Confirmation Interceptor for Forms with data-confirm
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            const confirmMsg = form.dataset.confirm;
+            if (!confirmMsg || form.dataset.confirmed === 'true') return;
+
+            e.preventDefault();
+            const title = form.dataset.confirmTitle || '{{ __('Konfirmasi Tindakan') }}';
+            const subtitle = form.dataset.confirmSubtitle || '';
+            const confirmBtnText = form.dataset.confirmButton || '{{ __('Ya, Lanjutkan') }}';
+            const cancelBtnText = form.dataset.confirmCancel || '{{ __('Batal') }}';
+            const isDanger = form.dataset.confirmDanger === 'true';
+            const icon = form.dataset.confirmIcon || (isDanger ? 'warning' : 'question');
+
+            let htmlContent = `<div class="text-xs sm:text-sm text-slate-600 leading-relaxed">${confirmMsg}</div>`;
+            if (subtitle) {
+                htmlContent += `<div class="text-[11px] sm:text-xs text-slate-500 mt-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-left">${subtitle}</div>`;
+            }
+
+            if (window.Swal) {
+                Swal.fire({
+                    title: title,
+                    html: htmlContent,
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonText: confirmBtnText,
+                    cancelButtonText: cancelBtnText,
+                    confirmButtonColor: isDanger ? '#e11d48' : '#0f172a',
+                    cancelButtonColor: '#94a3b8',
+                    reverseButtons: true,
+                    focusConfirm: true,
+                    customClass: {
+                        popup: 'rounded-3xl p-6 shadow-2xl border border-slate-100 max-w-sm sm:max-w-md',
+                        title: 'text-slate-900 text-lg sm:text-xl font-bold pt-1',
+                        confirmButton: 'rounded-xl font-semibold text-xs sm:text-sm px-5 py-2.5 shadow-sm',
+                        cancelButton: 'rounded-xl font-semibold text-xs sm:text-sm px-5 py-2.5 shadow-sm'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.dataset.confirmed = 'true';
+                        Swal.fire({
+                            title: '{{ __('Memproses...') }}',
+                            text: '{{ __('Mohon tunggu sebentar.') }}',
+                            allowOutsideClick: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        form.submit();
+                    }
+                });
+            } else if (confirm(confirmMsg)) {
+                form.dataset.confirmed = 'true';
+                form.submit();
+            }
+        });
+    });
+</script>
 
 @stack('scripts')
 </body>

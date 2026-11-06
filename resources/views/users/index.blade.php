@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-<div x-data="{ showAddModal: false, showEditModal: false }"
+<div x-data="{ showAddModal: {{ $errors->any() && !old('_method') ? 'true' : 'false' }}, showEditModal: false }"
      @open-edit.window="
         showEditModal = true;
         document.getElementById('editUserForm').action = '/users/' + $event.detail.id;
@@ -110,7 +110,11 @@
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 @if($u->id !== auth()->id())
-                                <form method="POST" action="{{ route('users.destroy', $u) }}" onsubmit="return confirm('{{ __('Hapus petugas ini?') }}')">
+                                <form method="POST" action="{{ route('users.destroy', $u) }}"
+                                      data-confirm="{{ __('Apakah Anda yakin ingin menghapus petugas ini?') }}"
+                                      data-confirm-title="{{ __('Hapus Petugas?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="inline-flex items-center justify-center text-sm font-medium rounded-lg text-red-600 border border-slate-200 border-red-600 hover:bg-red-50 transition-colors gap-2 py-2 px-6 cursor-pointer" title="{{ __('Hapus') }}">
                                         <i class="bi bi-trash"></i>
@@ -190,29 +194,55 @@
                     <button type="button" @click="showAddModal = false" class="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="p-8 max-h-[70vh] overflow-y-auto">
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Lengkap') }}</label>
-                        <input type="text" name="name" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Nama lengkap petugas') }}" required>
+                    @if($roles->isEmpty())
+                    <div class="p-3.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs mb-5 flex items-start gap-2">
+                        <i class="bi bi-exclamation-triangle-fill text-amber-500 text-base mt-0.5"></i>
+                        <div>
+                            <strong>{{ __('Role Belum Tersedia!') }}</strong><br>
+                            {{ __('Tabel roles di database masih kosong. Jalankan') }} <code class="bg-amber-100 px-1 py-0.5 rounded font-bold">php artisan db:seed</code> {{ __('di terminal agar role dapat dipilih.') }}
+                        </div>
                     </div>
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Username') }}</label>
-                        <input type="text" name="username" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Username untuk login') }}" required>
+                    @endif
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Nama Lengkap') }} <span class="text-rose-500">*</span></label>
+                        <input type="text" name="name" value="{{ old('name') }}" class="w-full rounded-lg border @error('name') border-rose-500 bg-rose-50/30 @else border-slate-300 @enderror text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Nama lengkap petugas') }}" required>
+                        @error('name')
+                            <p class="text-xs text-rose-500 mt-1 mb-0">{{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="mb-6">
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Username') }} <span class="text-rose-500">*</span></label>
+                        <input type="text" name="username" value="{{ old('username') }}" class="w-full rounded-lg border @error('username') border-rose-500 bg-rose-50/30 @else border-slate-300 @enderror text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Username untuk login') }}" required>
+                        @error('username')
+                            <p class="text-xs text-rose-500 mt-1 mb-0">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="mb-5">
                         <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Alamat Email') }}</label>
-                        <input type="email" name="email" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('contoh@domain.com') }}">
+                        <input type="email" name="email" value="{{ old('email') }}" class="w-full rounded-lg border @error('email') border-rose-500 bg-rose-50/30 @else border-slate-300 @enderror text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('contoh@domain.com') }}">
+                        @error('email')
+                            <p class="text-xs text-rose-500 mt-1 mb-0">{{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Role / Peran') }}</label>
-                        <select name="role" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Role / Peran') }} <span class="text-rose-500">*</span></label>
+                        <select name="role" class="w-full rounded-lg border @error('role') border-rose-500 bg-rose-50/30 @else border-slate-300 @enderror text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none bg-white py-2 px-4" required>
+                            <option value="" disabled {{ old('role') ? '' : 'selected' }}>-- {{ __('Pilih Role') }} --</option>
                             @foreach($roles as $role)
-                            <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                            <option value="{{ $role->name }}" {{ old('role') === $role->name ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
                             @endforeach
                         </select>
+                        @error('role')
+                            <p class="text-xs text-rose-500 mt-1 mb-0">{{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Password') }}</label>
-                        <input type="password" name="password" class="w-full rounded-lg border border-slate-200 border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Min. 8 karakter') }}" required>
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Password') }} <span class="text-rose-500">*</span></label>
+                        <input type="password" name="password" class="w-full rounded-lg border @error('password') border-rose-500 bg-rose-50/30 @else border-slate-300 @enderror text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none py-2 px-4" placeholder="{{ __('Min. 8 karakter') }}" required>
+                        @error('password')
+                            <p class="text-xs text-rose-500 mt-1 mb-0">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
                 <div class="px-8 py-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">

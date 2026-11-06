@@ -142,7 +142,11 @@
                                 <a href="{{ route('guest-books.edit', $activity) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Edit') }}">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form action="{{ route('guest-books.destroy', $activity) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus catatan kunjungan ini?')">
+                                <form action="{{ route('guest-books.destroy', $activity) }}" method="POST" class="inline-block"
+                                      data-confirm="{{ __('Hapus catatan kunjungan ini?') }}"
+                                      data-confirm-title="{{ __('Hapus Kunjungan?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">

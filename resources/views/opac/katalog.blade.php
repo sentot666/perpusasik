@@ -51,16 +51,16 @@
             {{-- Left: Text, Pill Search, and CTA Buttons --}}
             <div class="w-full lg:w-7/12 text-left">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-indigo-300 text-xs font-bold uppercase tracking-wider mb-5 border border-white/15 shadow-sm">
-                    <i class="bi bi-mortarboard-fill text-indigo-400"></i> Katalog Digital Perpustakaan Sekolah
+                    <i class="bi bi-mortarboard-fill text-indigo-400"></i> {{ __('Katalog Digital Perpustakaan Sekolah') }}
                 </div>
 
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight">
-                    Jelajahi Dunia <br class="hidden sm:inline">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-sky-200 to-white">Pengetahuan Tanpa Batas</span>
+                    {{ __('Jelajahi Dunia') }} <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-sky-200 to-white">{{ __('Pengetahuan Tanpa Batas') }}</span>
                 </h1>
                 
                 <p class="text-slate-300 text-sm sm:text-base md:text-lg mb-8 leading-relaxed max-w-xl">
-                    Akses ribuan koleksi buku cetak, referensi belajar, dan e-book perpustakaan kapan saja dan di mana saja. Mudah, cepat, dan praktis.
+                    {{ __('Akses ribuan koleksi buku cetak, referensi belajar, dan e-book perpustakaan kapan saja dan di mana saja. Mudah, cepat, dan praktis.') }}
                 </p>
 
                 {{-- Pill Search Bar (UBSI Signature Capsule) --}}
@@ -70,18 +70,18 @@
                         <span class="pl-4 text-slate-400">
                             <i class="bi bi-search text-base"></i>
                         </span>
-                        <input type="text" name="q" placeholder="Cari buku, penulis, topik, atau ISBN..." class="flex-1 min-w-[120px] px-3 sm:px-4 py-2 sm:py-3 text-slate-700 text-sm sm:text-base outline-none border-0 rounded-full placeholder:text-slate-400" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                        <input type="text" name="q" placeholder="{{ __('Cari buku, penulis, topik, atau ISBN...') }}" class="flex-1 min-w-[120px] px-3 sm:px-4 py-2 sm:py-3 text-slate-700 text-sm sm:text-base outline-none border-0 rounded-full placeholder:text-slate-400" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
                         
                         <div class="relative flex items-center border-l border-slate-200 pl-2 pr-1 hidden sm:flex">
                             <select name="search_by" class="px-3 py-2 bg-transparent text-slate-600 outline-none border-0 text-xs sm:text-sm font-semibold cursor-pointer appearance-none pr-6">
-                                <option value="title">Judul</option>
-                                <option value="author">Penulis</option>
-                                <option value="subject">Topik</option>
+                                <option value="title">{{ __('Judul') }}</option>
+                                <option value="author">{{ __('Penulis') }}</option>
+                                <option value="subject">{{ __('Topik') }}</option>
                             </select>
                             <i class="bi bi-chevron-down text-[10px] text-slate-400 absolute right-2 pointer-events-none"></i>
                         </div>
 
-                        <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-md flex-shrink-0" title="Cari Buku">
+                        <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-md flex-shrink-0" title="{{ __('Cari Buku') }}">
                             <i class="bi bi-arrow-right text-lg sm:text-xl"></i>
                         </button>
                     </div>
@@ -105,10 +105,10 @@
                 {{-- CTA Buttons (Pill Style) --}}
                 <div class="flex flex-wrap items-center gap-4">
                     <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="bg-white text-indigo-700 hover:bg-indigo-50 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 text-sm sm:text-base flex items-center gap-2 no-underline">
-                        <i class="bi bi-grid-fill"></i> Lihat Koleksi
+                        <i class="bi bi-grid-fill"></i> {{ __('Lihat Koleksi') }}
                     </a>
                     <a href="{{ route('opac.page', 'tata-tertib') }}" class="border-2 border-white/80 text-white hover:bg-white/10 font-bold py-3 px-8 rounded-full transition-all duration-200 transform hover:scale-105 text-sm sm:text-base flex items-center gap-2 no-underline backdrop-blur-md">
-                        <i class="bi bi-journal-text"></i> Panduan & Tata Tertib
+                        <i class="bi bi-journal-text"></i> {{ __('Panduan & Tata Tertib') }}
                     </a>
                 </div>
             </div>
@@ -127,7 +127,7 @@
                                     <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
                                     <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
                                 </div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Perpustakaan Online</span>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Perpustakaan Online') }}</span>
                             </div>
 
                             {{-- Book Reader representation --}}
@@ -141,7 +141,7 @@
                                         <div class="h-1.5 bg-slate-200 rounded w-3/4"></div>
                                     </div>
                                     <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[9px] text-slate-400">
-                                        <span>Hal. 12</span>
+                                        <span>{{ __('Hal.') }} 12</span>
                                         <i class="bi bi-bookmark-fill text-indigo-500"></i>
                                     </div>
                                 </div>
@@ -156,7 +156,7 @@
                                     </div>
                                     <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[9px] text-slate-400">
                                         <span class="text-indigo-600 font-bold">Santo Paulus</span>
-                                        <span>Hal. 13</span>
+                                        <span>{{ __('Hal.') }} 13</span>
                                     </div>
                                 </div>
                             </div>
@@ -166,19 +166,19 @@
                     {{-- Floating Badges around the mockup (UBSI Style) --}}
                     <div class="absolute -top-5 -right-3 sm:-right-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-3 shadow-xl border border-white/20 transform rotate-6 hover:rotate-0 transition-transform duration-300 flex items-center gap-2">
                         <i class="bi bi-book-half text-lg"></i>
-                        <span class="text-xs font-extrabold tracking-wide uppercase">E-Book Digital</span>
+                        <span class="text-xs font-extrabold tracking-wide uppercase">{{ __('E-Book Digital') }}</span>
                     </div>
 
                     <div class="absolute -bottom-5 -left-3 sm:-left-5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl p-3 shadow-xl border border-white/20 transform -rotate-6 hover:rotate-0 transition-transform duration-300 flex items-center gap-2">
                         <i class="bi bi-journal-bookmark-fill text-lg"></i>
-                        <span class="text-xs font-extrabold tracking-wide uppercase">Buku Cetak</span>
+                        <span class="text-xs font-extrabold tracking-wide uppercase">{{ __('Buku Cetak') }}</span>
                     </div>
 
                     <div class="absolute top-1/2 -right-5 sm:-right-7 bg-white text-slate-800 rounded-2xl px-3 py-2 shadow-2xl border border-slate-100 transform translate-y-4 hover:scale-105 transition-transform duration-300 flex items-center gap-2">
                         <div class="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs font-bold">
                             <i class="bi bi-star-fill"></i>
                         </div>
-                        <span class="text-[11px] font-extrabold tracking-wide">Koleksi Terkini</span>
+                        <span class="text-[11px] font-extrabold tracking-wide">{{ __('Koleksi Terkini') }}</span>
                     </div>
                 </div>
             </div>
@@ -202,13 +202,13 @@
                     <div class="w-2 h-8 rounded-full bg-indigo-600 mr-3"></div>
                     <div>
                         <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 m-0 tracking-tight leading-none mb-1">
-                            Buku Populer
+                            {{ __('Buku Populer') }}
                         </h2>
-                        <p class="text-xs sm:text-sm text-slate-500 m-0">Rekomendasi Wajib Baca Minggu Ini</p>
+                        <p class="text-xs sm:text-sm text-slate-500 m-0">{{ __('Rekomendasi Wajib Baca Minggu Ini') }}</p>
                     </div>
                 </div>
                 <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-xs sm:text-sm font-bold text-indigo-600 px-4 py-2 border border-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all no-underline flex items-center gap-1.5 shadow-sm">
-                    <span>Lihat Semua</span> <i class="bi bi-arrow-right"></i>
+                    <span>{{ __('Lihat Semua') }}</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
             
@@ -218,7 +218,7 @@
                 @empty
                     <div class="col-span-full text-center py-12 text-slate-400">
                         <i class="bi bi-journal-x text-4xl block mb-2 opacity-50"></i>
-                        Belum ada data buku populer.
+                        {{ __('Belum ada data buku populer.') }}
                     </div>
                 @endforelse
             </div>
@@ -231,13 +231,13 @@
                     <div class="w-2 h-8 rounded-full bg-indigo-600 mr-3"></div>
                     <div>
                         <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 m-0 tracking-tight leading-none mb-1">
-                            Buku Terbaru
+                            {{ __('Buku Terbaru') }}
                         </h2>
-                        <p class="text-xs sm:text-sm text-slate-500 m-0">Jelajahi Judul-judul Paling Segar di Perpustakaan</p>
+                        <p class="text-xs sm:text-sm text-slate-500 m-0">{{ __('Jelajahi Judul-judul Paling Segar di Perpustakaan') }}</p>
                     </div>
                 </div>
                 <a href="{{ route('opac.katalog', ['tab' => 'koleksi']) }}" class="text-xs sm:text-sm font-bold text-indigo-600 px-4 py-2 border border-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all no-underline flex items-center gap-1.5 shadow-sm">
-                    <span>Lihat Semua</span> <i class="bi bi-arrow-right"></i>
+                    <span>{{ __('Lihat Semua') }}</span> <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
             
@@ -247,7 +247,7 @@
                 @empty
                     <div class="col-span-full text-center py-12 text-slate-400">
                         <i class="bi bi-journal-x text-4xl block mb-2 opacity-50"></i>
-                        Belum ada data buku terbaru.
+                        {{ __('Belum ada data buku terbaru.') }}
                     </div>
                 @endforelse
             </div>
@@ -262,7 +262,7 @@
                     <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
                             <i class="bi bi-funnel text-indigo-600 text-lg"></i>
-                            <h3 class="font-bold text-slate-800 m-0 text-base tracking-tight">Kategori Subjek</h3>
+                            <h3 class="font-bold text-slate-800 m-0 text-base tracking-tight">{{ __('Kategori Subjek') }}</h3>
                         </div>
                     </div>
                     <div class="p-3.5 border-b border-slate-50 bg-slate-50/60">
@@ -270,13 +270,13 @@
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                                 <i class="bi bi-search text-xs"></i>
                             </span>
-                            <input type="text" x-model="searchCategory" placeholder="Cari Kategori..." class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors shadow-sm">
+                            <input type="text" x-model="searchCategory" placeholder="{{ __('Cari Kategori...') }}" class="w-full pl-8 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors shadow-sm">
                         </div>
                     </div>
                     <div class="p-2.5 max-h-[60vh] overflow-y-auto custom-scrollbar">
                         <a href="{{ route('opac.katalog', ['tab' => $tab, 'q' => request('q')]) }}" 
                            class="block px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all mb-1 {{ !request('subject_id') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' }} no-underline">
-                            Semua Kategori
+                            {{ __('Semua Kategori') }}
                         </a>
                         
                         @foreach($categories as $category)
@@ -304,7 +304,7 @@
                         <span class="pl-4 text-slate-400">
                             <i class="bi bi-search text-base"></i>
                         </span>
-                        <input type="text" name="q" placeholder="Cari buku, penulis, topik, ISBN..." class="w-full bg-transparent border-none py-2.5 px-3 text-slate-700 outline-none text-sm placeholder:text-slate-400" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                        <input type="text" name="q" placeholder="{{ __('Cari buku, penulis, topik, ISBN...') }}" class="w-full bg-transparent border-none py-2.5 px-3 text-slate-700 outline-none text-sm placeholder:text-slate-400" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
                         
                         {{-- Autocomplete Dropdown --}}
                         <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
@@ -323,9 +323,9 @@
 
                         <div class="relative flex items-center border-l border-slate-200 pl-2 pr-1 hidden sm:flex">
                             <select name="search_by" class="bg-transparent text-slate-600 outline-none border-0 text-xs sm:text-sm font-semibold cursor-pointer appearance-none pr-6">
-                                <option value="title" {{ request('search_by') == 'title' ? 'selected' : '' }}>Judul</option>
-                                <option value="author" {{ request('search_by') == 'author' ? 'selected' : '' }}>Penulis</option>
-                                <option value="subject" {{ request('search_by') == 'subject' ? 'selected' : '' }}>Topik</option>
+                                <option value="title" {{ request('search_by') == 'title' ? 'selected' : '' }}>{{ __('Judul') }}</option>
+                                <option value="author" {{ request('search_by') == 'author' ? 'selected' : '' }}>{{ __('Penulis') }}</option>
+                                <option value="subject" {{ request('search_by') == 'subject' ? 'selected' : '' }}>{{ __('Topik') }}</option>
                             </select>
                             <i class="bi bi-chevron-down text-[10px] text-slate-400 absolute right-2 pointer-events-none"></i>
                         </div>
@@ -336,7 +336,7 @@
                 {{-- Hasil Filter Header --}}
                 <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
                     <h2 class="text-slate-500 text-sm sm:text-base font-medium m-0">
-                        Hasil dari <span class="font-bold text-slate-800">"{{ $activeCategory ? $activeCategory->name : ($tab == 'digital' ? 'Semua Koleksi Digital' : 'Semua Buku') }}"</span>
+                        {{ __('Hasil dari') }} <span class="font-bold text-slate-800">"{{ $activeCategory ? $activeCategory->name : ($tab == 'digital' ? __('Semua Koleksi Digital') : __('Semua Buku')) }}"</span>
                     </h2>
                     <span class="text-indigo-600 text-xs bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full font-bold">
                         {{ $books->count() }} {{ __('judul buku') }}

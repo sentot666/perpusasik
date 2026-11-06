@@ -25,10 +25,41 @@
 @section('content')
 <div class="page-header flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">Dashboard Admin</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Dashboard Admin') }}</h1>
         <p class="text-slate-500 text-xs sm:text-sm">{{ __('Selamat datang,') }} <strong>{{ auth()->user()->name }}</strong> — {{ now()->translatedFormat('l, d F Y') }}</p>
     </div>
 </div>
+
+{{-- Online Reservations Alert Banner --}}
+@php
+    $pendingReservationsList = \App\Models\Reservation::with(['member', 'book'])->where('status', 'Menunggu')->get();
+@endphp
+
+@if($pendingReservationsList->isNotEmpty())
+<div class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg flex-shrink-0 shadow-xs">
+            <i class="bi bi-bookmark-plus-fill"></i>
+        </div>
+        <div>
+            <h3 class="font-bold text-sm text-amber-950 flex items-center gap-2">
+                <span>{{ __('Reservasi Buku Online Menunggu Konfirmasi!') }}</span>
+                <span class="bg-amber-200 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {{ $pendingReservationsList->count() }} {{ __('Pesanan') }}
+                </span>
+            </h3>
+            <p class="text-xs text-amber-800 mt-0.5 leading-relaxed">
+                {{ __('Terdapat siswa yang melakukan pemesanan buku secara online. Silakan periksa dan siapkan buku sebelum diambil.') }}
+            </p>
+        </div>
+    </div>
+    <a href="{{ route('reservations.index') }}" 
+       class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs transition-colors flex-shrink-0 no-underline shadow-xs">
+        <span>{{ __('Konfirmasi Reservasi') }}</span>
+        <i class="bi bi-arrow-right"></i>
+    </a>
+</div>
+@endif
 
 {{-- ── Stat Cards Row 1 ─────────────────────────────────────────────────────── --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

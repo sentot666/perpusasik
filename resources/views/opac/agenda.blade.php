@@ -62,8 +62,8 @@
                 <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all shadow-sm">
                     <i class="bi bi-backpack"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Sekolah Dasar (SD)</h3>
-                <p class="text-xs text-slate-500 text-center">Lihat Jadwal Kunjungan Kelas SD</p>
+                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">{{ __('Sekolah Dasar (SD)') }}</h3>
+                <p class="text-xs text-slate-500 text-center">{{ __('Lihat Jadwal Kunjungan Kelas SD') }}</p>
             </a>
 
             <!-- SMP Grid -->
@@ -71,8 +71,8 @@
                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
                     <i class="bi bi-book-half"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Menengah Pertama (SMP)</h3>
-                <p class="text-xs text-slate-500 text-center">Lihat Jadwal Kunjungan Kelas SMP</p>
+                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">{{ __('Menengah Pertama (SMP)') }}</h3>
+                <p class="text-xs text-slate-500 text-center">{{ __('Lihat Jadwal Kunjungan Kelas SMP') }}</p>
             </a>
 
             <!-- SMA Grid -->
@@ -80,8 +80,8 @@
                 <div class="w-16 h-16 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 group-hover:bg-slate-600 group-hover:text-white transition-all shadow-sm">
                     <i class="bi bi-mortarboard"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Menengah Atas (SMA)</h3>
-                <p class="text-xs text-slate-500 text-center">Lihat Jadwal Kunjungan Kelas SMA</p>
+                <h3 class="text-lg font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">{{ __('Menengah Atas (SMA)') }}</h3>
+                <p class="text-xs text-slate-500 text-center">{{ __('Lihat Jadwal Kunjungan Kelas SMA') }}</p>
             </a>
         </div>
     </div>
@@ -116,7 +116,7 @@
                         $statusClass = $statusColors[$agenda->status] ?? 'bg-slate-400 text-white';
                     @endphp
                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider {{ $statusClass }}">
-                        {{ $agenda->status }}
+                        {{ __($agenda->status) }}
                     </span>
                 </div>
 

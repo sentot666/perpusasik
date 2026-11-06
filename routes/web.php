@@ -28,6 +28,13 @@ Route::get('/lang/{locale}', function ($locale) {
     return back();
 })->name('lang.switch');
 
+Route::get('/locale/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        session()->put('locale', $locale);
+    }
+    return back();
+})->name('locale.switch');
+
 // ── OPAC (public) ─────────────────────────────────────────────────────────────
 Route::get('/', [OpacController::class, 'index'])->name('opac.index');
 Route::get('/katalog', [OpacController::class, 'katalog'])->name('opac.katalog');
@@ -44,16 +51,32 @@ Route::post('/isi-buku-tamu', [GuestBookController::class, 'visitorStore'])->nam
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    // Portal Siswa / Anggota Login
     Route::get('/login-anggota', [LoginController::class, 'showMemberLoginForm'])->name('login.member');
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/login-anggota', [LoginController::class, 'login'])->name('login.member.submit')->middleware('throttle:5,1');
+
+    // Dedicated Admin Login (Khusus Akses Langsung URL - Tanpa Tombol Publik)
+    Route::get('/admin/login', [LoginController::class, 'showAdminLoginForm'])->name('admin.login');
+    Route::post('/admin/login', [LoginController::class, 'adminLogin'])->name('admin.login.submit')->middleware('throttle:5,1');
 
     // Password Reset
     Route::get('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('throttle:3,1');
     Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\PasswordResetController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'reset'])->name('password.update');
+    Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'reset'])->name('password.update')->middleware('throttle:5,1');
 });
+
+// Shortcut / Alias URL Admin
+Route::get('/admin', function () {
+    if (auth()->check()) {
+        return auth()->user()->hasRole('anggota') 
+            ? redirect()->route('member.dashboard') 
+            : redirect()->route('dashboard');
+    }
+    return redirect()->route('admin.login');
+});
+Route::get('/login-admin', fn() => redirect()->route('admin.login'));
+
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 // ── Authenticated Admin Routes ────────────────────────────────────────────────
@@ -67,14 +90,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
-    // ── Guestbook & Agendas ──
-    Route::get('/guest-books/scan', [GuestBookController::class, 'scanForm'])->name('guest-books.scan');
-    Route::post('/guest-books/scan', [GuestBookController::class, 'scanSubmit'])->name('guest-books.scan.submit');
-    Route::get('/guest-books/export', [GuestBookController::class, 'export'])->name('guest-books.export');
-    Route::resource('guest-books', GuestBookController::class)->except(['show']);
-    Route::resource('agendas', AgendaController::class);
-    Route::resource('class-visits', ClassVisitController::class);
-    Route::resource('pages', PageController::class);
+    // ── Guestbook, Agendas & CMS Halaman (Khusus Staf / Pustakawan) ──
+    Route::middleware(['can:manage-catalog'])->group(function () {
+        Route::get('/guest-books/scan', [GuestBookController::class, 'scanForm'])->name('guest-books.scan');
+        Route::post('/guest-books/scan', [GuestBookController::class, 'scanSubmit'])->name('guest-books.scan.submit');
+        Route::get('/guest-books/export', [GuestBookController::class, 'export'])->name('guest-books.export');
+        Route::resource('guest-books', GuestBookController::class)->except(['show']);
+        Route::resource('agendas', AgendaController::class);
+        Route::resource('class-visits', ClassVisitController::class);
+        Route::resource('pages', PageController::class);
+    });
 
     // ── Katalogisasi ────────────────────────────────────────────────────────
     Route::middleware(['can:view-books'])->group(function () {

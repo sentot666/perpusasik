@@ -32,7 +32,7 @@
                         </a>
                     @else
                         <a
-                            href="{{ route('login') }}"
+                            href="{{ route('admin.login') }}"
                             class="inline-block px-8 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-slate-200 border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                         >
                             Log in

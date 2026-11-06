@@ -1,6 +1,6 @@
 @extends('layouts.member')
 
-@section('title', 'Kartu Anggota & Profil')
+@section('title', __('Kartu Anggota & Profil'))
 
 @push('styles')
 <style>
@@ -34,10 +34,10 @@
     <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
         <div>
             <h1 class="text-xl font-bold text-slate-800 tracking-tight">
-                Kartu Anggota & Profil Siswa
+                {{ __('Kartu Anggota & Profil Siswa') }}
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
-                Kartu identitas perpustakaan digital dan informasi data diri siswa.
+                {{ __('Kartu identitas perpustakaan digital dan informasi data diri siswa.') }}
             </p>
         </div>
 
@@ -45,12 +45,12 @@
             <button onclick="window.print()" 
                     class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer">
                 <i class="bi bi-printer"></i>
-                <span>Cetak Kartu</span>
+                <span>{{ __('Cetak Kartu') }}</span>
             </button>
             <a href="{{ route('member.profile.edit') }}" 
                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-colors no-underline">
                 <i class="bi bi-pencil"></i>
-                <span>Edit Profil</span>
+                <span>{{ __('Edit Profil') }}</span>
             </a>
         </div>
     </div>
@@ -69,13 +69,13 @@
                         </div>
                         <div>
                             <h2 class="font-bold text-xs text-white leading-tight uppercase tracking-wide">
-                                {{ \App\Models\Setting::get('library_name', 'Perpustakaan') }}
+                                {{ \App\Models\Setting::get('library_name', __('Perpustakaan')) }}
                             </h2>
-                            <p class="text-[10px] text-slate-400">Kartu Anggota Perpustakaan</p>
+                            <p class="text-[10px] text-slate-400">{{ __('Kartu Anggota Perpustakaan') }}</p>
                         </div>
                     </div>
                     <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        Aktif
+                        {{ __('Aktif') }}
                     </span>
                 </div>
 
@@ -93,15 +93,15 @@
 
                     <div class="min-w-0 flex-1 space-y-1 text-xs">
                         <div>
-                            <span class="text-[10px] text-slate-400 block">Nama Siswa:</span>
+                            <span class="text-[10px] text-slate-400 block">{{ __('Nama Siswa:') }}</span>
                             <p class="font-bold text-white text-sm leading-tight truncate uppercase">{{ $member->name }}</p>
                         </div>
                         <div>
-                            <span class="text-[10px] text-slate-400 block">Nomor Induk (NIS):</span>
+                            <span class="text-[10px] text-slate-400 block">{{ __('Nomor Induk (NIS):') }}</span>
                             <p class="font-mono font-bold text-indigo-300">{{ $member->member_code }}</p>
                         </div>
                         <div class="text-[11px] text-slate-400">
-                            JK: <strong class="text-slate-200">{{ $member->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</strong>
+                            {{ __('JK:') }} <strong class="text-slate-200">{{ $member->gender === 'L' ? __('Laki-laki') : __('Perempuan') }}</strong>
                         </div>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
             </div>
 
             <p class="text-[11px] text-slate-400 text-center mt-3 no-print">
-                Tunjukkan barcode kartu ini kepada petugas saat meminjam buku.
+                {{ __('Tunjukkan barcode kartu ini kepada petugas saat meminjam buku.') }}
             </p>
         </div>
 
@@ -127,55 +127,55 @@
         <div class="lg:col-span-7 no-print">
             <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <h3 class="font-bold text-slate-800 text-sm">Informasi Data Diri</h3>
+                    <h3 class="font-bold text-slate-800 text-sm">{{ __('Informasi Data Diri') }}</h3>
                     <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
-                        {{ $member->status_label }}
+                        {{ __($member->status_label) }}
                     </span>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div>
-                        <span class="text-slate-400 block mb-0.5">Nama Lengkap</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Nama Lengkap') }}</span>
                         <p class="font-semibold text-slate-800">{{ $member->name }}</p>
                     </div>
 
                     <div>
-                        <span class="text-slate-400 block mb-0.5">Nomor Anggota (NIS)</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Nomor Anggota (NIS)') }}</span>
                         <p class="font-mono font-semibold text-slate-800">{{ $member->member_code }}</p>
                     </div>
 
                     <div>
-                        <span class="text-slate-400 block mb-0.5">Nomor Identitas (NIK/NISN)</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Nomor Identitas (NIK/NISN)') }}</span>
                         <p class="font-medium text-slate-700">{{ $member->identity_number ?? '-' }}</p>
                     </div>
 
                     <div>
-                        <span class="text-slate-400 block mb-0.5">Jenis Kelamin</span>
-                        <p class="font-medium text-slate-700">{{ $member->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Jenis Kelamin') }}</span>
+                        <p class="font-medium text-slate-700">{{ $member->gender === 'L' ? __('Laki-laki') : __('Perempuan') }}</p>
                     </div>
 
                     <div>
-                        <span class="text-slate-400 block mb-0.5">No. Telepon / WA</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('No. Telepon / WA') }}</span>
                         <p class="font-medium text-slate-700">{{ $member->phone ?? '-' }}</p>
                     </div>
 
                     <div>
-                        <span class="text-slate-400 block mb-0.5">Alamat Email</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Alamat Email') }}</span>
                         <p class="font-medium text-slate-700">{{ $member->email ?? '-' }}</p>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <span class="text-slate-400 block mb-0.5">Alamat Rumah</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Alamat Rumah') }}</span>
                         <p class="font-medium text-slate-700">{{ $member->address ?? '-' }}</p>
                     </div>
 
                     <div>
-                        <span class="text-slate-400 block mb-0.5">Tanggal Terdaftar</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Tanggal Terdaftar') }}</span>
                         <p class="font-medium text-slate-700">{{ $member->register_date ? $member->register_date->format('d F Y') : '-' }}</p>
                     </div>
 
                     <div>
-                        <span class="text-slate-400 block mb-0.5">Masa Berlaku Kartu</span>
+                        <span class="text-slate-400 block mb-0.5">{{ __('Masa Berlaku Kartu') }}</span>
                         <p class="font-medium text-slate-700">{{ $member->expired_date ? $member->expired_date->format('d F Y') : '-' }}</p>
                     </div>
                 </div>
@@ -184,7 +184,7 @@
                     <a href="{{ route('member.profile.edit') }}" 
                        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors no-underline">
                         <i class="bi bi-pencil"></i>
-                        <span>Ubah Kontak & Password</span>
+                        <span>{{ __('Ubah Kontak & Password') }}</span>
                     </a>
                 </div>
             </div>

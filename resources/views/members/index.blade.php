@@ -139,7 +139,11 @@
                                 </a>
                                 @endcan
                                 @can('delete-members')
-                                <form action="{{ route('members.destroy', $member) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?')">
+                                <form action="{{ route('members.destroy', $member) }}" method="POST" class="inline-block"
+                                      data-confirm="{{ __('Apakah Anda yakin ingin menghapus anggota ini?') }}"
+                                      data-confirm-title="{{ __('Hapus Anggota?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-danger="true">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="{{ __('Hapus') }}">
@@ -152,7 +156,6 @@
                     </tr>
                     @empty
                     <tr>
-                    <tr>
                         <td colspan="9" class="text-center py-8 text-slate-500">
                             <i class="bi bi-people text-3xl block mb-2 text-slate-300"></i>
                             {{ __('Tidak ada data anggota ditemukan') }}
@@ -160,7 +163,6 @@
                     </tr>
                     @endforelse
                 </tbody>
-            </table>
             </table>
         </div>
         @if($members->hasPages())
@@ -176,7 +178,16 @@
     function submitBulkPrint() {
         const checkboxes = document.querySelectorAll('input[name="member_ids[]"]:checked');
         if (checkboxes.length === 0) {
-            alert('Pilih minimal satu anggota!');
+            if (window.Swal) {
+            Swal.fire({
+                icon: 'warning',
+                title: '{{ __('Pilih Anggota') }}',
+                text: '{{ __('Pilih minimal satu anggota untuk dicetak!') }}',
+                confirmButtonColor: '#4f46e5'
+            });
+        } else {
+            alert('{{ __('Pilih minimal satu anggota!') }}');
+        }
             return;
         }
 

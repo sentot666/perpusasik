@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Scan Buku Tamu')
+@section('title', __('Scan Buku Tamu'))
 
 @push('styles')
 <style>
@@ -38,18 +38,18 @@
     
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Scan Buku Tamu</h1>
-            <p class="text-gray-600">Arahkan scanner ke barcode atau ketik manual ID anggota</p>
+            <h1 class="text-2xl font-bold text-gray-800">{{ __('Scan Buku Tamu') }}</h1>
+            <p class="text-gray-600">{{ __('Arahkan scanner ke barcode atau ketik manual ID anggota') }}</p>
         </div>
         <a href="{{ route('guest-books.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
-            <i class="fas fa-arrow-left mr-2"></i> Kembali
+            <i class="fas fa-arrow-left mr-2"></i> {{ __('Kembali') }}
         </a>
     </div>
 
     <div id="scan-container" class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 relative overflow-hidden">
         
         <!-- Toggle Fullscreen Button -->
-        <button type="button" id="fullscreen-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" title="Layar Penuh">
+        <button type="button" id="fullscreen-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" title="{{ __('Layar Penuh') }}">
             <i class="fas fa-expand text-xl"></i>
         </button>
 
@@ -57,8 +57,8 @@
             <div class="inline-flex items-center justify-center w-24 h-24 bg-blue-50 text-blue-600 rounded-full mb-4">
                 <i class="fas fa-barcode text-5xl"></i>
             </div>
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Mode Scan Aktif</h2>
-            <p class="text-gray-500">Tujuan otomatis: <span class="font-semibold text-blue-600">{{ \App\Models\Setting::get('default_guest_purpose', 'Membaca') }}</span></p>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ __('Mode Scan Aktif') }}</h2>
+            <p class="text-gray-500">{{ __('Tujuan otomatis:') }} <span class="font-semibold text-blue-600">{{ \App\Models\Setting::get('default_guest_purpose', __('Membaca')) }}</span></p>
         </div>
 
         <div class="max-w-md mx-auto">
@@ -69,14 +69,14 @@
                     </div>
                     <input type="text" id="barcode-input" name="barcode" 
                            class="barcode-input block w-full pl-12 pr-4 py-4 text-center text-2xl font-bold text-gray-800 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all placeholder-gray-300"
-                           placeholder="SCAN DI SINI..." 
+                           placeholder="{{ __('SCAN DI SINI...') }}" 
                            autocomplete="off" 
                            autofocus>
                 </div>
                 <div class="mt-4 text-center">
                     <span id="scan-status" class="inline-flex items-center text-sm font-medium text-gray-500">
                         <span class="w-2.5 h-2.5 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                        Menunggu scan...
+                        {{ __('Menunggu scan...') }}
                     </span>
                 </div>
             </form>
@@ -84,9 +84,9 @@
         
         <!-- Result Display Area -->
         <div id="result-area" class="mt-8 hidden flex-col items-center justify-center p-6 bg-green-50 rounded-xl border border-green-200">
-            <img id="result-photo" src="" alt="Foto" class="w-24 h-24 object-cover rounded-full shadow-md mb-4 hidden border-4 border-white">
-            <h3 id="result-name" class="text-2xl font-bold text-green-800 text-center mb-1">Nama Anggota</h3>
-            <p id="result-type" class="text-green-600 font-medium">Tipe / Kelas</p>
+            <img id="result-photo" src="" alt="{{ __('Foto') }}" class="w-24 h-24 object-cover rounded-full shadow-md mb-4 hidden border-4 border-white">
+            <h3 id="result-name" class="text-2xl font-bold text-green-800 text-center mb-1">{{ __('Nama Anggota') }}</h3>
+            <p id="result-type" class="text-green-600 font-medium">{{ __('Tipe / Kelas') }}</p>
         </div>
 
     </div>

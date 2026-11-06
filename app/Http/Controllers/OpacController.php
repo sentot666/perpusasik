@@ -30,6 +30,8 @@ class OpacController extends Controller
 
     public function katalog(Request $request)
     {
+        session(['opac_katalog_url' => $request->fullUrl()]);
+
         $tab = $request->get('tab', 'home');
 
         $query = Book::with(['authors', 'publisher', 'subjects'])
@@ -206,6 +208,10 @@ class OpacController extends Controller
 
     public function showPage($slug)
     {
+        if (!is_string($slug) || !preg_match('/^[a-z0-9_-]+$/i', $slug)) {
+            abort(404);
+        }
+
         $page = \App\Models\Page::where('slug', $slug)->where('is_active', true)->first();
         
         // Use custom view if it exists, otherwise fallback to generic page template

@@ -2,50 +2,25 @@
 
 @push('styles')
 <style>
-    /* Particles Background */
+    /* Hero Banner Background (Vibrant Blue/Cyan Vector Aesthetic) */
     #beranda {
         position: relative;
-        background: linear-gradient(135deg, #0a0f2e 0%, #152664 50%, #0d1b4b 100%);
+        background: linear-gradient(130deg, #0099ff 0%, #006be6 28%, #1435a8 60%, #08113b 100%);
         overflow: hidden;
     }
     
-    .particles-bg {
+    .hero-svg-bg {
         position: absolute;
-        top: 0;
-        left: 0;
+        inset: 0;
         width: 100%;
         height: 100%;
+        pointer-events: none;
         z-index: 1;
-        opacity: 0.5;
-        background-image: 
-            radial-gradient(circle at 15% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
-            radial-gradient(circle at 85% 30%, rgba(255,255,255,0.08) 0%, transparent 50%);
-    }
-
-    /* Mask Shape at bottom of hero */
-    .mask-a {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 80px;
-        background-color: #eff6ff; /* Matches bg-blue-50 of body */
-        clip-path: ellipse(100% 100% at 50% 100%);
-        z-index: 5;
     }
 
     .hero-content {
         position: relative;
         z-index: 10;
-    }
-
-    .hero-img {
-        animation: floatImg 6s ease-in-out infinite;
-    }
-    
-    @keyframes floatImg {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
     }
 
     /* Feature Cards */
@@ -79,74 +54,141 @@
 
 @section('content')
 
-{{-- Hero Section (Pusdiklat Style) --}}
-<div id="beranda" class="pt-32 pb-40 md:pt-40 md:pb-48">
-    <div class="particles-bg"></div>
-    <div class="mask-a"></div>
+{{-- Hero Section (Vibrant Vector Wave Style) --}}
+<div id="beranda" class="pt-32 pb-36 md:pt-40 md:pb-44">
+    <!-- SVG Vector Background matching reference design -->
+    <svg class="hero-svg-bg" viewBox="0 0 1440 600" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Top-Left Ambient Light Glow -->
+            <radialGradient id="heroCyanGlow" cx="20%" cy="30%" r="55%">
+                <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.45" />
+                <stop offset="50%" stop-color="#0084ff" stop-opacity="0.12" />
+                <stop offset="100%" stop-color="#0084ff" stop-opacity="0" />
+            </radialGradient>
+            
+            <!-- Curved Glass Ribbon Gradient -->
+            <linearGradient id="heroGlassWave" x1="0" y1="0" x2="600" y2="500" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22" />
+                <stop offset="40%" stop-color="#00f2fe" stop-opacity="0.12" />
+                <stop offset="100%" stop-color="#0077ff" stop-opacity="0" />
+            </linearGradient>
 
-    <div class="hero-content w-full px-6 sm:px-8 lg:px-12 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-8">
+            <!-- Cyan Accent Wave Gradient -->
+            <linearGradient id="heroAccentCyan" x1="0" y1="300" x2="800" y2="600" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.45" />
+                <stop offset="50%" stop-color="#0099ff" stop-opacity="0.22" />
+                <stop offset="100%" stop-color="#0055ff" stop-opacity="0" />
+            </linearGradient>
+
+            <!-- Filters for glowing orbs -->
+            <filter id="heroSoftBlur" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="35" />
+            </filter>
+            <filter id="heroBokehBlur" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="16" />
+            </filter>
+        </defs>
+
+        <!-- Ambient Cyan Glow in Left Half -->
+        <rect width="1440" height="600" fill="url(#heroCyanGlow)" />
+
+        <!-- Soft Glowing Bokeh Orbs -->
+        <circle cx="280" cy="220" r="160" fill="#00d8ff" opacity="0.32" filter="url(#heroSoftBlur)" />
+        <circle cx="480" cy="180" r="130" fill="#38bdf8" opacity="0.22" filter="url(#heroSoftBlur)" />
+        <circle cx="160" cy="380" r="110" fill="#00f0ff" opacity="0.35" filter="url(#heroSoftBlur)" />
+
+        <!-- Translucent Bokeh Bubbles -->
+        <circle cx="360" cy="240" r="55" fill="white" opacity="0.12" filter="url(#heroBokehBlur)" />
+        <circle cx="220" cy="180" r="40" fill="white" opacity="0.15" filter="url(#heroBokehBlur)" />
+        <circle cx="460" cy="320" r="70" fill="white" opacity="0.08" filter="url(#heroBokehBlur)" />
+
+        <!-- Sweeping Curved Glass Ribbon from top-left -->
+        <path d="M 0 0 L 420 0 C 370 180, 260 320, 0 440 Z" fill="url(#heroGlassWave)" />
+        <path d="M 0 60 C 260 120, 340 280, 220 500 C 140 600, 0 600, 0 600 Z" fill="white" opacity="0.06" />
+
+        <!-- Accent Cyan Ribbon above bottom-left wave -->
+        <path d="M 0 350 C 120 380, 280 490, 500 550 C 700 600, 1050 600, 1440 600 L 0 600 Z" fill="url(#heroAccentCyan)" />
+
+        <!-- Connected White Bubble Motif (top-left) -->
+        <g opacity="0.85">
+            <circle cx="130" cy="90" r="24" fill="white" />
+            <circle cx="108" cy="72" r="12" fill="white" />
+            <circle cx="152" cy="104" r="8" fill="white" opacity="0.8" />
+        </g>
+
+        <!-- Modern Geometric / Tech Accent Marks (Plus, Corner brackets) -->
+        <g opacity="0.22" fill="white" stroke="white" stroke-width="2">
+            <path d="M 90 220 L 102 220 M 96 214 L 96 226" />
+            <path d="M 380 120 L 392 120 M 386 114 L 386 126" />
+            <path d="M 520 280 L 532 280 M 526 274 L 526 286" />
+            <path d="M 1250 140 L 1262 140 M 1256 134 L 1256 146" />
+            <path d="M 1120 340 L 1132 340 M 1126 334 L 1126 346" />
+            
+            <path d="M 80 140 L 80 148 L 88 148" fill="none" stroke-width="2" />
+            <path d="M 320 80 L 320 88 L 328 88" fill="none" stroke-width="2" />
+            <path d="M 1180 80 L 1180 88 L 1188 88" fill="none" stroke-width="2" />
+            <path d="M 1320 240 L 1320 248 L 1328 248" fill="none" stroke-width="2" />
+        </g>
+
+        <!-- Main Swooping Bottom Wave matching the reference image bottom-left curve into page content -->
+        <path d="M 0 400 C 100 450, 260 550, 520 585 C 720 605, 1100 600, 1440 600 L 0 600 Z" fill="#eff6ff" />
+    </svg>
+
+    <div class="hero-content w-full max-w-4xl mx-auto px-6 sm:px-8 text-center flex flex-col items-center justify-center">
         
-        {{-- Left: Text & Search --}}
-        <div class="w-full lg:w-1/2 text-center lg:text-left">
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-6" data-aos="fade-up">
-                Selamat Datang di Katalog Online<br />
-                <span class="text-indigo-300">{{ \App\Models\Setting::get('library_name', 'Perpustakaan Sekolah Katolik Santo Paulus') }}</span>
-            </h1>
-            <p class="text-white/80 text-lg mb-8" data-aos="fade-up" data-aos-delay="100">
-                Temukan koleksi buku cetak, e-book interaktif, dan referensi akademik terbaik.
-            </p>
+        <h1 class="text-3xl md:text-5xl lg:text-5xl font-bold text-white leading-tight mb-5" data-aos="fade-up">
+            {{ __('Selamat Datang di') }}<br />
+            <span class="text-cyan-200">{{ \App\Models\Setting::get('library_name', __('landing.school_library_full')) }}</span>
+        </h1>
+        <p class="text-white/80 text-base md:text-lg mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+            {{ __('Temukan koleksi buku cetak, e-book interaktif, dan referensi akademik terbaik.') }}
+        </p>
 
-            {{-- Search Bar Integrated --}}
-            <div data-aos="fade-up" data-aos-delay="200" class="max-w-xl mx-auto lg:mx-0">
-                <form action="{{ route('opac.katalog') }}" method="GET" class="relative z-50 w-full" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
-                    <input type="hidden" name="tab" value="koleksi">
-                    <div class="flex flex-col sm:flex-row items-stretch bg-white rounded-xl overflow-visible shadow-lg relative border border-white/20">
-                        <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-200 py-3 px-4 text-sm font-semibold text-slate-600 outline-none cursor-pointer appearance-none rounded-t-xl sm:rounded-none sm:rounded-l-xl">
-                            <option value="title">Judul</option>
-                            <option value="author">Penulis</option>
-                            <option value="subject">Topik</option>
-                        </select>
-                        <div class="flex-1 flex items-center bg-transparent relative">
-                            <span class="pl-4 text-slate-400 hidden sm:block"><i class="bi bi-search"></i></span>
-                            <input type="text" name="q" placeholder="Cari buku, penulis, atau topik..." class="w-full bg-transparent border-none py-3 px-3 text-slate-700 outline-none text-sm" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
-                            
-                            <!-- Autocomplete Dropdown -->
-                            <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100]" style="display: none;">
-                                <template x-for="item in suggestions" :key="item.text + item.type">
-                                    <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
-                                                <i :class="'bi ' + item.icon"></i>
-                                            </div>
-                                            <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+        {{-- Search Bar Integrated --}}
+        <div data-aos="fade-up" data-aos-delay="200" class="w-full max-w-2xl mx-auto">
+            <form action="{{ route('opac.katalog') }}" method="GET" class="relative z-50 w-full" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
+                <input type="hidden" name="tab" value="koleksi">
+                <div class="flex flex-col sm:flex-row items-stretch bg-white rounded-xl overflow-visible shadow-2xl relative border border-white/20">
+                    <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-200 py-3.5 px-4 text-sm font-semibold text-slate-600 outline-none cursor-pointer appearance-none rounded-t-xl sm:rounded-none sm:rounded-l-xl">
+                        <option value="title">{{ __('Judul') }}</option>
+                        <option value="author">{{ __('Penulis') }}</option>
+                        <option value="subject">{{ __('Topik') }}</option>
+                    </select>
+                    <div class="flex-1 flex items-center bg-transparent relative">
+                        <span class="pl-4 text-slate-400 hidden sm:block"><i class="bi bi-search"></i></span>
+                        <input type="text" name="q" placeholder="{{ __('Cari buku, penulis, atau topik...') }}" class="w-full bg-transparent border-none py-3.5 px-3 text-slate-700 outline-none text-sm" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                        
+                        <!-- Autocomplete Dropdown -->
+                        <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100] text-left" style="display: none;">
+                            <template x-for="item in suggestions" :key="item.text + item.type">
+                                <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                            <i :class="'bi ' + item.icon"></i>
                                         </div>
-                                        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
-                                    </button>
-                                </template>
-                            </div>
+                                        <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                                    </div>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                                </button>
+                            </template>
                         </div>
-                        <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 transition-colors whitespace-nowrap rounded-b-xl sm:rounded-none sm:rounded-r-xl">
-                            <i class="bi bi-search sm:hidden mr-2"></i>Cari
-                        </button>
                     </div>
-                </form>
-            </div>
-        </div>
-
-        {{-- Right: Illustration --}}
-        <div class="w-full lg:w-1/2 flex justify-center lg:justify-end" data-aos="fade-left">
-            <img src="{{ asset('images/borrow-illustration.png') }}" alt="Library Illustration" loading="lazy" class="hero-img w-full max-w-md drop-shadow-2xl mix-blend-screen opacity-90 rounded-2xl">
+                    <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-7 transition-colors whitespace-nowrap rounded-b-xl sm:rounded-none sm:rounded-r-xl">
+                        <i class="bi bi-search sm:hidden mr-2"></i>{{ __('Cari') }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<div class="w-full px-6 sm:px-8 lg:px-12 -mt-10 relative z-20">
+<div class="w-full px-6 sm:px-8 lg:px-12 mt-12 md:mt-20 relative z-20">
 
     {{-- Section: Inovasi / Layanan Cepat --}}
     <div id="layanan" class="text-center mb-12 scroll-mt-[140px]">
-        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2 uppercase">Layanan Cepat</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2 uppercase">{{ __('Layanan Cepat') }}</h2>
         <div class="w-16 h-1 bg-indigo-600 mx-auto rounded-full mb-4"></div>
-        <p class="text-slate-500">Akses cepat ke berbagai fitur utama perpustakaan.</p>
+        <p class="text-slate-500">{{ __('Akses cepat ke berbagai fitur utama perpustakaan.') }}</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
@@ -155,8 +197,8 @@
             <div class="w-20 h-20 mx-auto bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
                 <i class="bi bi-journals text-3xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-indigo-600">Katalog Online</h4>
-            <p class="text-sm text-slate-500 m-0">Telusuri seluruh koleksi buku cetak dan e-book kami.</p>
+            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-indigo-600">{{ __('Katalog Online') }}</h4>
+            <p class="text-sm text-slate-500 m-0">{{ __('Telusuri seluruh koleksi buku cetak dan e-book kami.') }}</p>
         </a>
 
         <!-- Keanggotaan -->
@@ -164,8 +206,8 @@
             <div class="w-20 h-20 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                 <i class="bi bi-people-fill text-3xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600">Keanggotaan</h4>
-            <p class="text-sm text-slate-500 m-0">Masuk sebagai anggota untuk meminjam dan mengunduh buku.</p>
+            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600">{{ __('Keanggotaan') }}</h4>
+            <p class="text-sm text-slate-500 m-0">{{ __('Masuk sebagai anggota untuk meminjam dan mengunduh buku.') }}</p>
         </a>
 
         <!-- Buku Tamu -->
@@ -173,8 +215,8 @@
             <div class="w-20 h-20 mx-auto bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
                 <i class="bi bi-person-lines-fill text-3xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-emerald-600">Buku Tamu</h4>
-            <p class="text-sm text-slate-500 m-0">Isi daftar hadir kunjungan Anda ke perpustakaan fisik.</p>
+            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-emerald-600">{{ __('Buku Tamu') }}</h4>
+            <p class="text-sm text-slate-500 m-0">{{ __('Isi daftar hadir kunjungan Anda ke perpustakaan fisik.') }}</p>
         </a>
 
         <!-- Agenda -->
@@ -182,8 +224,8 @@
             <div class="w-20 h-20 mx-auto bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-300">
                 <i class="bi bi-calendar-event text-3xl"></i>
             </div>
-            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-amber-600">Agenda Kegiatan</h4>
-            <p class="text-sm text-slate-500 m-0">Jadwal kegiatan, literasi, dan acara perpustakaan.</p>
+            <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-amber-600">{{ __('Agenda Kegiatan') }}</h4>
+            <p class="text-sm text-slate-500 m-0">{{ __('Jadwal kegiatan, literasi, dan acara perpustakaan.') }}</p>
         </a>
     </div>
 
@@ -231,7 +273,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <!-- Content Left -->
             <div>
-                <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-3 uppercase">Tata Cara Peminjaman</h2>
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-3 uppercase">{{ __('landing.how_to_borrow') }}</h2>
                 <div class="w-16 h-1 bg-indigo-600 rounded-full mb-6"></div>
                 <p class="text-slate-600 mb-8 leading-relaxed">
                     {{ __('landing.how_to_borrow_desc') }}
@@ -272,9 +314,9 @@
 
     {{-- Section: Berita / Buku Terbaru --}}
     <div id="buku-terbaru" class="text-center mb-12 scroll-mt-[140px]">
-        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2 uppercase">Buku Terbaru</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2 uppercase">{{ __('Buku Terbaru') }}</h2>
         <div class="w-16 h-1 bg-indigo-600 mx-auto rounded-full mb-4"></div>
-        <p class="text-slate-500">Koleksi buku terbaru yang baru saja ditambahkan ke perpustakaan.</p>
+        <p class="text-slate-500">{{ __('Koleksi buku terbaru yang baru saja ditambahkan ke perpustakaan.') }}</p>
     </div>
 
     @php
@@ -304,24 +346,24 @@
                         </a>
                     </h4>
                     <p class="text-sm text-slate-500 line-clamp-2 mb-4 flex-1">
-                        {{ $book->abstract ?? 'Tidak ada abstrak.' }}
+                        {{ $book->abstract ?? __('Tidak ada abstrak.') }}
                     </p>
                     <div class="text-xs text-slate-500 border-t border-slate-100 pt-3 mt-auto">
                         <i class="bi bi-person mr-1"></i> 
-                        {{ $book->authors->pluck('name')->join(', ') ?: 'Anonim' }}
+                        {{ $book->authors->pluck('name')->join(', ') ?: __('Anonim') }}
                     </div>
                 </div>
             </div>
         @empty
             <div class="col-span-3 text-center py-12 text-slate-500">
-                Belum ada buku terbaru.
+                {{ __('Belum ada buku terbaru.') }}
             </div>
         @endforelse
     </div>
     
     <div class="text-center mb-16">
         <a href="{{ route('opac.katalog') }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-8 rounded-full shadow-md transition-colors no-underline text-sm uppercase tracking-wider">
-            Lihat Semua Koleksi
+            {{ __('Lihat Semua Koleksi') }}
         </a>
     </div>
 

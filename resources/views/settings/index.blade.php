@@ -75,13 +75,6 @@
                         <i class="bi bi-person-badge"></i>
                         <span>{{ __('Keanggotaan & Kartu') }}</span>
                     </button>
-                    <button type="button" 
-                            @click="activeTab = 'carousel'" 
-                            :class="activeTab === 'carousel' ? 'bg-indigo-600 text-white shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium'"
-                            class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-all duration-150 cursor-pointer">
-                        <i class="bi bi-images"></i>
-                        <span>{{ __('Banner Carousel OPAC') }}</span>
-                    </button>
                 </div>
 
                 {{-- ═══ TAB 1: IDENTITAS & KONTAK ═══════════════════════════════════ --}}
@@ -374,54 +367,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {{-- ═══ TAB 4: BANNER CAROUSEL OPAC ═════════════════════════════════ --}}
-                <div x-show="activeTab === 'carousel'" x-cloak class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="px-6 sm:px-8 py-5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center font-bold">
-                                <i class="bi bi-images"></i>
-                            </div>
-                            <div>
-                                <h2 class="font-bold text-slate-800 text-base leading-tight">{{ __('Banner Carousel Halaman Depan (OPAC)') }}</h2>
-                                <p class="text-xs text-slate-500 mt-0.5">{{ __('Sesuaikan gambar slider promosi yang muncul di beranda OPAC perpustakaan.') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 sm:p-8 divide-y divide-slate-100">
-                        @for ($i = 1; $i <= 3; $i++)
-                        <div class="py-6 first:pt-0 last:pb-0 flex flex-col md:flex-row gap-6 items-start">
-                            <div class="w-full md:w-56 shrink-0">
-                                <div class="aspect-video bg-slate-100 rounded-lg overflow-hidden border border-slate-200 shadow-sm relative group">
-                                    <img src="{{ asset('images/carousel-'.$i.'.jpg') }}?v={{ time() }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                                         alt="Banner Slide {{ $i }}">
-                                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-black/60 text-white backdrop-blur-xs">
-                                        Slide #{{ $i }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex-1 w-full">
-                                <label class="block text-sm font-semibold text-slate-700 mb-1.5">
-                                    {{ __('Ganti Gambar Slide') }} #{{ $i }}
-                                </label>
-                                <input type="file" 
-                                       name="carousel_{{ $i }}" 
-                                       class="block w-full text-xs text-slate-500
-                                              file:mr-3 file:py-2 file:px-3
-                                              file:rounded-md file:border-0
-                                              file:text-xs file:font-semibold
-                                              file:bg-indigo-50 file:text-indigo-700
-                                              hover:file:bg-indigo-100 transition-colors cursor-pointer border border-slate-300 rounded-lg bg-white" 
-                                       accept="image/jpeg,image/png,image/webp">
-                                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-                                    <i class="bi bi-info-circle mr-1"></i>{{ __('Format: JPG / PNG / WebP. Rekomendasi resolusi: 1920 x 600 px (Rasio lanskap). Maks: 2MB.') }}
-                                </p>
-                            </div>
-                        </div>
-                        @endfor
                     </div>
                 </div>
 

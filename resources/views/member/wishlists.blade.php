@@ -1,6 +1,6 @@
 @extends('layouts.member')
 
-@section('title', 'Buku Favorit')
+@section('title', __('Buku Favorit'))
 
 @section('content')
 <div class="space-y-6 pb-8">
@@ -9,17 +9,17 @@
     <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-xl font-bold text-slate-800 tracking-tight">
-                Buku Favorit
+                {{ __('Buku Favorit') }}
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
-                Daftar buku yang telah kamu simpan untuk dibaca atau dipinjam nanti.
+                {{ __('Daftar buku yang telah kamu simpan untuk dibaca atau dipinjam nanti.') }}
             </p>
         </div>
 
         <a href="{{ route('member.catalog') }}" 
            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-colors flex-shrink-0 no-underline">
             <i class="bi bi-search"></i>
-            <span>Cari Buku Lain</span>
+            <span>{{ __('Cari Buku Lain') }}</span>
         </a>
     </div>
 
@@ -29,10 +29,10 @@
             <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center text-xl mx-auto mb-2">
                 <i class="bi bi-heart"></i>
             </div>
-            <h3 class="font-bold text-slate-700 text-sm">Daftar Favorit Kosong</h3>
-            <p class="text-xs text-slate-400 mt-1 mb-4">Belum ada buku yang kamu simpan ke daftar favorit.</p>
+            <h3 class="font-bold text-slate-700 text-sm">{{ __('Daftar Favorit Kosong') }}</h3>
+            <p class="text-xs text-slate-400 mt-1 mb-4">{{ __('Belum ada buku yang kamu simpan ke daftar favorit.') }}</p>
             <a href="{{ route('member.catalog') }}" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors no-underline">
-                Jelajahi Katalog
+                {{ __('Jelajahi Katalog') }}
             </a>
         </div>
     @else
@@ -60,12 +60,16 @@
                             {{-- Remove Button --}}
                             <div class="absolute top-2 right-2">
                                 <form action="{{ route('member.wishlist.destroy', $book) }}" method="POST"
-                                      onsubmit="return confirm('Hapus dari favorit?')">
+                                      data-confirm="{{ __('Apakah kamu yakin ingin menghapus buku ini dari daftar favorit?') }}"
+                                      data-confirm-title="{{ __('Hapus dari Favorit?') }}"
+                                      data-confirm-button="{{ __('Ya, Hapus') }}"
+                                      data-confirm-cancel="{{ __('Batal') }}"
+                                      data-confirm-danger="true">
                                     @csrf 
                                     @method('DELETE')
                                     <button type="submit" 
                                             class="w-7 h-7 rounded-full bg-white/90 shadow-sm flex items-center justify-center text-rose-500 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer" 
-                                            title="Hapus">
+                                            title="{{ __('Hapus') }}">
                                         <i class="bi bi-x-lg text-xs"></i>
                                     </button>
                                 </form>
@@ -86,15 +90,15 @@
                             <div class="mt-2">
                                 @if($available)
                                     <span class="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                                        <span>Tersedia</span>
+                                        <span>{{ __('Tersedia') }}</span>
                                     </span>
                                 @elseif($isDigital)
                                     <span class="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">
-                                        <span>E-Book</span>
+                                        <span>{{ __('E-Book') }}</span>
                                     </span>
                                 @else
                                     <span class="inline-flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                                        <span>Dipinjam</span>
+                                        <span>{{ __('Dipinjam') }}</span>
                                     </span>
                                 @endif
                             </div>
@@ -105,12 +109,12 @@
                     <div class="p-3 pt-0 flex gap-1.5">
                         <a href="{{ route('member.catalog.show', $book) }}" 
                            class="flex-1 py-1.5 text-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] transition-colors no-underline">
-                            Detail
+                            {{ __('Detail') }}
                         </a>
                         @if($isDigital)
                             <a href="{{ route('opac.read', $book) }}" target="_blank" 
                                class="py-1.5 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] transition-colors no-underline" 
-                               title="Baca E-Book">
+                               title="{{ __('Baca E-Book') }}">
                                 <i class="bi bi-book"></i>
                             </a>
                         @endif

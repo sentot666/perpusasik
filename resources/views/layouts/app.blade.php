@@ -2,7 +2,7 @@
 @php
     $isSidebarCollapsed = request()->cookie('sidebar_collapsed') === 'true';
 @endphp
-<html lang="id" class="sidebar-no-transition {{ $isSidebarCollapsed ? 'sidebar-collapsed' : '' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="sidebar-no-transition {{ $isSidebarCollapsed ? 'sidebar-collapsed' : '' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -183,6 +183,7 @@
             $navLink = 'sidebar-item flex items-center gap-3.5 mx-3 px-4 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 group relative no-underline font-medium';
             $navLinkActive = 'sidebar-item flex items-center gap-3.5 mx-3 px-4 py-2.5 rounded-xl text-sm btn-gradient-blue font-semibold shadow-md shadow-indigo-500/20 text-white relative no-underline';
             $menuLabel = 'sidebar-heading text-[11px] uppercase tracking-wider text-slate-400 font-bold px-6 pt-4 pb-1';
+            $pendingReservationsCount = \App\Models\Reservation::where('status', 'Menunggu')->count();
         @endphp
 
         @unlessrole('anggota')
@@ -221,9 +222,16 @@
             <span class="sidebar-text truncate">{{ __('Pengembalian Buku') }}</span>
             <span class="sidebar-tooltip">{{ __('Pengembalian Buku') }}</span>
         </a>
-        <a href="{{ route('reservations.index') }}" class="{{ request()->routeIs('reservations.*') ? $navLinkActive : $navLink }}" title="{{ __('Reservasi Online') }}">
-            <i class="bi bi-journal-bookmark text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Reservasi Online') }}</span>
+        <a href="{{ route('reservations.index') }}" class="{{ request()->routeIs('reservations.*') ? $navLinkActive : $navLink }} flex items-center justify-between" title="{{ __('Reservasi Online') }}">
+            <div class="flex items-center gap-3.5 min-w-0">
+                <i class="bi bi-journal-bookmark text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
+                <span class="sidebar-text truncate">{{ __('Reservasi Online') }}</span>
+            </div>
+            @if($pendingReservationsCount > 0)
+                <span class="sidebar-text bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto animate-pulse">
+                    {{ $pendingReservationsCount }}
+                </span>
+            @endif
             <span class="sidebar-tooltip">{{ __('Reservasi Online') }}</span>
         </a>
         @endcan
@@ -265,15 +273,10 @@
         <p class="{{ $menuLabel }}">{{ __('Keanggotaan') }}</p>
         <div class="sidebar-heading-divider hidden w-8 mx-auto border-t border-slate-200 my-2"></div>
 
-        <a href="{{ route('members.index') }}" class="{{ request()->routeIs('members.index') || request()->routeIs('members.show') || request()->routeIs('members.edit') ? $navLinkActive : $navLink }}" title="{{ __('Data Anggota') }}">
+        <a href="{{ route('members.index') }}" class="{{ request()->routeIs('members.*') ? $navLinkActive : $navLink }}" title="{{ __('Data Anggota') }}">
             <i class="bi bi-people text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
             <span class="sidebar-text truncate">{{ __('Data Anggota') }}</span>
             <span class="sidebar-tooltip">{{ __('Data Anggota') }}</span>
-        </a>
-        <a href="{{ route('members.create') }}" class="{{ request()->routeIs('members.create') ? $navLinkActive : $navLink }}" title="{{ __('Tambah Anggota') }}">
-            <i class="bi bi-person-plus text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon"></i>
-            <span class="sidebar-text truncate">{{ __('Tambah Anggota') }}</span>
-            <span class="sidebar-tooltip">{{ __('Tambah Anggota') }}</span>
         </a>
         @endcan
 
@@ -421,7 +424,82 @@
 
         <div class="flex items-center ml-auto gap-2">
 
-            {{-- Notification Bell (for members - Hover Effect) --}}
+            {{-- Notification Bell (Reservasi Online untuk Admin & Petugas) --}}
+            @can('process-loans')
+            @php
+                $recentPendingReservations = \App\Models\Reservation::with(['member', 'book'])
+                    ->where('status', 'Menunggu')
+                    ->orderBy('created_at', 'desc')
+                    ->take(6)
+                    ->get();
+            @endphp
+            <div class="relative group">
+                <a href="{{ route('reservations.index') }}" 
+                   class="relative w-10 h-10 flex items-center justify-center text-slate-500 group-hover:text-indigo-600 group-hover:bg-indigo-50 rounded-xl transition-colors cursor-pointer no-underline" 
+                   title="{{ __('Notifikasi Reservasi Online') }}">
+                    <i class="bi bi-bell text-xl"></i>
+                    @if($pendingReservationsCount > 0)
+                    <span class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs animate-pulse">
+                        {{ $pendingReservationsCount > 9 ? '9+' : $pendingReservationsCount }}
+                    </span>
+                    @endif
+                </a>
+
+                {{-- Notification Dropdown on Hover --}}
+                <div class="absolute right-0 top-full pt-1 hidden group-hover:block z-50">
+                    <div class="w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                        <div class="px-5 py-3.5 border-b border-slate-100 font-bold text-slate-700 flex items-center justify-between bg-slate-50">
+                            <span class="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
+                                <i class="bi bi-journal-bookmark-fill text-indigo-600"></i> {{ __('Reservasi Online') }}
+                            </span>
+                            @if($pendingReservationsCount > 0)
+                            <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-full">
+                                {{ __(':count Menunggu Konfirmasi', ['count' => $pendingReservationsCount]) }}
+                            </span>
+                            @endif
+                        </div>
+                        <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                            @forelse($recentPendingReservations as $res)
+                            <a href="{{ route('reservations.index') }}" class="px-4 py-3 hover:bg-slate-50 transition-colors flex gap-3 items-start no-underline block">
+                                <div class="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center bg-amber-100 text-amber-700 text-sm mt-0.5">
+                                    <i class="bi bi-bookmark-plus-fill"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-1 mb-0.5">
+                                        <p class="text-xs font-bold text-slate-800 line-clamp-1">
+                                            {{ $res->member?->name ?? __('Anggota') }}
+                                        </p>
+                                        <span class="text-[10px] text-slate-400 whitespace-nowrap">{{ $res->created_at?->diffForHumans() }}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600 line-clamp-1">
+                                        {{ $res->book?->title ?? __('Judul Buku') }}
+                                    </p>
+                                    <p class="text-[10px] text-amber-700 font-semibold mt-0.5">
+                                        {{ __('NIS:') }} {{ $res->member?->member_code ?? '-' }} • {{ __('Menunggu persetujuan') }}
+                                    </p>
+                                </div>
+                            </a>
+                            @empty
+                            <div class="py-8 text-center px-4">
+                                <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mx-auto mb-2">
+                                    <i class="bi bi-check2-circle"></i>
+                                </div>
+                                <p class="text-xs font-semibold text-slate-700">{{ __('Semua Beres!') }}</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">{{ __('Tidak ada reservasi buku yang menunggu persetujuan.') }}</p>
+                            </div>
+                            @endforelse
+                        </div>
+                        <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 text-center">
+                            <a href="{{ route('reservations.index') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 no-underline inline-flex items-center gap-1.5">
+                                <span>{{ __('Kelola Semua Reservasi Online') }}</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @elsecan('view-history')
+            {{-- Notification Bell (for members fallback) --}}
             @role('anggota')
             <div class="relative group">
                 <div class="relative w-10 h-10 flex items-center justify-center text-slate-500 group-hover:text-indigo-600 group-hover:bg-indigo-50 rounded-xl transition-colors cursor-pointer">
@@ -475,15 +553,15 @@
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-semibold text-slate-800 line-clamp-1">{{ $notifLoan->bookItem?->book?->title }}</p>
                                     <p class="text-xs {{ $isOverdueNotif ? 'text-red-600 font-bold' : 'text-amber-600' }} mt-0.5">
-                                        {{ $isOverdueNotif ? 'Terlambat ' . abs($daysLeft) . ' hari!' : 'Jatuh tempo ' . ($daysLeft == 0 ? 'hari ini!' : 'dalam ' . $daysLeft . ' hari') }}
+                                        {{ $isOverdueNotif ? __('Terlambat :days hari!', ['days' => abs($daysLeft)]) : ($daysLeft == 0 ? __('Jatuh tempo hari ini!') : __('Jatuh tempo dalam :days hari', ['days' => $daysLeft])) }}
                                     </p>
                                 </div>
                             </div>
                             @empty
                             <div class="py-8 text-center">
                                 <div class="text-3xl mb-2">🎉</div>
-                                <p class="text-sm font-semibold text-slate-700">Semua aman!</p>
-                                <p class="text-xs text-slate-400 mt-1">Tidak ada buku yang akan jatuh tempo.</p>
+                                <p class="text-sm font-semibold text-slate-700">{{ __('Semua aman!') }}</p>
+                                <p class="text-xs text-slate-400 mt-1">{{ __('Tidak ada buku yang akan jatuh tempo.') }}</p>
                             </div>
                             @endforelse
                         </div>
@@ -496,6 +574,7 @@
                 </div>
             </div>
             @endrole
+            @endcan
 
             {{-- Auto Refresh Widget --}}
             <div id="autoRefreshContainer" class="hidden sm:flex items-center gap-2" x-data="autoRefreshWidget()">
@@ -522,6 +601,12 @@
                     <div class="h-full bg-indigo-600 rounded-full transition-all duration-1000"
                         :style="'width:' + progress + '%'"></div>
                 </div>
+            </div>
+
+            {{-- Language Switcher --}}
+            <div class="flex items-center bg-slate-100 rounded-lg p-1 border border-slate-200">
+                <a href="{{ route('lang.switch', 'id') }}" class="px-2 py-0.5 rounded text-xs font-bold transition {{ app()->getLocale() == 'id' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">ID</a>
+                <a href="{{ route('lang.switch', 'en') }}" class="px-2 py-0.5 rounded text-xs font-bold transition {{ app()->getLocale() == 'en' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-800' }}">EN</a>
             </div>
 
             {{-- User dropdown (Hover Effect) --}}
@@ -554,7 +639,7 @@
             </div>
             @else
             <div class="flex items-center gap-2">
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition-colors no-underline">
+                <a href="{{ route('admin.login') }}" class="inline-flex items-center justify-center text-xs sm:text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 transition-colors no-underline">
                     <i class="bi bi-box-arrow-in-right mr-1.5"></i> {{ __('Masuk / Login') }}
                 </a>
             </div>
@@ -664,6 +749,64 @@ if (window.autoRefreshWidget) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Universal Modern Confirmation Interceptor for Forms with data-confirm
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                const confirmMsg = form.dataset.confirm;
+                if (!confirmMsg || form.dataset.confirmed === 'true') return;
+
+                e.preventDefault();
+                const title = form.dataset.confirmTitle || '{{ __('Konfirmasi Tindakan') }}';
+                const subtitle = form.dataset.confirmSubtitle || '';
+                const confirmBtnText = form.dataset.confirmButton || '{{ __('Ya, Lanjutkan') }}';
+                const cancelBtnText = form.dataset.confirmCancel || '{{ __('Batal') }}';
+                const isDanger = form.dataset.confirmDanger === 'true';
+                const icon = form.dataset.confirmIcon || (isDanger ? 'warning' : 'question');
+
+                let htmlContent = `<div class="text-xs sm:text-sm text-slate-600 leading-relaxed">${confirmMsg}</div>`;
+                if (subtitle) {
+                    htmlContent += `<div class="text-[11px] sm:text-xs text-slate-500 mt-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-left">${subtitle}</div>`;
+                }
+
+                if (window.Swal) {
+                    Swal.fire({
+                        title: title,
+                        html: htmlContent,
+                        icon: icon,
+                        showCancelButton: true,
+                        confirmButtonText: confirmBtnText,
+                        cancelButtonText: cancelBtnText,
+                        confirmButtonColor: isDanger ? '#e11d48' : '#4f46e5',
+                        cancelButtonColor: '#94a3b8',
+                        reverseButtons: true,
+                        focusConfirm: true,
+                        customClass: {
+                            popup: 'rounded-3xl p-6 shadow-2xl border border-slate-100 max-w-sm sm:max-w-md',
+                            title: 'text-slate-900 text-lg sm:text-xl font-bold pt-1',
+                            confirmButton: 'rounded-xl font-semibold text-xs sm:text-sm px-5 py-2.5 shadow-sm',
+                            cancelButton: 'rounded-xl font-semibold text-xs sm:text-sm px-5 py-2.5 shadow-sm'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.dataset.confirmed = 'true';
+                            Swal.fire({
+                                title: '{{ __('Memproses...') }}',
+                                text: '{{ __('Mohon tunggu sebentar.') }}',
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+                            form.submit();
+                        }
+                    });
+                } else if (confirm(confirmMsg)) {
+                    form.dataset.confirmed = 'true';
+                    form.submit();
+                }
+            });
+
             // Mencegah scanner barcode (yang mengirim kombinasi tertentu) membuka tab console
             window.addEventListener('keydown', function(e) {
                 // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U

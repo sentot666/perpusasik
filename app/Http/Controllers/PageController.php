@@ -59,7 +59,7 @@ class PageController extends Controller
         Page::create([
             'title' => $request->title,
             'slug' => $slug,
-            'content' => $request->content,
+            'content' => $this->cleanHtml($request->content),
             'is_active' => $request->boolean('is_active', true)
         ]);
 
@@ -93,7 +93,7 @@ class PageController extends Controller
 
         $data = [
             'title' => $request->title,
-            'content' => $request->content,
+            'content' => $this->cleanHtml($request->content),
             'is_active' => $request->boolean('is_active')
         ];
 
@@ -118,5 +118,27 @@ class PageController extends Controller
         Cache::forget('opac_pages_menu');
 
         return redirect()->route('pages.index')->with('success', 'Halaman berhasil dihapus.');
+    }
+
+    /**
+     * Bersihkan HTML dari skrip berbahaya (Stored XSS Protection)
+     */
+    protected function cleanHtml(?string $content): ?string
+    {
+        if (!$content) {
+            return null;
+        }
+
+        // 1. Hapus tag script, iframe, object, embed, applet, meta, link
+        $content = preg_replace('/<\s*(script|iframe|object|embed|applet|meta|link)\b[^>]*>.*?<\s*\/\s*\1\s*>/is', '', $content);
+        $content = preg_replace('/<\s*(script|iframe|object|embed|applet|meta|link)\b[^>]*>/is', '', $content);
+
+        // 2. Hapus inline javascript event handlers (onclick, onerror, onload, onmouseover, dsb.)
+        $content = preg_replace('/(\bon\w+\s*=\s*["\'][^"\']*["\']|\bon\w+\s*=\s*[^>\s]+)/is', '', $content);
+
+        // 3. Hapus pseudo-protocol berbahaya pada href/src (javascript:, vbscript:, data:text/html)
+        $content = preg_replace('/(href|src)\s*=\s*["\']\s*(javascript|vbscript|data):[^"\']*["\']/is', '$1="#"', $content);
+
+        return $content;
     }
 }

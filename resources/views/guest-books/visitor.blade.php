@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Buku Tamu')
+@section('title', __('Buku Tamu'))
 
 @section('content')
 <div class="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[550px]">
