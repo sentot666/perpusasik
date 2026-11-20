@@ -67,10 +67,16 @@ class ReportController extends Controller
             $startDate = $request->start_date ? date('Y-m-d', strtotime($request->start_date)) : today()->startOfMonth()->toDateString();
             $endDate   = $request->end_date ? date('Y-m-d', strtotime($request->end_date)) : today()->endOfMonth()->toDateString();
 
-            $circulations = Circulation::with(['member', 'bookItem.book'])
+            $circulationsQuery = Circulation::with(['member', 'bookItem.book'])
                 ->whereBetween('loan_date', [$startDate, $endDate])
-                ->latest()
-                ->get();
+                ->latest();
+
+            if ($request->filled('ids')) {
+                $ids = is_array($request->ids) ? $request->ids : explode(',', $request->ids);
+                $circulationsQuery->whereIn('id', array_filter($ids));
+            }
+
+            $circulations = $circulationsQuery->get();
 
             $headers = [
                 'Content-Type' => 'text/csv; charset=UTF-8',
@@ -108,7 +114,14 @@ class ReportController extends Controller
 
             return response()->stream($callback, 200, $headers);
         } elseif ($type === 'members') {
-            $members = \App\Models\Member::latest()->get();
+            $membersQuery = \App\Models\Member::latest();
+
+            if ($request->filled('ids')) {
+                $ids = is_array($request->ids) ? $request->ids : explode(',', $request->ids);
+                $membersQuery->whereIn('id', array_filter($ids));
+            }
+
+            $members = $membersQuery->get();
 
             $headers = [
                 'Content-Type' => 'text/csv; charset=UTF-8',
@@ -148,7 +161,12 @@ class ReportController extends Controller
 
             return response()->stream($callback, 200, $headers);
         } elseif ($type === 'collection') {
-            $books = \App\Models\Book::with(['publisher', 'authors'])->withCount('items')->get();
+            $booksQuery = \App\Models\Book::with(['publisher', 'authors'])->withCount('items');
+            if ($request->filled('ids')) {
+                $ids = is_array($request->ids) ? $request->ids : explode(',', $request->ids);
+                $booksQuery->whereIn('id', array_filter($ids));
+            }
+            $books = $booksQuery->get();
 
             $headers = [
                 'Content-Type' => 'text/csv; charset=UTF-8',
@@ -183,10 +201,16 @@ class ReportController extends Controller
 
             return response()->stream($callback, 200, $headers);
         } elseif ($type === 'overdue') {
-            $overdueLoans = \App\Models\Circulation::with(['member', 'bookItem.book'])
+            $overdueQuery = \App\Models\Circulation::with(['member', 'bookItem.book'])
                 ->overdue()
-                ->orderBy('due_date')
-                ->get();
+                ->orderBy('due_date');
+
+            if ($request->filled('ids')) {
+                $ids = is_array($request->ids) ? $request->ids : explode(',', $request->ids);
+                $overdueQuery->whereIn('id', array_filter($ids));
+            }
+
+            $overdueLoans = $overdueQuery->get();
 
             $headers = [
                 'Content-Type' => 'text/csv; charset=UTF-8',
