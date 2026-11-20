@@ -84,6 +84,19 @@ class BookItemController extends Controller
         return view('book-items.barcode', compact('item'));
     }
 
+    public function printCard(BookItem $item)
+    {
+        $item->load(['book.authors', 'book.publisher', 'location']);
+        $book = $item->book;
+        $allItems = $book->items()->orderBy('id')->get();
+        $copyNumbers = [];
+        foreach ($allItems as $index => $itm) {
+            $copyNumbers[$itm->id] = $index + 1;
+        }
+        $items = collect([$item]);
+        return view('books.card', compact('book', 'items', 'copyNumbers'));
+    }
+
     public function ajaxLookup(Request $request)
     {
         $barcode = $request->barcode;

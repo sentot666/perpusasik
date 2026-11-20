@@ -86,16 +86,29 @@ class BookController extends Controller
 
     public function create()
     {
-        $publishers = Publisher::orderBy('name')->get();
-        $authors    = Author::orderBy('name')->get();
-        $subjects   = Subject::orderBy('name')->get();
-        $locations  = Location::orderBy('name')->get();
+        $publishers  = Publisher::orderBy('name')->get();
+        $authors     = Author::orderBy('name')->get();
+        $subjects    = Subject::orderBy('name')->get();
+        $locations   = Location::orderBy('name')->get();
+        $defaultMode = request('type') === 'digital' ? 'digital' : 'physical';
 
-        return view('books.create', compact('publishers', 'authors', 'subjects', 'locations'));
+        return view('books.create', compact('publishers', 'authors', 'subjects', 'locations', 'defaultMode'));
     }
 
     public function store(Request $request)
     {
+        if ($request->has('subjects') && is_array($request->subjects)) {
+            $request->merge([
+                'subjects' => array_values(array_filter($request->subjects, fn($val) => !empty($val)))
+            ]);
+        }
+
+        if ($request->has('authors') && is_array($request->authors)) {
+            $request->merge([
+                'authors' => array_values(array_filter($request->authors, fn($val) => !empty($val)))
+            ]);
+        }
+
         $validated = $request->validate([
             'title'              => 'required|string|max:500',
             'subtitle'           => 'nullable|string|max:500',
@@ -112,10 +125,12 @@ class BookController extends Controller
             'collection_type'    => 'required|string',
             'publisher_id'       => 'nullable|exists:publishers,id',
             'authors'            => 'nullable|array',
-            'authors.*'          => 'exists:authors,id',
+            'authors.*'          => 'nullable|exists:authors,id',
+            'author_name'        => 'nullable|string|max:255',
             'subjects'           => 'nullable|array',
-            'subjects.*'         => 'exists:subjects,id',
+            'subjects.*'         => 'nullable|exists:subjects,id',
             'digital_file'       => 'nullable|file|mimes:pdf,epub|max:51200',
+            'cover_image_data'   => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($validated, $request) {
@@ -129,6 +144,12 @@ class BookController extends Controller
                     $authorData[$authorId] = ['role' => 'author', 'order' => $order++];
                 }
                 $book->authors()->sync($authorData);
+            } elseif ($request->filled('author_name')) {
+                $author = Author::firstOrCreate(
+                    ['name' => trim($request->author_name)],
+                    ['type' => 'personal']
+                );
+                $book->authors()->sync([$author->id => ['role' => 'author', 'order' => 1]]);
             }
 
             if ($request->subjects) {
@@ -140,6 +161,18 @@ class BookController extends Controller
             if ($request->hasFile('cover_image')) {
                 $path = $request->file('cover_image')->store('covers', 'public');
                 $book->update(['cover_image' => $path]);
+            } elseif ($request->filled('cover_image_data')) {
+                $data = $request->cover_image_data;
+                if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
+                    $imageType = strtolower($matches[1]);
+                    $base64 = substr($data, strpos($data, ',') + 1);
+                    $decoded = base64_decode($base64);
+                    if ($decoded !== false) {
+                        $filename = 'covers/' . uniqid('cover_') . '.' . ($imageType === 'jpeg' ? 'jpg' : $imageType);
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $decoded);
+                        $book->update(['cover_image' => $filename]);
+                    }
+                }
             }
 
             // Handle digital file
@@ -171,6 +204,18 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
+        if ($request->has('subjects') && is_array($request->subjects)) {
+            $request->merge([
+                'subjects' => array_values(array_filter($request->subjects, fn($val) => !empty($val)))
+            ]);
+        }
+
+        if ($request->has('authors') && is_array($request->authors)) {
+            $request->merge([
+                'authors' => array_values(array_filter($request->authors, fn($val) => !empty($val)))
+            ]);
+        }
+
         $validated = $request->validate([
             'title'              => 'required|string|max:500',
             'subtitle'           => 'nullable|string|max:500',
@@ -187,15 +232,18 @@ class BookController extends Controller
             'collection_type'    => 'required|string',
             'publisher_id'       => 'nullable|exists:publishers,id',
             'authors'            => 'nullable|array',
+            'authors.*'          => 'nullable|exists:authors,id',
+            'author_name'        => 'nullable|string|max:255',
             'subjects'           => 'nullable|array',
+            'subjects.*'         => 'nullable|exists:subjects,id',
             'digital_file'       => 'nullable|file|mimes:pdf,epub|max:51200',
+            'cover_image_data'   => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($validated, $request, $book) {
             $book->update($validated);
-            $book->authors()->sync([]);
 
-            if ($request->authors) {
+            if ($request->has('authors') && !empty($request->authors)) {
                 $authorData = [];
                 $validAuthors = array_filter($request->authors, function($val) { return !empty($val); });
                 $order = 1;
@@ -203,6 +251,12 @@ class BookController extends Controller
                     $authorData[$authorId] = ['role' => 'author', 'order' => $order++];
                 }
                 $book->authors()->sync($authorData);
+            } elseif ($request->filled('author_name')) {
+                $author = Author::firstOrCreate(
+                    ['name' => trim($request->author_name)],
+                    ['type' => 'personal']
+                );
+                $book->authors()->sync([$author->id => ['role' => 'author', 'order' => 1]]);
             }
 
             if ($request->has('subjects')) {
@@ -211,8 +265,26 @@ class BookController extends Controller
             }
 
             if ($request->hasFile('cover_image')) {
+                if ($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($book->cover_image);
+                }
                 $path = $request->file('cover_image')->store('covers', 'public');
                 $book->update(['cover_image' => $path]);
+            } elseif ($request->filled('cover_image_data')) {
+                $data = $request->cover_image_data;
+                if (preg_match('/^data:image\/(\w+);base64,/', $data, $matches)) {
+                    $imageType = strtolower($matches[1]);
+                    $base64 = substr($data, strpos($data, ',') + 1);
+                    $decoded = base64_decode($base64);
+                    if ($decoded !== false) {
+                        if ($book->cover_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($book->cover_image)) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($book->cover_image);
+                        }
+                        $filename = 'covers/' . uniqid('cover_') . '.' . ($imageType === 'jpeg' ? 'jpg' : $imageType);
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $decoded);
+                        $book->update(['cover_image' => $filename]);
+                    }
+                }
             }
 
             if ($request->hasFile('digital_file')) {
@@ -252,5 +324,25 @@ class BookController extends Controller
         
         $items = $query->orderBy('id')->get();
         return view('books.barcode', compact('book', 'items', 'copyNumbers'));
+    }
+
+    public function printCard(Request $request, Book $book)
+    {
+        $book->load(['authors', 'publisher']);
+        $allItems = $book->items()->orderBy('id')->get();
+        $copyNumbers = [];
+        foreach ($allItems as $index => $itm) {
+            $copyNumbers[$itm->id] = $index + 1;
+        }
+
+        $query = $book->items()->with('location');
+        
+        $itemsInput = $request->get('items');
+        if (!empty($itemsInput) && is_array($itemsInput)) {
+            $query->whereIn('id', $itemsInput);
+        }
+        
+        $items = $query->orderBy('id')->get();
+        return view('books.card', compact('book', 'items', 'copyNumbers'));
     }
 }

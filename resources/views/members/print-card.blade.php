@@ -584,10 +584,23 @@
                             $librarianName = \App\Models\Setting::get('librarian_name', 'Felix Wijaya');
                         @endphp
                         <div class="pustakawan-sign-space">
-                            @if($signType === 'upload_image' && file_exists(public_path('images/stempel.png')))
-                                <img src="{{ asset('images/stempel.png') }}?v={{ time() }}" style="max-height: 28px; margin: 0 auto;" alt="Cap/Stempel">
-                            @elseif($signType === 'upload_image' && file_exists(public_path('images/ttd.png')))
-                                <img src="{{ asset('images/ttd.png') }}?v={{ time() }}" style="max-height: 28px; margin: 0 auto;" alt="Cap/Stempel">
+                            @if($signType === 'upload_image')
+                                @php
+                                    $hasStamp = file_exists(public_path('images/stempel.png'));
+                                    $hasSignature = file_exists(public_path('images/ttd.png'));
+                                @endphp
+                                @if($hasStamp && $hasSignature)
+                                    <div style="position: relative; width: 85px; height: 30px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                                        <img src="{{ asset('images/ttd.png') }}?v={{ time() }}" style="max-height: 28px; max-width: 75px; object-fit: contain; position: relative; z-index: 1;" alt="Tanda Tangan">
+                                        <img src="{{ asset('images/stempel.png') }}?v={{ time() }}" style="max-height: 32px; max-width: 48px; object-fit: contain; position: absolute; left: 0px; top: -2px; z-index: 2; opacity: 0.85;" alt="Stempel">
+                                    </div>
+                                @elseif($hasSignature)
+                                    <img src="{{ asset('images/ttd.png') }}?v={{ time() }}" style="max-height: 28px; margin: 0 auto; object-fit: contain;" alt="Tanda Tangan">
+                                @elseif($hasStamp)
+                                    <img src="{{ asset('images/stempel.png') }}?v={{ time() }}" style="max-height: 28px; margin: 0 auto; object-fit: contain;" alt="Cap/Stempel">
+                                @else
+                                    <span style="font-size: 6pt; color: #94a3b8;">(Belum upload)</span>
+                                @endif
                             @elseif($signType === 'blank')
                                 {{-- Space Kosong untuk TTD/Cap Manual --}}
                             @else

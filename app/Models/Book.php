@@ -77,6 +77,20 @@ class Book extends Model
         return !empty($this->digital_file_path);
     }
 
+    public function getDigitalFileSizeFormattedAttribute(): ?string
+    {
+        if (!$this->digital_file_path || !file_exists(public_path('storage/' . $this->digital_file_path))) {
+            return null;
+        }
+        $bytes = filesize(public_path('storage/' . $this->digital_file_path));
+        if ($bytes >= 1048576) {
+            return number_format($bytes / 1048576, 2) . ' MB';
+        } elseif ($bytes >= 1024) {
+            return number_format($bytes / 1024, 1) . ' KB';
+        }
+        return $bytes . ' B';
+    }
+
     // ── Scopes ────────────────────────────────────────────────────────────────
 
     public function scopeSearch($query, string $term)

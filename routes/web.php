@@ -106,6 +106,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/books/autocomplete', [BookController::class, 'autocomplete'])->name('books.autocomplete');
         Route::resource('books', BookController::class);
         Route::get('/books/{book}/print-barcode', [BookController::class, 'printBarcode'])->name('books.barcode');
+        Route::get('/books/{book}/print-card', [BookController::class, 'printCard'])->name('books.card');
         Route::resource('authors', AuthorController::class);
         Route::resource('publishers', PublisherController::class);
         Route::resource('subjects', SubjectController::class);
@@ -114,6 +115,7 @@ Route::middleware(['auth'])->group(function () {
         // Book Items (eksemplar) - nested
         Route::resource('books.items', BookItemController::class)->shallow();
         Route::get('/book-items/{item}/barcode', [BookItemController::class, 'barcode'])->name('book-items.barcode');
+        Route::get('/book-items/{item}/print-card', [BookItemController::class, 'printCard'])->name('book-items.card');
     });
 
     // ── Anggota ─────────────────────────────────────────────────────────────

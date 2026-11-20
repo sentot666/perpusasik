@@ -342,30 +342,86 @@
                             </select>
                         </div>
 
-                        {{-- Upload Stempel / TTD --}}
-                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Upload Gambar Stempel & Tanda Tangan') }}</label>
-                            <div class="flex flex-col sm:flex-row items-center gap-4">
-                                <div class="w-28 h-20 bg-white rounded-lg border border-slate-200 shadow-xs flex items-center justify-center p-2 shrink-0">
+                        {{-- Upload Stempel & TTD Terpisah --}}
+                        <div class="space-y-4">
+                            {{-- 1. Upload Stempel --}}
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
+                                        <i class="bi bi-patch-check text-indigo-600"></i>
+                                        {{ __('1. Upload Gambar Stempel (Cap Resmi Perpustakaan)') }}
+                                    </label>
                                     @if(file_exists(public_path('images/stempel.png')))
-                                        <img src="{{ asset('images/stempel.png') }}?v={{ time() }}" class="max-h-full object-contain" alt="Stempel Aktif">
-                                    @else
-                                        <span class="text-xs text-slate-400 text-center"><i class="bi bi-image text-lg block mb-0.5"></i>{{ __('Belum ada') }}</span>
+                                        <label class="inline-flex items-center gap-1.5 text-xs text-red-600 hover:text-red-700 cursor-pointer">
+                                            <input type="checkbox" name="remove_librarian_stamp" value="1" class="rounded border-slate-300 text-red-600 focus:ring-red-500">
+                                            <span>{{ __('Hapus Stempel') }}</span>
+                                        </label>
                                     @endif
                                 </div>
-                                <div class="flex-1 w-full">
-                                    <input type="file" 
-                                           name="librarian_stamp" 
-                                           class="block w-full text-xs text-slate-500
-                                                  file:mr-3 file:py-2 file:px-3
-                                                  file:rounded-md file:border-0
-                                                  file:text-xs file:font-semibold
-                                                  file:bg-indigo-50 file:text-indigo-700
-                                                  hover:file:bg-indigo-100 transition-colors cursor-pointer border border-slate-300 rounded-lg bg-white" 
-                                           accept="image/png,image/jpeg,image/webp">
-                                    <p class="text-xs text-slate-400 mt-1.5"><i class="bi bi-info-circle mr-1"></i>{{ __('Format disarankan: PNG transparan (maks. 2MB). Aktif jika memilih opsi "Gambar Stempel / Tanda Tangan Hasil Upload".') }}</p>
+                                <div class="flex flex-col sm:flex-row items-center gap-4">
+                                    <div class="w-28 h-20 bg-white rounded-lg border border-slate-200 shadow-xs flex items-center justify-center p-2 shrink-0">
+                                        @if(file_exists(public_path('images/stempel.png')))
+                                            <img src="{{ asset('images/stempel.png') }}?v={{ time() }}" class="max-h-full object-contain" alt="Stempel Aktif">
+                                        @else
+                                            <span class="text-xs text-slate-400 text-center"><i class="bi bi-image text-lg block mb-0.5"></i>{{ __('Belum ada stempel') }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 w-full">
+                                        <input type="file" 
+                                               name="librarian_stamp" 
+                                               class="block w-full text-xs text-slate-500
+                                                      file:mr-3 file:py-2 file:px-3
+                                                      file:rounded-md file:border-0
+                                                      file:text-xs file:font-semibold
+                                                      file:bg-indigo-50 file:text-indigo-700
+                                                      hover:file:bg-indigo-100 transition-colors cursor-pointer border border-slate-300 rounded-lg bg-white" 
+                                               accept="image/png,image/jpeg,image/webp">
+                                        <p class="text-xs text-slate-400 mt-1.5"><i class="bi bi-info-circle mr-1"></i>{{ __('File cap/stempel perpustakaan. Format disarankan: PNG transparan (maks. 2MB).') }}</p>
+                                    </div>
                                 </div>
                             </div>
+
+                            {{-- 2. Upload Tanda Tangan --}}
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
+                                        <i class="bi bi-pen text-indigo-600"></i>
+                                        {{ __('2. Upload Gambar Tanda Tangan Pustakawan') }}
+                                    </label>
+                                    @if(file_exists(public_path('images/ttd.png')))
+                                        <label class="inline-flex items-center gap-1.5 text-xs text-red-600 hover:text-red-700 cursor-pointer">
+                                            <input type="checkbox" name="remove_librarian_signature" value="1" class="rounded border-slate-300 text-red-600 focus:ring-red-500">
+                                            <span>{{ __('Hapus Tanda Tangan') }}</span>
+                                        </label>
+                                    @endif
+                                </div>
+                                <div class="flex flex-col sm:flex-row items-center gap-4">
+                                    <div class="w-28 h-20 bg-white rounded-lg border border-slate-200 shadow-xs flex items-center justify-center p-2 shrink-0">
+                                        @if(file_exists(public_path('images/ttd.png')))
+                                            <img src="{{ asset('images/ttd.png') }}?v={{ time() }}" class="max-h-full object-contain" alt="Tanda Tangan Aktif">
+                                        @else
+                                            <span class="text-xs text-slate-400 text-center"><i class="bi bi-image text-lg block mb-0.5"></i>{{ __('Belum ada TTD') }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 w-full">
+                                        <input type="file" 
+                                               name="librarian_signature" 
+                                               class="block w-full text-xs text-slate-500
+                                                      file:mr-3 file:py-2 file:px-3
+                                                      file:rounded-md file:border-0
+                                                      file:text-xs file:font-semibold
+                                                      file:bg-indigo-50 file:text-indigo-700
+                                                      hover:file:bg-indigo-100 transition-colors cursor-pointer border border-slate-300 rounded-lg bg-white" 
+                                               accept="image/png,image/jpeg,image/webp">
+                                        <p class="text-xs text-slate-400 mt-1.5"><i class="bi bi-info-circle mr-1"></i>{{ __('File tanda tangan pustakawan. Format disarankan: PNG transparan (maks. 2MB).') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-xs text-slate-500 bg-indigo-50/60 border border-indigo-100 rounded-lg p-2.5 flex items-start gap-2">
+                                <i class="bi bi-info-circle-fill text-indigo-600 mt-0.5"></i>
+                                <span>{{ __('Keterangan: Anda dapat mengunggah Stempel dan Tanda Tangan secara terpisah. Jika keduanya diunggah, sistem akan menggabungkannya secara otomatis di atas kartu anggota saat opsi "Gambar Stempel / Tanda Tangan Hasil Upload" dipilih.') }}</span>
+                            </p>
                         </div>
                     </div>
                 </div>

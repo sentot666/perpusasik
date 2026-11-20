@@ -390,25 +390,29 @@
         </a>
         @endrole
 
-    </div>
+        {{-- Menu Keluar / Logout --}}
+        @auth
+        <div class="pt-3 mt-4 border-t border-slate-200">
+            <form action="{{ route('logout') }}" method="POST"
+                  data-confirm="{{ __('Apakah Anda yakin ingin keluar dari sistem?') }}"
+                  data-confirm-title="{{ __('Konfirmasi Keluar') }}"
+                  data-confirm-button="{{ __('Ya, Keluar') }}"
+                  data-confirm-danger="true">
+                @csrf
+                <button type="submit" class="sidebar-item flex items-center gap-3.5 w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 group relative font-medium cursor-pointer border-0 bg-transparent text-left" title="{{ __('Keluar') }}">
+                    <i class="bi bi-box-arrow-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon text-red-500 group-hover:text-red-600"></i>
+                    <span class="sidebar-text truncate text-sm font-semibold">{{ __('Keluar') }}</span>
+                    <span class="sidebar-tooltip">{{ __('Keluar') }}</span>
+                </button>
+            </form>
+        </div>
+        @endauth
 
-    {{-- Menu Keluar / Logout --}}
-    @auth
-    <div class="py-2 border-t border-slate-200 flex-shrink-0">
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="sidebar-item flex items-center gap-3.5 w-[calc(100%-1.5rem)] mx-3 px-4 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 group relative font-medium cursor-pointer border-0 bg-transparent text-left" title="{{ __('Keluar') }}">
-                <i class="bi bi-box-arrow-right text-xl w-7 text-center transition-transform group-hover:scale-110 flex-shrink-0 sidebar-icon text-red-500 group-hover:text-red-600"></i>
-                <span class="sidebar-text truncate text-sm font-semibold">{{ __('Keluar') }}</span>
-                <span class="sidebar-tooltip">{{ __('Keluar') }}</span>
-            </button>
-        </form>
-    </div>
-    @endauth
+        {{-- Sidebar Footer --}}
+        <div class="sidebar-footer px-5 pt-3 pb-6 text-xs text-slate-400 flex items-center justify-between">
+            <span class="sidebar-footer-text truncate">&copy; {{ date('Y') }} {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</span>
+        </div>
 
-    {{-- Sidebar Footer --}}
-    <div class="sidebar-footer px-5 border-t border-slate-200 text-xs text-slate-400 flex-shrink-0 py-3 flex items-center justify-between">
-        <span class="sidebar-footer-text truncate">&copy; {{ date('Y') }} {{ \App\Models\Setting::get('library_name', config('app.name', 'Makarya')) }}</span>
     </div>
 </nav>
 

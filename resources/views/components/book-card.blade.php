@@ -52,8 +52,8 @@
                 <i class="bi bi-calendar3 text-[10px]"></i> {{ $book->publication_year ?? '-' }}
             </span>
 
-            @if($book->collection_type === 'E-book')
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60 flex items-center gap-1">
+            @if($book->collection_type === 'E-book' || $book->isDigital())
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60 flex items-center gap-1">
                     <i class="bi bi-file-earmark-pdf"></i> E-Book
                 </span>
             @elseif($book->available_items_count > 0)

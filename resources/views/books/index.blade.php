@@ -13,9 +13,12 @@
         <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">{{ __('Master Buku') }}</h1>
         <p class="text-slate-500 text-xs sm:text-sm">{{ __('Kelola koleksi katalog bibliografi perpustakaan') }}</p>
     </div>
-    <div class="flex gap-2 w-full sm:w-auto">
-        <a href="{{ route('books.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg btn-gradient-blue transition-colors text-white gap-2 py-2 px-5" id="addBookBtn">
-            <i class="bi bi-plus-circle"></i>{{ __('Tambah Buku') }}
+    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+        <a href="{{ route('books.create', ['type' => 'digital']) }}" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors text-white gap-2 py-2 px-4 shadow-sm" title="{{ __('Upload file PDF buku digital secara instan') }}">
+            <i class="bi bi-file-earmark-pdf-fill"></i>{{ __('Upload E-Book') }}
+        </a>
+        <a href="{{ route('books.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-medium rounded-lg text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition-colors gap-2 py-2 px-4 shadow-sm" id="addBookBtn">
+            <i class="bi bi-plus-circle"></i>{{ __('Tambah Buku Fisik') }}
         </a>
     </div>
 </div>
@@ -103,17 +106,38 @@
                         <td>{{ $book->publisher?->name ?? '-' }}</td>
                         <td>{{ $book->publication_year ?? '-' }}</td>
                         <td><code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">{{ $book->call_number ?? '-' }}</code></td>
-                        <td><span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-50 border border-slate-200 text-slate-800">{{ $book->collection_type }}</span></td>
-                        <td class="text-center font-semibold">{{ $book->items_count }}</td>
-                        <td class="text-center">
-                            @if($book->available_items_count > 0)
-                            <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ $book->available_items_count }}</span>
+                        <td>
+                            @if($book->collection_type === 'E-book' || $book->isDigital())
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-700">
+                                    <i class="bi bi-file-earmark-pdf"></i> E-Book
+                                </span>
                             @else
-                            <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-slate-100 text-slate-700 px-2">0</span>
+                                <span class="inline-block px-2.5 py-0.5 rounded text-xs font-medium bg-slate-50 border border-slate-200 text-slate-800">{{ $book->collection_type }}</span>
+                            @endif
+                        </td>
+                        <td class="text-center font-semibold">
+                            @if($book->collection_type === 'E-book' || $book->isDigital())
+                                <span class="text-xs text-indigo-600 font-semibold">Online</span>
+                            @else
+                                {{ $book->items_count }}
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($book->collection_type === 'E-book' || $book->isDigital())
+                                <span class="inline-flex py-0.5 text-xs font-semibold rounded-md bg-indigo-100 text-indigo-700 px-2">Bebas</span>
+                            @elseif($book->available_items_count > 0)
+                                <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-emerald-100 text-emerald-700 px-2">{{ $book->available_items_count }}</span>
+                            @else
+                                <span class="inline-flex py-0.5 text-xs font-medium rounded-md bg-slate-100 text-slate-700 px-2">0</span>
                             @endif
                         </td>
                         <td class="text-center">
                             <div class="inline-flex items-center gap-1">
+                                @if($book->isDigital() || $book->collection_type === 'E-book')
+                                <a href="{{ route('opac.read', $book) }}" target="_blank" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="{{ __('Buka Pembaca E-Book') }}">
+                                    <i class="bi bi-book-half"></i>
+                                </a>
+                                @endif
                                 <a href="{{ route('books.show', $book) }}" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="{{ __('Detail') }}">
                                     <i class="bi bi-eye"></i>
                                 </a>

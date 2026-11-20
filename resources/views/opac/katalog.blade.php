@@ -39,7 +39,7 @@
 @section('content')
 @if($tab == 'home')
     {{-- Hero Section (Pusdiklat & UBSI Inspired, matching Beranda style) --}}
-    <div id="katalog-hero" class="pt-32 pb-36 md:pt-40 md:pb-44 relative">
+    <div id="katalog-hero" class="pt-28 pb-24 sm:pt-36 sm:pb-32 md:pt-40 md:pb-44 relative">
         <div class="katalog-particles-bg"></div>
         <div class="katalog-mask-a"></div>
 

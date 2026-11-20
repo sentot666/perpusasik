@@ -148,34 +148,49 @@
         <div data-aos="fade-up" data-aos-delay="200" class="w-full max-w-2xl mx-auto">
             <form action="{{ route('opac.katalog') }}" method="GET" class="relative z-50 w-full" x-data="autocompleteSearch('{{ addslashes(request('q')) }}')" @click.away="isOpen = false">
                 <input type="hidden" name="tab" value="koleksi">
-                <div class="flex flex-col sm:flex-row items-stretch bg-white rounded-xl overflow-visible shadow-2xl relative border border-white/20">
-                    <select name="search_by" class="bg-transparent border-0 sm:border-r border-slate-200 py-3.5 px-4 text-sm font-semibold text-slate-600 outline-none cursor-pointer appearance-none rounded-t-xl sm:rounded-none sm:rounded-l-xl">
-                        <option value="title">{{ __('Judul') }}</option>
-                        <option value="author">{{ __('Penulis') }}</option>
-                        <option value="subject">{{ __('Topik') }}</option>
-                    </select>
-                    <div class="flex-1 flex items-center bg-transparent relative">
-                        <span class="pl-4 text-slate-400 hidden sm:block"><i class="bi bi-search"></i></span>
-                        <input type="text" name="q" placeholder="{{ __('Cari buku, penulis, atau topik...') }}" class="w-full bg-transparent border-none py-3.5 px-3 text-slate-700 outline-none text-sm" x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
-                        
-                        <!-- Autocomplete Dropdown -->
-                        <div x-show="isOpen && suggestions.length > 0" x-transition.opacity class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden z-[100] text-left" style="display: none;">
-                            <template x-for="item in suggestions" :key="item.text + item.type">
-                                <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
-                                            <i :class="'bi ' + item.icon"></i>
-                                        </div>
-                                        <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
-                                    </div>
-                                    <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
-                                </button>
-                            </template>
-                        </div>
+                
+                {{-- Single-row unified pill searchbar for both mobile and desktop --}}
+                <div class="bg-white rounded-full p-1.5 sm:p-2 flex items-center shadow-2xl border border-white/40 relative transition-all focus-within:ring-2 focus-within:ring-cyan-300">
+                    <span class="pl-3.5 sm:pl-4 text-slate-400 flex-shrink-0">
+                        <i class="bi bi-search text-sm sm:text-base"></i>
+                    </span>
+                    <input type="text" name="q" placeholder="{{ __('Cari buku, penulis, atau topik...') }}" 
+                           class="flex-1 min-w-[100px] px-2.5 sm:px-4 py-2 sm:py-3 text-slate-700 text-xs sm:text-base outline-none border-0 rounded-full placeholder:text-slate-400 font-medium bg-transparent" 
+                           x-model="query" @input.debounce.300ms="fetchSuggestions" @focus="if(query.length > 1) isOpen = true" autocomplete="off">
+                    
+                    {{-- Category filter with custom chevron dropdown --}}
+                    <div class="relative flex items-center border-l border-slate-200 pl-1.5 sm:pl-2 pr-1 flex-shrink-0">
+                        <select name="search_by" class="px-2 sm:px-3 py-1.5 sm:py-2 bg-transparent text-slate-600 outline-none border-0 text-xs sm:text-sm font-semibold cursor-pointer appearance-none pr-5 sm:pr-6">
+                            <option value="title">{{ __('Judul') }}</option>
+                            <option value="author">{{ __('Penulis') }}</option>
+                            <option value="subject">{{ __('Topik') }}</option>
+                        </select>
+                        <i class="bi bi-chevron-down text-[9px] sm:text-[10px] text-slate-400 absolute right-1.5 sm:right-2 pointer-events-none"></i>
                     </div>
-                    <button type="submit" x-ref="submitBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-7 transition-colors whitespace-nowrap rounded-b-xl sm:rounded-none sm:rounded-r-xl">
-                        <i class="bi bi-search sm:hidden mr-2"></i>{{ __('Cari') }}
+
+                    {{-- Search submit button --}}
+                    <button type="submit" x-ref="submitBtn" 
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-md flex-shrink-0 cursor-pointer" 
+                            title="{{ __('Cari Buku') }}">
+                        <i class="bi bi-arrow-right text-base sm:text-xl"></i>
                     </button>
+                </div>
+
+                <!-- Autocomplete Dropdown -->
+                <div x-show="isOpen && suggestions.length > 0" x-transition.opacity 
+                     class="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[100] text-left" 
+                     style="display: none;">
+                    <template x-for="item in suggestions" :key="item.text + item.type">
+                        <button type="button" @click="selectSuggestion(item)" class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 flex items-center justify-between group transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                                    <i :class="'bi ' + item.icon"></i>
+                                </div>
+                                <span class="text-slate-700 font-medium text-sm truncate" x-text="item.text"></span>
+                            </div>
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-400 flex-shrink-0 ml-2" x-text="item.type"></span>
+                        </button>
+                    </template>
                 </div>
             </form>
         </div>
